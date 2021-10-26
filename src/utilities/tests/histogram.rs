@@ -15,12 +15,15 @@
  */
 // package com::dynatrace::dynahist;
 
-pub struct HistogramTestUtil {
+pub struct HistogramTest {
 }
 
-impl HistogramTestUtil {
+#[cfg(feature = "test-traits")]
+impl utilities::tests::Histogram for HistogramTest {}
 
-    fn new() -> HistogramTestUtil {
+trait Histogram {
+
+    fn new() -> Histogram {
     }
 
     pub fn  check_histogram_data_consistency( histogram_data: &Histogram) -> Map<Integer, Long>  {
@@ -46,7 +49,7 @@ impl HistogramTestUtil {
              }
 
         }
-         let non_empty_bins_from_forward_bin_iteration: Map<Integer, Long> = c<>::new();
+         let non_empty_bins_from_forward_bin_iteration: Map<Integer, Long> = TreeMap<>::new();
         {
             if !histogram_data.is_empty() {
                  let bin_iterator: BinIterator = histogram_data.get_first_non_empty_bin();

@@ -16,7 +16,8 @@
 // package com::dynatrace::dynahist::serialization;
 
 
- const HEX_UPPER_CASE_CHARACTERS: Vec<char> = "0123456789ABCDEF".to_char_array();
+const HEX_UPPER_CASE_CHARACTERS: Vec<char> = "0123456789ABCDEF".to_char_array();
+
 pub struct SerializationTestUtil {
 }
 
@@ -109,4 +110,3 @@ impl SerializationTestUtil {
         return String::new(&hex_chars);
     }
 }
-

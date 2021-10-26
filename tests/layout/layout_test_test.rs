@@ -15,6 +15,13 @@
  */
 // package com::dynatrace::dynahist::layout;
 
+extern crate dynahist;
+
+// Declare the helper module
+mod test;
+
+use test;
+
 pub struct TestLayoutTest {
 }
 
@@ -46,4 +53,3 @@ impl TestLayoutTest {
 
     }
 }
-

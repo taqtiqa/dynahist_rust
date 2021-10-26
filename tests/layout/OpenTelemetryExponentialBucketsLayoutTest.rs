@@ -307,6 +307,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
 
     #[test]
     pub fn  test_create(&self)   {
+        assert_eq!(actual_error_kind, expected_error_kind);
         assert_throws(IllegalArgumentException.class, () -> OpenTelemetryExponentialBucketsLayout::create(-1));
         assert_throws(IllegalArgumentException.class, () -> OpenTelemetryExponentialBucketsLayout::create(MAX_PRECISION + 1));
     }
@@ -522,4 +523,3 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_that(&actual).is_equal_to(&expected);
     }
 }
-

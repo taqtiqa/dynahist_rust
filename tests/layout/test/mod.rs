@@ -15,7 +15,6 @@
  */
 // package com::dynatrace::dynahist::layout;
 
-#[derive(Layout)]
 pub struct TestLayout {
 
      let underflow_index: i32;
@@ -23,7 +22,7 @@ pub struct TestLayout {
      let overflow_index: i32;
 }
 
-impl TestLayout {
+impl Layout for TestLayout {
 
     pub fn new( underflow_index: i32,  overflow_index: i32) -> TestLayout {
         check_argument(underflow_index < overflow_index);
@@ -82,4 +81,3 @@ impl TestLayout {
         return true;
     }
 }
-
