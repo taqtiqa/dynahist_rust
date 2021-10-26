@@ -1,2 +1,3 @@
-# dynahist_rust
-DynaHist: A Dynamic Histogram Library for Rust 
+# DynaHist for Rust
+
+DynaHist: A Dynamic Histogram Library for Rust
