@@ -16,9 +16,9 @@
 // package com::dynatrace::dynahist::layout;
 
 
- const SMALLEST_POSITIVE_NAN: f64 = Double::long_bits_to_double(0x7ff0000000000001);
+const SMALLEST_POSITIVE_NAN: f64 = Double::long_bits_to_double(0x7ff0000000000001);
 
- const GREATEST_POSITIVE_NAN: f64 = Double::long_bits_to_double(0x7fffffffffffffff);
+const GREATEST_POSITIVE_NAN: f64 = Double::long_bits_to_double(0x7fffffffffffffff);
 pub struct LayoutTestUtil {
 }
 
@@ -130,4 +130,3 @@ impl LayoutTestUtil {
         return IntStream::range(layout.get_underflow_bin_index() + 1, layout.get_overflow_bin_index() + 1)::map_to_long( bin_idx: & -> ::calculate_lower_bound_approximation_offset(layout, bin_idx))::max()::or_else(0);
     }
 }
-
