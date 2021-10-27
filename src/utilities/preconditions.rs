@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// package com::dynatrace::dynahist::util;
+
+use crate::errors::DynaHistError;
 
 /** Utility trait for preconditions. */
 // pub struct Preconditions {
@@ -28,24 +29,25 @@ pub trait Preconditions {
    * Throws an {@link IllegalArgumentException} if the given expression evaluates to {@code false}.
    *
    * @param expression an expression
-   * @throws IllegalArgumentException if the given expression evaluates to {@code false}
+   * @throws IllegalArgumentEerror if the given expression evaluates to {@code false}
    */
-    fn check_argument( expression: bool)   {
+    fn check_argument( expression: bool) -> Result<bool, DynaHistError> {
         if !expression {
-            return IllegalArgumentError::new();
+            let source = "Check argument failed";
+            return Err(DynaHistError::IllegalArgumentError { source });
         }
     }
 
-    /**
+   /**
    * Throws an {@link IllegalArgumentException} if the given expression evaluates to {@code false}.
    *
    * @param expression an expression
    * @param errorMessage an error message
    * @throws IllegalArgumentException if the given expression evaluates to {@code false}
    */
-    pub fn  check_argument( expression: bool,  error_message: &String)   {
+    fn check_argument_msg(expression: bool,  error_message: &String) -> Result<bool, DynaHistError> {
         if !expression {
-            throw IllegalArgumentException::new(&error_message);
+            return Err( DynaHistError::IllegalArgumentError { error_message } );
         }
     }
 
@@ -57,9 +59,13 @@ pub trait Preconditions {
    * @param value a long value
    * @throws IllegalArgumentException if the given expression evaluates to {@code false}
    */
-    pub fn  check_argument( expression: bool,  error_message_format_string: &String,  value: i64)   {
+    fn  check_argument_value( expression: bool,  error_message_format_string: &String,  value: i64) -> Result<bool, DynaHistError> {
         if !expression {
-            throw IllegalArgumentException::new(&String::format(null as Locale, &error_message_format_string, &Long::value_of(value)));
+            let source = error_message_format_string.replace("{}", value.into());
+            // "The format functions provided by Rust’s standard library do not
+            // have any concept of locale and will produce the same results on
+            // all systems regardless of user configuration."
+            return Err(DynaHistError::IllegalArgumentError { source } );
         }
     }
 }

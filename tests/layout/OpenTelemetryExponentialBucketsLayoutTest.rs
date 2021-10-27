@@ -517,9 +517,6 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
                 i += 1;
              }
          }
-
-        // System.out.println(LongStream.of(expected).mapToObj(l -> String.format("0x%013xL",
-        // l)).collect(Collectors.joining(",", "{", "}")));
         assert_that(&actual).is_equal_to(&expected);
     }
 }

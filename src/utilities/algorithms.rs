@@ -239,7 +239,7 @@ pub trait Algorithms: Preconditions {
             loop {
                 {
                     low = high;
-                    Self::check_argument(low != max, &INVALID_PREDICATE_MSG_FORMAT_STRING, max);
+                    Self::check_argument_value(low != max, &INVALID_PREDICATE_MSG_FORMAT_STRING, max);
                     high = low + increment;
                     if high <= low || high > max {
                         high = max;
@@ -270,12 +270,13 @@ pub trait Algorithms: Preconditions {
      * @param max the maximum value of the interval (inclusive)
      * @return the clipped value
      */
-    fn clip(value: i32, min: i32, max: i32) -> i32 {
+    fn clip(value: i32, min: i32, max: i32)  -> Result<i32, DynaHistError>  {
         if value >= min && value <= max {
             return value;
         } else {
             if min > max {
-                return DynaHistError::IllegalArgumentError;
+                let source = format!("Illegal argument error - min > max: {} > {}", min, max);
+                return Err(DynaHistError::IllegalArgumentError { source });
             } else if value >= min {
                 return max;
             } else {

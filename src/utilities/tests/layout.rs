@@ -16,11 +16,14 @@
 // package com::dynatrace::dynahist::layout;
 
 use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
 
 const SMALLEST_POSITIVE_NAN: f64 = f64::from_bits(0x7ff0000000000001);
 
 const GREATEST_POSITIVE_NAN: f64 = f64::from_bits(0x7fffffffffffffff);
 pub struct LayoutTestUtil {}
+
+impl Preconditions for LayoutTestUtil {}
 
 impl Algorithms for LayoutTestUtil {}
 
