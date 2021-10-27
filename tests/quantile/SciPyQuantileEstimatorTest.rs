@@ -32,9 +32,9 @@ impl SciPyQuantileEstimatorTest {
         ;
         Arrays::sort(&values);
          let quantile_estimator: QuantileEstimator = SciPyQuantileEstimator::create(0.4, 0.4);
-        assert_equals(19.200000000000003, &quantile_estimator.estimate_quantile(0.25, &values), 0);
-        assert_equals(40, &quantile_estimator.estimate_quantile(0.5, &values), 0);
-        assert_equals(42.8, &quantile_estimator.estimate_quantile(0.75, &values), 0);
+        assert_eq!(19.200000000000003, &quantile_estimator.estimate_quantile(0.25, &values), 0);
+        assert_eq!(40, &quantile_estimator.estimate_quantile(0.5, &values), 0);
+        assert_eq!(42.8, &quantile_estimator.estimate_quantile(0.75, &values), 0);
     }
 
     #[test]
@@ -43,11 +43,11 @@ impl SciPyQuantileEstimatorTest {
         ;
         Arrays::sort(&values);
          let quantile_estimator: QuantileEstimator = SciPyQuantileEstimator::create(0.4, 0.4);
-        assert_equals(3, &quantile_estimator.estimate_quantile(0, &values), 0);
-        assert_equals(3, &quantile_estimator.estimate_quantile(0.25, &values), 0);
-        assert_equals(4, &quantile_estimator.estimate_quantile(0.5, &values), 0);
-        assert_equals(5, &quantile_estimator.estimate_quantile(0.75, &values), 0);
-        assert_equals(5, &quantile_estimator.estimate_quantile(1, &values), 0);
+        assert_eq!(3, &quantile_estimator.estimate_quantile(0, &values), 0);
+        assert_eq!(3, &quantile_estimator.estimate_quantile(0.25, &values), 0);
+        assert_eq!(4, &quantile_estimator.estimate_quantile(0.5, &values), 0);
+        assert_eq!(5, &quantile_estimator.estimate_quantile(0.75, &values), 0);
+        assert_eq!(5, &quantile_estimator.estimate_quantile(1, &values), 0);
     }
 
     #[test]
@@ -56,11 +56,11 @@ impl SciPyQuantileEstimatorTest {
         ;
         Arrays::sort(&values);
          let quantile_estimator: QuantileEstimator = SciPyQuantileEstimator::create(0.5, 0.5);
-        assert_equals(3, &quantile_estimator.estimate_quantile(0, &values), 0);
-        assert_equals(3, &quantile_estimator.estimate_quantile(0.25, &values), 0);
-        assert_equals(4, &quantile_estimator.estimate_quantile(0.5, &values), 0);
-        assert_equals(5, &quantile_estimator.estimate_quantile(0.75, &values), 0);
-        assert_equals(5, &quantile_estimator.estimate_quantile(1, &values), 0);
+        assert_eq!(3, &quantile_estimator.estimate_quantile(0, &values), 0);
+        assert_eq!(3, &quantile_estimator.estimate_quantile(0.25, &values), 0);
+        assert_eq!(4, &quantile_estimator.estimate_quantile(0.5, &values), 0);
+        assert_eq!(5, &quantile_estimator.estimate_quantile(0.75, &values), 0);
+        assert_eq!(5, &quantile_estimator.estimate_quantile(1, &values), 0);
     }
 
     #[test]
@@ -70,7 +70,7 @@ impl SciPyQuantileEstimatorTest {
         ;
         for  let quantile_estimator: QuantileEstimator in QUANTILE_ESTIMATORS {
             for  let p: f64 in P_VALUES {
-                assert_equals(value, &quantile_estimator.estimate_quantile(p, &values), 0);
+                assert_eq!(value, &quantile_estimator.estimate_quantile(p, &values), 0);
             }
         }
     }
@@ -80,7 +80,7 @@ impl SciPyQuantileEstimatorTest {
          let values;
         for  let quantile_estimator: QuantileEstimator in QUANTILE_ESTIMATORS {
             for  let p: f64 in P_VALUES {
-                assert_equals(Double::NaN, &quantile_estimator.estimate_quantile(p, &values), 0);
+                assert_eq!(Double::NaN, &quantile_estimator.estimate_quantile(p, &values), 0);
             }
         }
     }
@@ -96,7 +96,7 @@ impl SciPyQuantileEstimatorTest {
         for  let alphap: f64 in alphap_values {
             for  let betap: f64 in betap_values {
                  let estimator: QuantileEstimator = SciPyQuantileEstimator::create(alphap, betap);
-                assert_equals(true_median + (alphap - betap) * 0.5, &estimator.estimate_quantile(0.5, &values), 1e-10);
+                assert_eq!(true_median + (alphap - betap) * 0.5, &estimator.estimate_quantile(0.5, &values), 1e-10);
             }
         }
     }
@@ -113,7 +113,6 @@ impl SciPyQuantileEstimatorTest {
     pub fn  test_to_string(&self)   {
          let alphap: f64 = 0.5;
          let betap: f64 = 0.7;
-        assert_equals("SciPyQuantileEstimator [alphap=0.5, betap=0.7]", &SciPyQuantileEstimator::create(alphap, betap)::to_string());
+        assert_eq!("SciPyQuantileEstimator [alphap=0.5, betap=0.7]", &SciPyQuantileEstimator::create(alphap, betap)::to_string());
     }
 }
-

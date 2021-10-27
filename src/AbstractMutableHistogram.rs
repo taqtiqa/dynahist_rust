@@ -39,9 +39,9 @@ struct AbstractMutableHistogram {
 
      let total_count: i64 = 0;
 
-     let min: f64 = Double::POSITIVE_INFINITY;
+     let min: f64 = f64::INFINITY;
 
-     let max: f64 = Double::NEGATIVE_INFINITY;
+     let max: f64 = f64::NEG_INFINITY;
 }
 
 impl AbstractMutableHistogram {
@@ -67,10 +67,10 @@ impl AbstractMutableHistogram {
     }
 
     pub fn  update_min_max(&self,  min: f64,  max: f64)   {
-        if min <= self.min && (min < self.min || (Double::double_to_raw_long_bits(min) == 0x8000000000000000)) {
+        if min <= self.min && (min < self.min || (min.to_bits() == 0x8000000000000000)) {
             self.min = min;
         }
-        if max >= self.max && (max > self.max || (Double::double_to_raw_long_bits(max) == 0x0000000000000000)) {
+        if max >= self.max && (max > self.max || (max.to_bits() == 0x0000000000000000)) {
             self.max = max;
         }
     }
@@ -158,14 +158,14 @@ impl AbstractMutableHistogram {
 
          let bin_index: i32;
     }
-    
+
     impl BinCopyImpl {
 
         fn new( bin_count: i64,  less_count: i64,  greater_count: i64,  bin_index: i32) -> BinCopyImpl {
             let .binCount = bin_count;
             let .lessCount = less_count;
             let .greaterCount = greater_count;
-            let .binIndex = bin_index;
+            let .bin_index = bin_index;
         }
 
         pub fn  get_histogram(&self) -> Histogram  {
@@ -202,11 +202,11 @@ impl AbstractMutableHistogram {
 
          let mut count: i64;
     }
-    
+
     impl BinIteratorImpl {
 
         pub fn new( bin_index: i32,  less_count: i64,  greater_count: i64,  count: i64) -> BinIteratorImpl {
-            let .binIndex = bin_index;
+            let .bin_index = bin_index;
             let .lessCount = less_count;
             let .greaterCount = greater_count;
             let .count = count;
@@ -334,7 +334,7 @@ impl AbstractMutableHistogram {
             info_byte |= 0x08;
         }
         // bit 5 and 6
-        info_byte |= (Math::min(effective_regular_total_count, 3) as i32) << 4;
+        info_byte |= (std::cmp::min(effective_regular_total_count, 3) as i32) << 4;
         if effective_under_flow_count > 0 {
             // bit 7
             info_byte |= 0x40;
@@ -360,14 +360,14 @@ impl AbstractMutableHistogram {
              let min_bin_index: i32 = layout.map_to_bin_index(self.min);
              let max_bin_index: i32 = layout.map_to_bin_index(self.max);
             // 4. write first regular effectively non-zero bin index
-             let first_regular_effectively_non_zero_bin_index: i32 = Math::max(&self.min_allocated_bin_index_inclusive(), min_bin_index);
+             let first_regular_effectively_non_zero_bin_index: i32 = std::cmp::max(&self.min_allocated_bin_index_inclusive(), min_bin_index);
             while self.get_allocated_bin_count(first_regular_effectively_non_zero_bin_index) - ( if (min_bin_index == first_regular_effectively_non_zero_bin_index) { 1 } else { 0 }) - ( if (max_bin_index == first_regular_effectively_non_zero_bin_index) { 1 } else { 0 }) == 0 {
                 first_regular_effectively_non_zero_bin_index += 1;
             }
             write_signed_var_int(first_regular_effectively_non_zero_bin_index, &data_output);
             if effective_regular_total_count >= 2 {
                 // 5. write first regular effectively non-zero bin index
-                 let last_regular_effectively_non_zero_bin_index: i32 = Math::min(self.max_allocated_bin_index_exclusive() - 1, max_bin_index);
+                 let last_regular_effectively_non_zero_bin_index: i32 = std::cmp::min(self.max_allocated_bin_index_exclusive() - 1, max_bin_index);
                 while self.get_allocated_bin_count(last_regular_effectively_non_zero_bin_index) - ( if (min_bin_index == last_regular_effectively_non_zero_bin_index) { 1 } else { 0 }) - ( if (max_bin_index == last_regular_effectively_non_zero_bin_index) { 1 } else { 0 }) == 0 {
                     last_regular_effectively_non_zero_bin_index -= 1;
                 }
@@ -480,13 +480,13 @@ impl AbstractMutableHistogram {
                 if min_bin_index <= layout.get_underflow_bin_index() {
                     min_allocated_bin_index_unclipped = first_regular_effectively_non_zero_bin_index;
                 } else {
-                    min_allocated_bin_index_unclipped = Math::min(min_bin_index, first_regular_effectively_non_zero_bin_index);
+                    min_allocated_bin_index_unclipped = std::cmp::min(min_bin_index, first_regular_effectively_non_zero_bin_index);
                 }
                  let max_allocated_bin_index_unclipped: i32;
                 if max_bin_index >= layout.get_overflow_bin_index() {
                     max_allocated_bin_index_unclipped = last_regular_effectively_non_zero_bin_index;
                 } else {
-                    max_allocated_bin_index_unclipped = Math::max(max_bin_index, last_regular_effectively_non_zero_bin_index);
+                    max_allocated_bin_index_unclipped = std::cmp::max(max_bin_index, last_regular_effectively_non_zero_bin_index);
                 }
                  let min_allocated_bin_index: i32 = Algorithms::clip(min_allocated_bin_index_unclipped, layout.get_underflow_bin_index() + 1, layout.get_overflow_bin_index() - 1);
                  let max_allocated_bin_index: i32 = Algorithms::clip(max_allocated_bin_index_unclipped, layout.get_underflow_bin_index() + 1, layout.get_overflow_bin_index() - 1);
@@ -685,4 +685,3 @@ impl AbstractMutableHistogram {
         return true;
     }
 }
-

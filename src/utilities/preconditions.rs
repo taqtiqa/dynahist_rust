@@ -15,24 +15,24 @@
  */
 // package com::dynatrace::dynahist::util;
 
-/** Utility class for preconditions. */
-pub struct Preconditions {
-}
+/** Utility trait for preconditions. */
+// pub struct Preconditions {
+// }
 
-impl Preconditions {
+pub trait Preconditions {
 
-    fn new() -> Preconditions {
-    }
+    // fn new() -> Preconditions {
+    // }
 
-    /**
+   /**
    * Throws an {@link IllegalArgumentException} if the given expression evaluates to {@code false}.
    *
    * @param expression an expression
    * @throws IllegalArgumentException if the given expression evaluates to {@code false}
    */
-    pub fn  check_argument( expression: bool)   {
+    fn check_argument( expression: bool)   {
         if !expression {
-            throw IllegalArgumentException::new();
+            return IllegalArgumentError::new();
         }
     }
 
@@ -63,4 +63,3 @@ impl Preconditions {
         }
     }
 }
-

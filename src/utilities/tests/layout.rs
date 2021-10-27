@@ -15,107 +15,120 @@
  */
 // package com::dynatrace::dynahist::layout;
 
+use crate::utilities::Algorithms;
 
-const SMALLEST_POSITIVE_NAN: f64 = Double::long_bits_to_double(0x7ff0000000000001);
+const SMALLEST_POSITIVE_NAN: f64 = f64::from_bits(0x7ff0000000000001);
 
-const GREATEST_POSITIVE_NAN: f64 = Double::long_bits_to_double(0x7fffffffffffffff);
-pub struct LayoutTestUtil {
-}
+const GREATEST_POSITIVE_NAN: f64 = f64::from_bits(0x7fffffffffffffff);
+pub struct LayoutTestUtil {}
+
+impl Algorithms for LayoutTestUtil {}
 
 impl LayoutTestUtil {
 
     fn new() -> LayoutTestUtil {
     }
 
-    fn  next_up( value: f64) -> f64  {
-        if Double::double_to_long_bits(value) == Double::double_to_long_bits(-0.0) {
+    fn next_up(value: f64) -> f64  {
+        if Self::to_bits_nan_collapse(value) == Self::to_bits_nan_collapse(-0.0) {
             return 0.0;
         }
-
-        return Math::next_up(value);
+        // Java Math::next_up(value) has no counterpart in Rust.
+        // closest is float_next_after crate.
+        return value.next_after(std::f64::INFINITY);
     }
 
     fn  next_down( value: f64) -> f64  {
-        if Double::double_to_long_bits(value) == Double::double_to_long_bits(0.0) {
+        if Self::to_bits_nan_collapse(value) == Self::to_bits_nan_collapse(0.0) {
             return -0.0;
         }
 
-        return Math::next_down(value);
+        return value.next_after(std::f64::NEG_INFINITY);
     }
 
-    fn  valid_na_n_index( layout: &Layout) -> Condition<Integer>  {
-         let under_flow_index: i32 = layout.get_underflow_bin_index();
-         let over_flow_index: i32 = layout.get_underflow_bin_index();
-        return Condition<>::new() {
+    // The Java implementation types indices as `int`, or `i32` in Rust.
+    // However, since we are referring to array indices, and Rust only accepts
+    // `usize` when indexing .
+    fn  valid_nan_index( layout: &Layout, idx: usize) -> bool  {
+         let under_flow_index = layout.get_underflow_bin_index();
+         let over_flow_index = layout.get_underflow_bin_index();
+         let check = idx >= over_flow_index || idx <= under_flow_index;
+         return check;
+        // return Condition<>::new() {
 
-            pub fn  matches(&self,  value: &Integer) -> bool  {
-                return value >= over_flow_index || value <= under_flow_index;
-            }
-        };
+        //     pub fn  matches(&self,  value: &Integer) -> bool  {
+        //         return value >= over_flow_index || value <= under_flow_index;
+        //     }
+        // };
     }
 
-    fn  valid_pos_inf_index( layout: &Layout) -> Condition<Integer>  {
+    fn  valid_pos_inf_index( layout: &Layout, value: f64) -> Condition<Integer>  {
          let over_flow_index: i32 = layout.get_underflow_bin_index();
-        return Condition<>::new() {
+         let check = value >= over_flow_index;
+         return check;
+        // return Condition<>::new() {
 
-            pub fn  matches(&self,  value: &Integer) -> bool  {
-                return value >= over_flow_index;
-            }
-        };
+        //     pub fn  matches(&self,  value: &Integer) -> bool  {
+        //         return value >= over_flow_index;
+        //     }
+        // };
     }
 
     fn  valid_neg_inf_index( layout: &Layout) -> Condition<Integer>  {
          let under_flow_index: i32 = layout.get_underflow_bin_index();
-        return Condition<>::new() {
+         let check = value <= under_flow_index;
+         return check;
+        // return Condition<>::new() {
 
-            pub fn  matches(&self,  value: &Integer) -> bool  {
-                return value <= under_flow_index;
-            }
-        };
+        //     pub fn  matches(&self,  value: &Integer) -> bool  {
+        //         return value <= under_flow_index;
+        //     }
+        // };
     }
 
     pub fn  assert_consistency( layout: &Layout)   {
-        assert_equals(&layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), &layout.get_bin_lower_bound(layout.get_underflow_bin_index() - 1), 0.0);
-        assert_equals(&layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), &layout.get_bin_lower_bound(Integer::MIN_VALUE), 0.0);
-        assert_equals(&layout.get_bin_upper_bound(&layout.get_underflow_bin_index()), &layout.get_bin_upper_bound(layout.get_underflow_bin_index() - 1), 0.0);
-        assert_equals(&layout.get_bin_upper_bound(&layout.get_underflow_bin_index()), &layout.get_bin_upper_bound(Integer::MIN_VALUE), 0.0);
-        assert_equals(&layout.get_bin_lower_bound(&layout.get_overflow_bin_index()), &layout.get_bin_lower_bound(layout.get_overflow_bin_index() + 1), 0.0);
-        assert_equals(&layout.get_bin_lower_bound(&layout.get_overflow_bin_index()), &layout.get_bin_lower_bound(Integer::MAX_VALUE), 0.0);
-        assert_equals(&layout.get_bin_upper_bound(&layout.get_overflow_bin_index()), &layout.get_bin_upper_bound(layout.get_overflow_bin_index() + 1), 0.0);
-        assert_equals(&layout.get_bin_upper_bound(&layout.get_overflow_bin_index()), &layout.get_bin_upper_bound(Integer::MAX_VALUE), 0.0);
+        assert_eq!(&layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), &layout.get_bin_lower_bound(layout.get_underflow_bin_index() - 1), 0.0);
+        assert_eq!(&layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), &layout.get_bin_lower_bound(Integer::MIN_VALUE), 0.0);
+        assert_eq!(&layout.get_bin_upper_bound(&layout.get_underflow_bin_index()), &layout.get_bin_upper_bound(layout.get_underflow_bin_index() - 1), 0.0);
+        assert_eq!(&layout.get_bin_upper_bound(&layout.get_underflow_bin_index()), &layout.get_bin_upper_bound(Integer::MIN_VALUE), 0.0);
+        assert_eq!(&layout.get_bin_lower_bound(&layout.get_overflow_bin_index()), &layout.get_bin_lower_bound(layout.get_overflow_bin_index() + 1), 0.0);
+        assert_eq!(&layout.get_bin_lower_bound(&layout.get_overflow_bin_index()), &layout.get_bin_lower_bound(Integer::MAX_VALUE), 0.0);
+        assert_eq!(&layout.get_bin_upper_bound(&layout.get_overflow_bin_index()), &layout.get_bin_upper_bound(layout.get_overflow_bin_index() + 1), 0.0);
+        assert_eq!(&layout.get_bin_upper_bound(&layout.get_overflow_bin_index()), &layout.get_bin_upper_bound(Integer::MAX_VALUE), 0.0);
          {
              let mut i: i32 = layout.get_underflow_bin_index();
             while i <= layout.get_overflow_bin_index() {
                 {
                      let lower_bound: f64 = layout.get_bin_lower_bound(i);
                     if i == layout.get_underflow_bin_index() {
-                        assert_equals(Double::NEGATIVE_INFINITY, lower_bound, 0.0);
+                        assert_eq!(f64::NEG_INFINITY, lower_bound, 0.0);
                     } else {
-                        assert_equals(i, &layout.map_to_bin_index(lower_bound));
-                        assert_equals(i - 1, &layout.map_to_bin_index(&::next_down(lower_bound)));
+                        assert_eq!(i, &layout.map_to_bin_index(lower_bound));
+                        assert_eq!(i - 1, &layout.map_to_bin_index(&::next_down(lower_bound)));
                     }
                      let upper_bound: f64 = layout.get_bin_upper_bound(i);
                     if i == layout.get_overflow_bin_index() {
-                        assert_equals(Double::POSITIVE_INFINITY, upper_bound, 0.0);
+                        assert_eq!(f64::INFINITY, upper_bound, 0.0);
                     } else {
-                        assert_equals(i, &layout.map_to_bin_index(upper_bound));
-                        assert_equals(i + 1, &layout.map_to_bin_index(&::next_up(upper_bound)));
+                        assert_eq!(i, &layout.map_to_bin_index(upper_bound));
+                        assert_eq!(i + 1, &layout.map_to_bin_index(&::next_up(upper_bound)));
                     }
                 }
                 i += 1;
              }
          }
 
-        assert_equals(&layout.get_bin_lower_bound(layout.get_underflow_bin_index() + 1), &layout.get_normal_range_lower_bound(), 0.0);
-        assert_equals(&layout.get_bin_upper_bound(layout.get_overflow_bin_index() - 1), &layout.get_normal_range_upper_bound(), 0.0);
-        assert_that(&layout.map_to_bin_index(Double::POSITIVE_INFINITY)).is(&::valid_pos_inf_index(layout));
-        assert_that(&layout.map_to_bin_index(SMALLEST_POSITIVE_NAN)).is(&::valid_na_n_index(layout));
-        assert_that(&layout.map_to_bin_index(Double::NaN)).is(&::valid_na_n_index(layout));
-        assert_that(&layout.map_to_bin_index(GREATEST_POSITIVE_NAN)).is(&::valid_na_n_index(layout));
-        assert_that(&layout.map_to_bin_index(Double::NEGATIVE_INFINITY)).is(&::valid_neg_inf_index(layout));
-        assert_that(&layout.map_to_bin_index(&Double::long_bits_to_double(0xfff0000000000001))).is(&::valid_na_n_index(layout));
-        assert_that(&layout.map_to_bin_index(&Double::long_bits_to_double(0xfff8000000000000))).is(&::valid_na_n_index(layout));
-        assert_that(&layout.map_to_bin_index(&Double::long_bits_to_double(0xffffffffffffffff))).is(&::valid_na_n_index(layout));
+        assert_eq!(&layout.get_bin_lower_bound(layout.get_underflow_bin_index() + 1), &layout.get_normal_range_lower_bound(), 0.0);
+        assert_eq!(&layout.get_bin_upper_bound(layout.get_overflow_bin_index() - 1), &layout.get_normal_range_upper_bound(), 0.0);
+        assert!(valid_pos_inf_index(layout, &layout.map_to_bin_index(f64::INFINITY)));
+        // assert_that(&layout.map_to_bin_index(f64::INFINITY)).is(&::valid_pos_inf_index(layout));
+        assert_that(&layout.map_to_bin_index(SMALLEST_POSITIVE_NAN)).is(&::valid_nan_index(layout));
+        assert_that(&layout.map_to_bin_index(Double::NaN)).is(&::valid_nan_index(layout));
+        assert_that(&layout.map_to_bin_index(GREATEST_POSITIVE_NAN)).is(&::valid_nan_index(layout));
+        assert_that(&layout.map_to_bin_index(f64::NEG_INFINITY)).is(&::valid_neg_inf_index(layout));
+        assert_that(&layout.map_to_bin_index(&f64::from_bits(0xfff0000000000001))).is(&::valid_nan_index(layout));
+        assert_that(&layout.map_to_bin_index(&f64::from_bits(0xfff8000000000000))).is(&::valid_nan_index(layout));
+        assert_that(&layout.map_to_bin_index(&f64::from_bits(0xffffffffffffffff))).is(&::valid_nan_index(layout));
     }
 
     fn  calculate_lower_bound_approximation_offset( layout: &AbstractLayout,  bin_idx: i32) -> i64  {
@@ -123,7 +136,7 @@ impl LayoutTestUtil {
          let exact_lower_bound: f64 = layout.get_bin_lower_bound(bin_idx);
          let approximate_lower_bound_long_representation: i64 = Algorithms::map_double_to_long(approximate_lower_bound);
          let exact_lower_bound_long_representation: i64 = Algorithms::map_double_to_long(exact_lower_bound);
-        return Math::max(&Math::subtract_exact(approximate_lower_bound_long_representation, exact_lower_bound_long_representation), &Math::subtract_exact(exact_lower_bound_long_representation, approximate_lower_bound_long_representation));
+        return std::cmp::max(&Math::subtract_exact(approximate_lower_bound_long_representation, exact_lower_bound_long_representation), &Math::subtract_exact(exact_lower_bound_long_representation, approximate_lower_bound_long_representation));
     }
 
     pub fn  max_lower_bound_approximation_offset( layout: &AbstractLayout) -> i64  {

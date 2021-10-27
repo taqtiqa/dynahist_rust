@@ -50,7 +50,7 @@ pub trait Bin {
    *
    * @return the width of the bin
    */
-    fn default  get_width(&self) -> f64  {
+    fn get_width(&self) -> f64  {
         return self.get_upper_bound() - self.get_lower_bound();
     }
 
@@ -80,7 +80,7 @@ pub trait Bin {
    *
    * @return {@code true} if this bin corresponds to the first non-empty bin
    */
-    fn default  is_first_non_empty_bin(&self) -> bool  {
+    fn is_first_non_empty_bin(&self) -> bool  {
         return self.get_less_count() == 0;
     }
 
@@ -89,7 +89,7 @@ pub trait Bin {
    *
    * @return {@code true} if this bin corresponds to the last non-empty bin
    */
-    fn default  is_last_non_empty_bin(&self) -> bool  {
+    fn is_last_non_empty_bin(&self) -> bool  {
         return self.get_greater_count() == 0;
     }
 
@@ -107,4 +107,3 @@ pub trait Bin {
    */
     fn  is_overflow_bin(&self) -> bool ;
 }
-

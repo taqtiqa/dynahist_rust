@@ -57,10 +57,10 @@ impl AbstractMutableHistogramTest {
     pub fn  test_positive_infinity(&self)   {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
-        histogram.add_value(Double::POSITIVE_INFINITY);
-        assert_equals(1, &histogram.get_total_count());
-        assert_equals(Double::POSITIVE_INFINITY, &histogram.get_min(), 0.0);
-        assert_equals(Double::POSITIVE_INFINITY, &histogram.get_max(), 0.0);
+        histogram.add_value(f64::INFINITY);
+        assert_eq!(1, &histogram.get_total_count());
+        assert_eq!(f64::INFINITY, &histogram.get_min(), 0.0);
+        assert_eq!(f64::INFINITY, &histogram.get_max(), 0.0);
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
@@ -69,10 +69,10 @@ impl AbstractMutableHistogramTest {
     pub fn  test_negative_infinity(&self)   {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
-        histogram.add_value(Double::NEGATIVE_INFINITY);
-        assert_equals(1, &histogram.get_total_count());
-        assert_equals(Double::NEGATIVE_INFINITY, &histogram.get_min(), 0.0);
-        assert_equals(Double::NEGATIVE_INFINITY, &histogram.get_max(), 0.0);
+        histogram.add_value(f64::NEG_INFINITY);
+        assert_eq!(1, &histogram.get_total_count());
+        assert_eq!(f64::NEG_INFINITY, &histogram.get_min(), 0.0);
+        assert_eq!(f64::NEG_INFINITY, &histogram.get_max(), 0.0);
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
@@ -100,9 +100,9 @@ impl AbstractMutableHistogramTest {
             while k < Z * K {
                 {
                      let bin: BinIterator = histogram.get_bin_by_rank(k);
-                    assert_equals(Z, &bin.get_bin_count());
-                    assert_equals((k / Z) * Z, &bin.get_less_count());
-                    assert_equals(Z * K - (k / Z) * Z - Z, &bin.get_greater_count());
+                    assert_eq!(Z, &bin.get_bin_count());
+                    assert_eq!((k / Z) * Z, &bin.get_less_count());
+                    assert_eq!(Z * K - (k / Z) * Z - Z, &bin.get_greater_count());
                 }
                 k += 1;
              }
@@ -113,7 +113,7 @@ impl AbstractMutableHistogramTest {
     #[test]
     pub fn  test_single_value_histogram_normal(&self)   {
          let histogram: Histogram = create(TestLayout::new(-100, 100)).add_value(5);
-        assert_equals(1, &HistogramTestUtil::number_of_non_empty_bins(histogram));
+        assert_eq!(1, &HistogramTestUtil::number_of_non_empty_bins(histogram));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
@@ -121,7 +121,7 @@ impl AbstractMutableHistogramTest {
     #[test]
     pub fn  test_single_value_histogram_underflow(&self)   {
          let histogram: Histogram = create(TestLayout::new(-100, 100)).add_value(1000);
-        assert_equals(1, &HistogramTestUtil::number_of_non_empty_bins(histogram));
+        assert_eq!(1, &HistogramTestUtil::number_of_non_empty_bins(histogram));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
@@ -129,7 +129,7 @@ impl AbstractMutableHistogramTest {
     #[test]
     pub fn  test_single_value_histogram_overflow(&self)   {
          let histogram: Histogram = create(TestLayout::new(-100, 100)).add_value(-1000);
-        assert_equals(1, &HistogramTestUtil::number_of_non_empty_bins(histogram));
+        assert_eq!(1, &HistogramTestUtil::number_of_non_empty_bins(histogram));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
@@ -137,7 +137,7 @@ impl AbstractMutableHistogramTest {
     #[test]
     pub fn  test_two_values_histogram_underflow_and_overflow(&self)   {
          let histogram: Histogram = create(TestLayout::new(-100, 100)).add_value(-1000).add_value(1000);
-        assert_equals(2, &HistogramTestUtil::number_of_non_empty_bins(histogram));
+        assert_eq!(2, &HistogramTestUtil::number_of_non_empty_bins(histogram));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
@@ -155,8 +155,8 @@ impl AbstractMutableHistogramTest {
                      const N_Data: i32 = random.next_int(50);
                      let count_base: i64 = 1 << random.next_int(33);
                      let total_count: i64 = 0;
-                     let mut min: f64 = Double::POSITIVE_INFINITY;
-                     let mut max: f64 = Double::NEGATIVE_INFINITY;
+                     let mut min: f64 = f64::INFINITY;
+                     let mut max: f64 = f64::NEG_INFINITY;
                      {
                          let mut j: i32 = 0;
                         while j < N_Data {
@@ -165,20 +165,20 @@ impl AbstractMutableHistogramTest {
                                  let value: f64 = random.next_double() * 200.0 - 100.0;
                                 histogram.add_value(value, count);
                                 total_count += count;
-                                min = Math::min(min, value);
-                                max = Math::max(max, value);
+                                min = std::cmp::min(min, value);
+                                max = std::cmp::max(max, value);
                             }
                             j += 1;
                          }
                      }
 
                     // verify total count, min, and max
-                    assert_equals(total_count, &histogram.get_total_count());
-                    assert_equals(min, &histogram.get_min(), 0.0);
-                    assert_equals(max, &histogram.get_max(), 0.0);
+                    assert_eq!(total_count, &histogram.get_total_count());
+                    assert_eq!(min, &histogram.get_min(), 0.0);
+                    assert_eq!(max, &histogram.get_max(), 0.0);
                     if total_count > 0 {
-                        assert_equals(min, &histogram.get_value(0), 0.0);
-                        assert_equals(max, &histogram.get_value(total_count - 1), 0.0);
+                        assert_eq!(min, &histogram.get_value(0), 0.0);
+                        assert_eq!(max, &histogram.get_value(total_count - 1), 0.0);
                     }
                     HistogramTestUtil::check_histogram_data_consistency(histogram);
                     HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
@@ -198,60 +198,60 @@ impl AbstractMutableHistogramTest {
         histogram.add_value(3, 4);
         histogram.add_value(106, 1);
          let preprocessed_histogram: Histogram = histogram.get_preprocessed_copy();
-        assert_equals(histogram, preprocessed_histogram);
+        assert_eq!(histogram, preprocessed_histogram);
         HistogramTestUtil::check_histogram_data_consistency(preprocessed_histogram);
         HistogramTestUtil::check_histogram_data_consistency(histogram);
-        assert_equals(106, &preprocessed_histogram.get_max(), 0);
-        assert_equals(-101, &preprocessed_histogram.get_min(), 0);
-        assert_equals(10, &preprocessed_histogram.get_total_count());
-        assert_equals(-100, &preprocessed_histogram.get_bin_by_rank(0).get_bin_index());
-        assert_equals(0, &preprocessed_histogram.get_bin_by_rank(0).get_less_count());
-        assert_equals(3, &preprocessed_histogram.get_bin_by_rank(0).get_bin_count());
-        assert_equals(7, &preprocessed_histogram.get_bin_by_rank(0).get_greater_count());
-        assert_equals(-100, &preprocessed_histogram.get_first_non_empty_bin().get_bin_index());
-        assert_equals(0, &preprocessed_histogram.get_first_non_empty_bin().get_less_count());
-        assert_equals(3, &preprocessed_histogram.get_first_non_empty_bin().get_bin_count());
-        assert_equals(7, &preprocessed_histogram.get_first_non_empty_bin().get_greater_count());
-        assert_equals(-100, &preprocessed_histogram.get_bin_by_rank(1).get_bin_index());
-        assert_equals(0, &preprocessed_histogram.get_bin_by_rank(1).get_less_count());
-        assert_equals(3, &preprocessed_histogram.get_bin_by_rank(1).get_bin_count());
-        assert_equals(7, &preprocessed_histogram.get_bin_by_rank(1).get_greater_count());
-        assert_equals(-100, &preprocessed_histogram.get_bin_by_rank(2).get_bin_index());
-        assert_equals(0, &preprocessed_histogram.get_bin_by_rank(2).get_less_count());
-        assert_equals(3, &preprocessed_histogram.get_bin_by_rank(2).get_bin_count());
-        assert_equals(7, &preprocessed_histogram.get_bin_by_rank(2).get_greater_count());
-        assert_equals(-53, &preprocessed_histogram.get_bin_by_rank(3).get_bin_index());
-        assert_equals(3, &preprocessed_histogram.get_bin_by_rank(3).get_less_count());
-        assert_equals(2, &preprocessed_histogram.get_bin_by_rank(3).get_bin_count());
-        assert_equals(5, &preprocessed_histogram.get_bin_by_rank(3).get_greater_count());
-        assert_equals(-53, &preprocessed_histogram.get_bin_by_rank(4).get_bin_index());
-        assert_equals(3, &preprocessed_histogram.get_bin_by_rank(4).get_less_count());
-        assert_equals(2, &preprocessed_histogram.get_bin_by_rank(4).get_bin_count());
-        assert_equals(5, &preprocessed_histogram.get_bin_by_rank(4).get_greater_count());
-        assert_equals(3, &preprocessed_histogram.get_bin_by_rank(5).get_bin_index());
-        assert_equals(5, &preprocessed_histogram.get_bin_by_rank(5).get_less_count());
-        assert_equals(4, &preprocessed_histogram.get_bin_by_rank(5).get_bin_count());
-        assert_equals(1, &preprocessed_histogram.get_bin_by_rank(5).get_greater_count());
-        assert_equals(3, &preprocessed_histogram.get_bin_by_rank(6).get_bin_index());
-        assert_equals(5, &preprocessed_histogram.get_bin_by_rank(6).get_less_count());
-        assert_equals(4, &preprocessed_histogram.get_bin_by_rank(6).get_bin_count());
-        assert_equals(1, &preprocessed_histogram.get_bin_by_rank(6).get_greater_count());
-        assert_equals(3, &preprocessed_histogram.get_bin_by_rank(7).get_bin_index());
-        assert_equals(5, &preprocessed_histogram.get_bin_by_rank(7).get_less_count());
-        assert_equals(4, &preprocessed_histogram.get_bin_by_rank(7).get_bin_count());
-        assert_equals(1, &preprocessed_histogram.get_bin_by_rank(7).get_greater_count());
-        assert_equals(3, &preprocessed_histogram.get_bin_by_rank(8).get_bin_index());
-        assert_equals(5, &preprocessed_histogram.get_bin_by_rank(8).get_less_count());
-        assert_equals(4, &preprocessed_histogram.get_bin_by_rank(8).get_bin_count());
-        assert_equals(1, &preprocessed_histogram.get_bin_by_rank(8).get_greater_count());
-        assert_equals(100, &preprocessed_histogram.get_bin_by_rank(9).get_bin_index());
-        assert_equals(9, &preprocessed_histogram.get_bin_by_rank(9).get_less_count());
-        assert_equals(1, &preprocessed_histogram.get_bin_by_rank(9).get_bin_count());
-        assert_equals(0, &preprocessed_histogram.get_bin_by_rank(9).get_greater_count());
-        assert_equals(100, &preprocessed_histogram.get_last_non_empty_bin().get_bin_index());
-        assert_equals(9, &preprocessed_histogram.get_last_non_empty_bin().get_less_count());
-        assert_equals(1, &preprocessed_histogram.get_last_non_empty_bin().get_bin_count());
-        assert_equals(0, &preprocessed_histogram.get_last_non_empty_bin().get_greater_count());
+        assert_eq!(106, &preprocessed_histogram.get_max(), 0);
+        assert_eq!(-101, &preprocessed_histogram.get_min(), 0);
+        assert_eq!(10, &preprocessed_histogram.get_total_count());
+        assert_eq!(-100, &preprocessed_histogram.get_bin_by_rank(0).get_bin_index());
+        assert_eq!(0, &preprocessed_histogram.get_bin_by_rank(0).get_less_count());
+        assert_eq!(3, &preprocessed_histogram.get_bin_by_rank(0).get_bin_count());
+        assert_eq!(7, &preprocessed_histogram.get_bin_by_rank(0).get_greater_count());
+        assert_eq!(-100, &preprocessed_histogram.get_first_non_empty_bin().get_bin_index());
+        assert_eq!(0, &preprocessed_histogram.get_first_non_empty_bin().get_less_count());
+        assert_eq!(3, &preprocessed_histogram.get_first_non_empty_bin().get_bin_count());
+        assert_eq!(7, &preprocessed_histogram.get_first_non_empty_bin().get_greater_count());
+        assert_eq!(-100, &preprocessed_histogram.get_bin_by_rank(1).get_bin_index());
+        assert_eq!(0, &preprocessed_histogram.get_bin_by_rank(1).get_less_count());
+        assert_eq!(3, &preprocessed_histogram.get_bin_by_rank(1).get_bin_count());
+        assert_eq!(7, &preprocessed_histogram.get_bin_by_rank(1).get_greater_count());
+        assert_eq!(-100, &preprocessed_histogram.get_bin_by_rank(2).get_bin_index());
+        assert_eq!(0, &preprocessed_histogram.get_bin_by_rank(2).get_less_count());
+        assert_eq!(3, &preprocessed_histogram.get_bin_by_rank(2).get_bin_count());
+        assert_eq!(7, &preprocessed_histogram.get_bin_by_rank(2).get_greater_count());
+        assert_eq!(-53, &preprocessed_histogram.get_bin_by_rank(3).get_bin_index());
+        assert_eq!(3, &preprocessed_histogram.get_bin_by_rank(3).get_less_count());
+        assert_eq!(2, &preprocessed_histogram.get_bin_by_rank(3).get_bin_count());
+        assert_eq!(5, &preprocessed_histogram.get_bin_by_rank(3).get_greater_count());
+        assert_eq!(-53, &preprocessed_histogram.get_bin_by_rank(4).get_bin_index());
+        assert_eq!(3, &preprocessed_histogram.get_bin_by_rank(4).get_less_count());
+        assert_eq!(2, &preprocessed_histogram.get_bin_by_rank(4).get_bin_count());
+        assert_eq!(5, &preprocessed_histogram.get_bin_by_rank(4).get_greater_count());
+        assert_eq!(3, &preprocessed_histogram.get_bin_by_rank(5).get_bin_index());
+        assert_eq!(5, &preprocessed_histogram.get_bin_by_rank(5).get_less_count());
+        assert_eq!(4, &preprocessed_histogram.get_bin_by_rank(5).get_bin_count());
+        assert_eq!(1, &preprocessed_histogram.get_bin_by_rank(5).get_greater_count());
+        assert_eq!(3, &preprocessed_histogram.get_bin_by_rank(6).get_bin_index());
+        assert_eq!(5, &preprocessed_histogram.get_bin_by_rank(6).get_less_count());
+        assert_eq!(4, &preprocessed_histogram.get_bin_by_rank(6).get_bin_count());
+        assert_eq!(1, &preprocessed_histogram.get_bin_by_rank(6).get_greater_count());
+        assert_eq!(3, &preprocessed_histogram.get_bin_by_rank(7).get_bin_index());
+        assert_eq!(5, &preprocessed_histogram.get_bin_by_rank(7).get_less_count());
+        assert_eq!(4, &preprocessed_histogram.get_bin_by_rank(7).get_bin_count());
+        assert_eq!(1, &preprocessed_histogram.get_bin_by_rank(7).get_greater_count());
+        assert_eq!(3, &preprocessed_histogram.get_bin_by_rank(8).get_bin_index());
+        assert_eq!(5, &preprocessed_histogram.get_bin_by_rank(8).get_less_count());
+        assert_eq!(4, &preprocessed_histogram.get_bin_by_rank(8).get_bin_count());
+        assert_eq!(1, &preprocessed_histogram.get_bin_by_rank(8).get_greater_count());
+        assert_eq!(100, &preprocessed_histogram.get_bin_by_rank(9).get_bin_index());
+        assert_eq!(9, &preprocessed_histogram.get_bin_by_rank(9).get_less_count());
+        assert_eq!(1, &preprocessed_histogram.get_bin_by_rank(9).get_bin_count());
+        assert_eq!(0, &preprocessed_histogram.get_bin_by_rank(9).get_greater_count());
+        assert_eq!(100, &preprocessed_histogram.get_last_non_empty_bin().get_bin_index());
+        assert_eq!(9, &preprocessed_histogram.get_last_non_empty_bin().get_less_count());
+        assert_eq!(1, &preprocessed_histogram.get_last_non_empty_bin().get_bin_count());
+        assert_eq!(0, &preprocessed_histogram.get_last_non_empty_bin().get_greater_count());
     }
 
     #[test]
@@ -271,8 +271,8 @@ impl AbstractMutableHistogramTest {
                         histogram1.add_value(v);
                     }
                     histogram2.add_ascending_sequence( j: & -> values[j as i32], values.len());
-                    assert_equals(histogram1, histogram2);
-                    assert_equals(&histogram1.get_preprocessed_copy(), &histogram2.get_preprocessed_copy());
+                    assert_eq!(histogram1, histogram2);
+                    assert_eq!(&histogram1.get_preprocessed_copy(), &histogram2.get_preprocessed_copy());
                 }
                 i += 1;
              }
@@ -283,14 +283,14 @@ impl AbstractMutableHistogramTest {
     #[test]
     pub fn  test_add_ascending_sequence_unique_value(&self)   {
          let layout: TestLayout = TestLayout::new(-5, 5);
-         let values: vec![Vec<f64>; 5] = vec![Double::NEGATIVE_INFINITY, -5.5, -0.1, 5.3, Double::POSITIVE_INFINITY, ]
+         let values: vec![Vec<f64>; 5] = vec![f64::NEG_INFINITY, -5.5, -0.1, 5.3, f64::INFINITY, ]
         ;
         for  let value: f64 in values {
              let histogram1: Histogram = create(layout);
              let histogram2: Histogram = create(layout);
             histogram1.add_value(value, Long::MAX_VALUE);
             histogram2.add_ascending_sequence( j: & -> value, Long::MAX_VALUE);
-            assert_equals(histogram1, histogram2);
+            assert_eq!(histogram1, histogram2);
         }
     }
 
@@ -298,7 +298,7 @@ impl AbstractMutableHistogramTest {
     pub fn  test_add_ascending_sequence_invalid_length(&self)   {
          let layout: TestLayout = TestLayout::new(-5, 5);
          let histogram: Histogram = create(layout);
-         let values: vec![Vec<f64>; 5] = vec![Double::NEGATIVE_INFINITY, -5.5, -0.1, 5.3, Double::POSITIVE_INFINITY, ]
+         let values: vec![Vec<f64>; 5] = vec![f64::NEG_INFINITY, -5.5, -0.1, 5.3, f64::INFINITY, ]
         ;
         assert_throws(IllegalArgumentException.class, () -> histogram.add_ascending_sequence( j: & -> values[j as i32], -1));
         histogram.add_value(1, Long::MAX_VALUE);
@@ -311,27 +311,27 @@ impl AbstractMutableHistogramTest {
     pub fn  test_histogram(&self)   {
          let layout: TestLayout = TestLayout::new(-2, 2);
          let histogram: Histogram = create(layout);
-        histogram.add_value(Double::NEGATIVE_INFINITY);
+        histogram.add_value(f64::NEG_INFINITY);
         histogram.add_value(-2, 3);
         histogram.add_value(-1, 4);
         histogram.add_value(0, 1);
         histogram.add_value(1, 3);
         histogram.add_value(2, 2);
-        assert_equals(14, &histogram.get_total_count());
-        assert_equals(Double::NEGATIVE_INFINITY, &histogram.get_value(0), 0.0);
-        assert_equals(Double::NEGATIVE_INFINITY, &histogram.get_value(1), 0.0);
-        assert_equals(Double::NEGATIVE_INFINITY, &histogram.get_value(2), 0.0);
-        assert_equals(Double::NEGATIVE_INFINITY, &histogram.get_value(3), 0.0);
-        assert_equals(-1.3749999999999998, &histogram.get_value(4), 0.0);
-        assert_equals(-1.5 + 3.0 / 8.0, &histogram.get_value(5), 0.0);
-        assert_equals(-0.8749999999999998, &histogram.get_value(6), 0.0);
-        assert_equals(-1.5 + 7.0 / 8.0, &histogram.get_value(7), 0.0);
-        assert_equals(0, &histogram.get_value(8), 0.0);
-        assert_equals(0.6666666666666665, &histogram.get_value(9), 0.0);
-        assert_equals(0.9999999999999998, &histogram.get_value(10), 0.0);
-        assert_equals(4.0 / 3.0, &histogram.get_value(11), 1e-14);
-        assert_equals(1.6666666666666667, &histogram.get_value(12), 0.0);
-        assert_equals(2, &histogram.get_value(13), 0.0);
+        assert_eq!(14, &histogram.get_total_count());
+        assert_eq!(f64::NEG_INFINITY, &histogram.get_value(0), 0.0);
+        assert_eq!(f64::NEG_INFINITY, &histogram.get_value(1), 0.0);
+        assert_eq!(f64::NEG_INFINITY, &histogram.get_value(2), 0.0);
+        assert_eq!(f64::NEG_INFINITY, &histogram.get_value(3), 0.0);
+        assert_eq!(-1.3749999999999998, &histogram.get_value(4), 0.0);
+        assert_eq!(-1.5 + 3.0 / 8.0, &histogram.get_value(5), 0.0);
+        assert_eq!(-0.8749999999999998, &histogram.get_value(6), 0.0);
+        assert_eq!(-1.5 + 7.0 / 8.0, &histogram.get_value(7), 0.0);
+        assert_eq!(0, &histogram.get_value(8), 0.0);
+        assert_eq!(0.6666666666666665, &histogram.get_value(9), 0.0);
+        assert_eq!(0.9999999999999998, &histogram.get_value(10), 0.0);
+        assert_eq!(4.0 / 3.0, &histogram.get_value(11), 1e-14);
+        assert_eq!(1.6666666666666667, &histogram.get_value(12), 0.0);
+        assert_eq!(2, &histogram.get_value(13), 0.0);
         test_serialization(layout, histogram);
     }
 
@@ -374,8 +374,8 @@ impl AbstractMutableHistogramTest {
                      }
 
                      let histogram_merged: Histogram = histogram1.add_histogram(histogram2);
-                    assert_equals(histogram_total, histogram_merged);
-                    assert_equals(&histogram_total.hash_code(), &histogram_merged.hash_code());
+                    assert_eq!(histogram_total, histogram_merged);
+                    assert_eq!(&histogram_total.hash_code(), &histogram_merged.hash_code());
                 }
                 cycle_counter += 1;
              }
@@ -424,8 +424,8 @@ impl AbstractMutableHistogramTest {
                      }
 
                      let histogram_merged: Histogram = histogram1.add_histogram(histogram2);
-                    assert_equals(histogram_total, histogram_merged);
-                    assert_equals(&histogram_total.hash_code(), &histogram_merged.hash_code());
+                    assert_eq!(histogram_total, histogram_merged);
+                    assert_eq!(&histogram_total.hash_code(), &histogram_merged.hash_code());
                 }
                 cycle_counter += 1;
              }
@@ -458,8 +458,8 @@ impl AbstractMutableHistogramTest {
                      }
 
                     histogram2.add_histogram(&create(layout));
-                    assert_equals(histogram1, histogram2);
-                    assert_equals(&histogram1.hash_code(), &histogram2.hash_code());
+                    assert_eq!(histogram1, histogram2);
+                    assert_eq!(&histogram1.hash_code(), &histogram2.hash_code());
                 }
                 cycle_counter += 1;
              }
@@ -489,11 +489,11 @@ impl AbstractMutableHistogramTest {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
         histogram.add_value(value);
-        assert_equals(value, &histogram.get_quantile(0), 0.0);
-        assert_equals(value, &histogram.get_quantile(0.2), 0.0);
-        assert_equals(value, &histogram.get_quantile(0.5), 0.0);
-        assert_equals(value, &histogram.get_quantile(0.7), 0.0);
-        assert_equals(value, &histogram.get_quantile(1), 0.0);
+        assert_eq!(value, &histogram.get_quantile(0), 0.0);
+        assert_eq!(value, &histogram.get_quantile(0.2), 0.0);
+        assert_eq!(value, &histogram.get_quantile(0.5), 0.0);
+        assert_eq!(value, &histogram.get_quantile(0.7), 0.0);
+        assert_eq!(value, &histogram.get_quantile(1), 0.0);
         test_serialization(layout, histogram);
     }
 
@@ -525,8 +525,8 @@ impl AbstractMutableHistogramTest {
                          }
                      }
 
-                    assert_equals(count, &histogram.get_total_count());
-                    assert_equals(non_empty_bins_count, &HistogramTestUtil::number_of_non_empty_bins(histogram));
+                    assert_eq!(count, &histogram.get_total_count());
+                    assert_eq!(non_empty_bins_count, &HistogramTestUtil::number_of_non_empty_bins(histogram));
                     test_serialization(layout, histogram);
                 }
                 i += 1;
@@ -539,7 +539,7 @@ impl AbstractMutableHistogramTest {
     pub fn  test_empty_histogram(&self)   {
          let layout: Layout = LogQuadraticLayout::create(1e-3, 0.0, 0.0, 10.0);
          let histogram: Histogram = create(layout);
-        assert_equals(0, &HistogramTestUtil::number_of_non_empty_bins(histogram));
+        assert_eq!(0, &HistogramTestUtil::number_of_non_empty_bins(histogram));
         test_serialization(layout, histogram);
     }
 
@@ -608,13 +608,13 @@ impl AbstractMutableHistogramTest {
         histogram.add_value(1000);
         histogram.add_value(-1000);
         test_serialization(layout, histogram);
-        assert_equals(-1000, &histogram.get_min(), 0.0);
-        assert_equals(1000, &histogram.get_max(), 0.0);
-        assert_equals(-1000, &histogram.get_value(0), 0.0);
-        assert_equals(1000, &histogram.get_value(1), 0.0);
-        assert_equals(-1000, &histogram.get_quantile(0), 0.0);
-        assert_equals(1000, &histogram.get_quantile(1), 0.0);
-        assert_equals(0, &histogram.get_quantile(0.5), 0.0);
+        assert_eq!(-1000, &histogram.get_min(), 0.0);
+        assert_eq!(1000, &histogram.get_max(), 0.0);
+        assert_eq!(-1000, &histogram.get_value(0), 0.0);
+        assert_eq!(1000, &histogram.get_value(1), 0.0);
+        assert_eq!(-1000, &histogram.get_quantile(0), 0.0);
+        assert_eq!(1000, &histogram.get_quantile(1), 0.0);
+        assert_eq!(0, &histogram.get_quantile(0.5), 0.0);
     }
 
     #[test]
@@ -629,7 +629,7 @@ impl AbstractMutableHistogramTest {
              let histogram: Histogram = create(layout);
             histogram.add_value(min, c1);
             histogram.add_value(max, c2);
-            assert_equals(c1 + c2, &histogram.get_total_count());
+            assert_eq!(c1 + c2, &histogram.get_total_count());
              let mut previous: f64 = histogram.get_value(0);
             assert_that(previous).is_greater_than_or_equal_to(min);
              {
@@ -655,29 +655,29 @@ impl AbstractMutableHistogramTest {
              let histogram: Histogram = create(layout);
             histogram.add_value(0.0);
             histogram.add_value(-0.0);
-            assert_equals(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
-            assert_equals(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
+            assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
+            assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
         }
         {
              let histogram: Histogram = create(layout);
             histogram.add_value(-0.0);
             histogram.add_value(0.0);
-            assert_equals(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
-            assert_equals(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
+            assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
+            assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
         }
         {
              let histogram: Histogram = create(layout);
             histogram.add_value(0.0);
             histogram.add_value(0.0);
-            assert_equals(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
-            assert_equals(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
+            assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
+            assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
         }
         {
              let histogram: Histogram = create(layout);
             histogram.add_value(-0.0);
             histogram.add_value(-0.0);
-            assert_equals(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
-            assert_equals(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
+            assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
+            assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
         }
     }
 
@@ -697,7 +697,7 @@ impl AbstractMutableHistogramTest {
         total_histogram.add_value(5.5, 5);
         histogram1.add_value(-5);
         histogram2.add_value(5.5, 5);
-        assert_equals(total_histogram, &histogram1.add_histogram(histogram2));
+        assert_eq!(total_histogram, &histogram1.add_histogram(histogram2));
     }
 
     #[test]
@@ -794,7 +794,7 @@ impl AbstractMutableHistogramTest {
         //           histogramTotal.addValue(x);
         //         });
         histogram1.add_histogram(histogram2);
-        assert_equals(histogram_total, histogram1);
+        assert_eq!(histogram_total, histogram1);
     }
 
     #[test]
@@ -824,7 +824,7 @@ impl AbstractMutableHistogramTest {
         //           histogramTotal.addValue(x);
         //         });
         histogram1.add_histogram(histogram2);
-        assert_equals(histogram_total, histogram1);
+        assert_eq!(histogram_total, histogram1);
     }
 
     #[test]
@@ -842,7 +842,7 @@ impl AbstractMutableHistogramTest {
         histogram2.add_value(2, 8000);
         histogram_total.add_value(2, 8000);
         histogram1.add_histogram(histogram2);
-        assert_equals(histogram_total, histogram1);
+        assert_eq!(histogram_total, histogram1);
     }
 
     #[test]
@@ -876,9 +876,9 @@ impl AbstractMutableHistogramTest {
                              }
 
                              let deserialized_histogram: Histogram = SerializationTestUtil::test_serialization(histogram, Histogram::write,  in: & -> read(read_layout, in));
-                            assert_equals(&histogram.get_total_count(), &deserialized_histogram.get_total_count());
-                            assert_equals(&histogram.get_min(), &deserialized_histogram.get_min(), 0.0);
-                            assert_equals(&histogram.get_max(), &deserialized_histogram.get_max(), 0.0);
+                            assert_eq!(&histogram.get_total_count(), &deserialized_histogram.get_total_count());
+                            assert_eq!(&histogram.get_min(), &deserialized_histogram.get_min(), 0.0);
+                            assert_eq!(&histogram.get_max(), &deserialized_histogram.get_max(), 0.0);
                         }
                     }
                 }
@@ -930,9 +930,8 @@ impl AbstractMutableHistogramTest {
         total_count += 4;
          let layout: Layout = TestLayout::new(-2, 2);
          let histogram: Histogram = SerializationTestUtil::test_reading( in: & -> read(layout, in), &sb.to_string());
-        assert_equals(total_count, &histogram.get_total_count());
-        assert_equals(min, &histogram.get_min(), 0.0);
-        assert_equals(max, &histogram.get_max(), 0.0);
+        assert_eq!(total_count, &histogram.get_total_count());
+        assert_eq!(min, &histogram.get_min(), 0.0);
+        assert_eq!(max, &histogram.get_max(), 0.0);
     }
 }
-

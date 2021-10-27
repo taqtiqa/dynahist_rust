@@ -55,7 +55,7 @@ trait Histogram {
                  let bin_iterator: BinIterator = histogram_data.get_first_non_empty_bin();
                 while true {
                     non_empty_bins_from_forward_bin_iteration.put(&bin_iterator.get_bin_index(), &bin_iterator.get_bin_count());
-                    assert_equals(total_count, bin_iterator.get_less_count() + bin_iterator.get_bin_count() + bin_iterator.get_greater_count());
+                    assert_eq!(total_count, bin_iterator.get_less_count() + bin_iterator.get_bin_count() + bin_iterator.get_greater_count());
                     //     0d);
                     if bin_iterator.is_last_non_empty_bin() {
                         break;
@@ -70,9 +70,9 @@ trait Histogram {
                  let bin_iterator: BinIterator = histogram_data.get_first_non_empty_bin();
                 while true {
                     non_empty_bins_from_forward_bin_iteration2.put(&bin_iterator.get_bin_index(), &bin_iterator.get_bin_count());
-                    assert_equals(total_count, bin_iterator.get_less_count() + bin_iterator.get_bin_count() + bin_iterator.get_greater_count());
-                    assert_equals(&Math::max(min, &layout.get_bin_lower_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_lower_bound(), 0.0);
-                    assert_equals(&Math::min(max, &layout.get_bin_upper_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_upper_bound(), 0.0);
+                    assert_eq!(total_count, bin_iterator.get_less_count() + bin_iterator.get_bin_count() + bin_iterator.get_greater_count());
+                    assert_eq!(&std::cmp::max(min, &layout.get_bin_lower_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_lower_bound(), 0.0);
+                    assert_eq!(&std::cmp::min(max, &layout.get_bin_upper_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_upper_bound(), 0.0);
                     if bin_iterator.is_last_non_empty_bin() {
                         break;
                     }
@@ -88,9 +88,9 @@ trait Histogram {
                  let bin_iterator: BinIterator = histogram_data.get_last_non_empty_bin();
                 while true {
                     non_empty_bins_from_backward_bin_iteration.put(&bin_iterator.get_bin_index(), &bin_iterator.get_bin_count());
-                    assert_equals(total_count, bin_iterator.get_less_count() + bin_iterator.get_bin_count() + bin_iterator.get_greater_count());
-                    assert_equals(&Math::max(min, &layout.get_bin_lower_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_lower_bound(), 0.0);
-                    assert_equals(&Math::min(max, &layout.get_bin_upper_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_upper_bound(), 0.0);
+                    assert_eq!(total_count, bin_iterator.get_less_count() + bin_iterator.get_bin_count() + bin_iterator.get_greater_count());
+                    assert_eq!(&std::cmp::max(min, &layout.get_bin_lower_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_lower_bound(), 0.0);
+                    assert_eq!(&std::cmp::min(max, &layout.get_bin_upper_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_upper_bound(), 0.0);
                     if bin_iterator.is_first_non_empty_bin() {
                         break;
                     }
@@ -104,9 +104,9 @@ trait Histogram {
                  let bin_iterator: BinIterator = histogram_data.get_last_non_empty_bin();
                 while true {
                     non_empty_bins_from_backward_bin_iteration2.put(&bin_iterator.get_bin_index(), &bin_iterator.get_bin_count());
-                    assert_equals(total_count, bin_iterator.get_less_count() + bin_iterator.get_bin_count() + bin_iterator.get_greater_count());
-                    assert_equals(&Math::max(min, &layout.get_bin_lower_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_lower_bound(), 0.0);
-                    assert_equals(&Math::min(max, &layout.get_bin_upper_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_upper_bound(), 0.0);
+                    assert_eq!(total_count, bin_iterator.get_less_count() + bin_iterator.get_bin_count() + bin_iterator.get_greater_count());
+                    assert_eq!(&std::cmp::max(min, &layout.get_bin_lower_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_lower_bound(), 0.0);
+                    assert_eq!(&std::cmp::min(max, &layout.get_bin_upper_bound(&bin_iterator.get_bin_index())), &bin_iterator.get_upper_bound(), 0.0);
                     if bin_iterator.is_first_non_empty_bin() {
                         break;
                     }
@@ -124,15 +124,15 @@ trait Histogram {
      * == null)?1:count+1); } } }
      */
          let non_empty_bins: Map<Integer, Long> = non_empty_bins_from_get_count;
-        assert_equals(&non_empty_bins, &non_empty_bins_from_get_count);
-        assert_equals(&non_empty_bins, &non_empty_bins_from_forward_bin_iteration);
-        assert_equals(&non_empty_bins, &non_empty_bins_from_backward_bin_iteration);
-        assert_equals(&non_empty_bins, &non_empty_bins_from_forward_bin_iteration2);
-        assert_equals(&non_empty_bins, &non_empty_bins_from_backward_bin_iteration2);
+        assert_eq!(&non_empty_bins, &non_empty_bins_from_get_count);
+        assert_eq!(&non_empty_bins, &non_empty_bins_from_forward_bin_iteration);
+        assert_eq!(&non_empty_bins, &non_empty_bins_from_backward_bin_iteration);
+        assert_eq!(&non_empty_bins, &non_empty_bins_from_forward_bin_iteration2);
+        assert_eq!(&non_empty_bins, &non_empty_bins_from_backward_bin_iteration2);
         // assertEquals(nonEmptyBins, nonEmptyBinsFromOrderAccess);
-        assert_equals(underflow_count, &non_empty_bins.get_or_default(&layout.get_underflow_bin_index(), 0).long_value());
-        assert_equals(overflow_count, &non_empty_bins.get_or_default(&layout.get_overflow_bin_index(), 0).long_value());
-        assert_equals(total_count, &non_empty_bins.values().stream().map_to_long(Long::longValue).sum());
+        assert_eq!(underflow_count, &non_empty_bins.get_or_default(&layout.get_underflow_bin_index(), 0).long_value());
+        assert_eq!(overflow_count, &non_empty_bins.get_or_default(&layout.get_overflow_bin_index(), 0).long_value());
+        assert_eq!(total_count, &non_empty_bins.values().stream().map_to_long(Long::longValue).sum());
         return non_empty_bins;
     }
 

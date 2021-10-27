@@ -28,19 +28,19 @@ impl LogQuadraticLayoutTest {
 
     #[test]
     pub fn  test_map_to_bin_index_helper_special_values(&self)   {
-        assert_equals(6144.0, &LogQuadraticLayout::map_to_bin_index_helper(Long::MAX_VALUE), 0.0);
-        assert_equals(6144.0, &LogQuadraticLayout::map_to_bin_index_helper(0x7fffffffffffffff), 0.0);
-        assert_equals(6142.75, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::NaN)), 0.0);
-        assert_equals(6141.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::POSITIVE_INFINITY)), 0.0);
-        assert_equals(3.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::MIN_NORMAL)), 0.0);
-        assert_equals(0.0, &LogQuadraticLayout::map_to_bin_index_helper(0), 0.0);
-        assert_equals(3063.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(0.25)), 0.0);
-        assert_equals(3066.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(0.5)), 0.0);
-        assert_equals(3069.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(1.0)), 0.0);
-        assert_equals(3072.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(2.0)), 0.0);
-        assert_equals(3075.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(4.0)), 0.0);
-        assert_equals(3078.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(8.0)), 0.0);
-        assert_equals(3081.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(16.0)), 0.0);
+        assert_eq!(6144.0, &LogQuadraticLayout::map_to_bin_index_helper(Long::MAX_VALUE), 0.0);
+        assert_eq!(6144.0, &LogQuadraticLayout::map_to_bin_index_helper(0x7fffffffffffffff), 0.0);
+        assert_eq!(6142.75, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::NaN)), 0.0);
+        assert_eq!(6141.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(f64::INFINITY)), 0.0);
+        assert_eq!(3.0, &LogQuadraticLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::MIN_NORMAL)), 0.0);
+        assert_eq!(0.0, &LogQuadraticLayout::map_to_bin_index_helper(0), 0.0);
+        assert_eq!(3063.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.25)), 0.0);
+        assert_eq!(3066.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.5)), 0.0);
+        assert_eq!(3069.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(1.0)), 0.0);
+        assert_eq!(3072.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(2.0)), 0.0);
+        assert_eq!(3075.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(4.0)), 0.0);
+        assert_eq!(3078.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(8.0)), 0.0);
+        assert_eq!(3081.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(16.0)), 0.0);
     }
 
     pub fn  create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> AbstractLayout  {
@@ -51,13 +51,13 @@ impl LogQuadraticLayoutTest {
     pub fn  test_overflow_and_underflow_indices(&self)   {
         {
              let layout: LogQuadraticLayout = LogQuadraticLayout::create(1e-7, 1e-6, -1e12, 1e12);
-            assert_equals(33391320, &layout.get_overflow_bin_index());
-            assert_equals(-33391321, &layout.get_underflow_bin_index());
+            assert_eq!(33391320, &layout.get_overflow_bin_index());
+            assert_eq!(-33391321, &layout.get_underflow_bin_index());
         }
         {
              let layout: LogQuadraticLayout = LogQuadraticLayout::create(1e-7, 1e-6, 1e12, 1e12);
-            assert_equals(33391320, &layout.get_overflow_bin_index());
-            assert_equals(33391318, &layout.get_underflow_bin_index());
+            assert_eq!(33391320, &layout.get_overflow_bin_index());
+            assert_eq!(33391318, &layout.get_underflow_bin_index());
         }
     }
 
@@ -69,13 +69,13 @@ impl LogQuadraticLayoutTest {
          let absolute_bin_width_limit: f64 = 1e-9;
          let layout: LogQuadraticLayout = LogQuadraticLayout::create(absolute_bin_width_limit, relative_bin_width_limit, value_range_lower_bound, value_range_upper_bound);
          let deserialized_layout: LogQuadraticLayout = SerializationTestUtil::test_serialization(layout, LogQuadraticLayout::write, LogQuadraticLayout::read, "003E112E0BE826D6953F50624DD2F1A9FC8FE303F48904");
-        assert_equals(deserialized_layout, layout);
+        assert_eq!(deserialized_layout, layout);
     }
 
     #[test]
     pub fn  test_to_string(&self)   {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
-        assert_equals("LogQuadraticLayout [absoluteBinWidthLimit=1.0E-8, relativeBinWidthLimit=0.01, underflowBinIndex=-3107, overflowBinIndex=3106]", &layout.to_string());
+        assert_eq!("LogQuadraticLayout [absoluteBinWidthLimit=1.0E-8, relativeBinWidthLimit=0.01, underflowBinIndex=-3107, overflowBinIndex=3106]", &layout.to_string());
     }
 
     #[test]
@@ -84,8 +84,8 @@ impl LogQuadraticLayoutTest {
          let histogram: Histogram = Histogram::create_static(layout);
         histogram.add_value(0);
         histogram.add_value(10);
-        assert_equals(9.999999999999999E-9, &histogram.get_first_non_empty_bin().get_width(), 0);
-        assert_equals(0.031135683241927836, &histogram.get_last_non_empty_bin().get_width(), 0);
+        assert_eq!(9.999999999999999E-9, &histogram.get_first_non_empty_bin().get_width(), 0);
+        assert_eq!(0.031135683241927836, &histogram.get_last_non_empty_bin().get_width(), 0);
     }
 
     #[test]
@@ -122,7 +122,7 @@ impl LogQuadraticLayoutTest {
 
     #[test]
     pub fn  test_hash_code(&self)   {
-        assert_equals(-1339415786, &self.create_layout(1e-6, 1e-4, -10, 1000).hash_code());
+        assert_eq!(-1339415786, &self.create_layout(1e-6, 1e-4, -10, 1000).hash_code());
     }
 
     fn  test_function(&self,  mantissa_plus1: f64) -> f64  {
@@ -211,4 +211,3 @@ impl LogQuadraticLayoutTest {
         }
     }
 }
-

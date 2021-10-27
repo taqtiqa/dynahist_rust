@@ -67,82 +67,82 @@ impl ValueEstimatorImplsTest {
 
     #[test]
     pub fn  test_lower_bound_value_estimation_policy(&self)   {
-        assert_equals(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 10), 0.0);
-        assert_equals(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 11), 0.0);
-        assert_equals(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 12), 0.0);
-        assert_equals(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 13), 0.0);
-        assert_equals(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 14), 0.0);
-        assert_equals(&BIN2::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN2, 1), 0.0);
-        assert_equals(&BIN2::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN2, 2), 0.0);
-        assert_equals(&BIN2::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN2, 3), 0.0);
-        assert_equals(&BIN2::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN2, 4), 0.0);
-        assert_equals(&BIN3::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN3, 30), 0.0);
-        assert_equals(&BIN3::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN3, 31), 0.0);
-        assert_equals(&BIN3::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN3, 32), 0.0);
-        assert_equals(&BIN3::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN3, 33), 0.0);
-        assert_equals(&BIN4::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN4, 1), 0.0);
-        assert_equals(&BIN4::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN4, 2), 0.0);
-        assert_equals(&BIN4::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN4, 3), 0.0);
+        assert_eq!(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 10), 0.0);
+        assert_eq!(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 11), 0.0);
+        assert_eq!(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 12), 0.0);
+        assert_eq!(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 13), 0.0);
+        assert_eq!(&BIN1::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 14), 0.0);
+        assert_eq!(&BIN2::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN2, 1), 0.0);
+        assert_eq!(&BIN2::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN2, 2), 0.0);
+        assert_eq!(&BIN2::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN2, 3), 0.0);
+        assert_eq!(&BIN2::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN2, 4), 0.0);
+        assert_eq!(&BIN3::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN3, 30), 0.0);
+        assert_eq!(&BIN3::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN3, 31), 0.0);
+        assert_eq!(&BIN3::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN3, 32), 0.0);
+        assert_eq!(&BIN3::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN3, 33), 0.0);
+        assert_eq!(&BIN4::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN4, 1), 0.0);
+        assert_eq!(&BIN4::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN4, 2), 0.0);
+        assert_eq!(&BIN4::get_lower_bound(), &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN4, 3), 0.0);
     }
 
     #[test]
     pub fn  test_upper_bound_value_estimation_policy(&self)   {
-        assert_equals(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 10), 0.0);
-        assert_equals(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 11), 0.0);
-        assert_equals(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 12), 0.0);
-        assert_equals(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 13), 0.0);
-        assert_equals(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 14), 0.0);
-        assert_equals(&BIN2::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN2, 1), 0.0);
-        assert_equals(&BIN2::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN2, 2), 0.0);
-        assert_equals(&BIN2::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN2, 3), 0.0);
-        assert_equals(&BIN2::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN2, 4), 0.0);
-        assert_equals(&BIN3::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN3, 30), 0.0);
-        assert_equals(&BIN3::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN3, 31), 0.0);
-        assert_equals(&BIN3::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN3, 32), 0.0);
-        assert_equals(&BIN3::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN3, 33), 0.0);
-        assert_equals(&BIN4::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN4, 1), 0.0);
-        assert_equals(&BIN4::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN4, 2), 0.0);
-        assert_equals(&BIN4::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN4, 3), 0.0);
+        assert_eq!(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 10), 0.0);
+        assert_eq!(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 11), 0.0);
+        assert_eq!(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 12), 0.0);
+        assert_eq!(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 13), 0.0);
+        assert_eq!(&BIN1::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 14), 0.0);
+        assert_eq!(&BIN2::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN2, 1), 0.0);
+        assert_eq!(&BIN2::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN2, 2), 0.0);
+        assert_eq!(&BIN2::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN2, 3), 0.0);
+        assert_eq!(&BIN2::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN2, 4), 0.0);
+        assert_eq!(&BIN3::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN3, 30), 0.0);
+        assert_eq!(&BIN3::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN3, 31), 0.0);
+        assert_eq!(&BIN3::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN3, 32), 0.0);
+        assert_eq!(&BIN3::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN3, 33), 0.0);
+        assert_eq!(&BIN4::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN4, 1), 0.0);
+        assert_eq!(&BIN4::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN4, 2), 0.0);
+        assert_eq!(&BIN4::get_upper_bound(), &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN4, 3), 0.0);
     }
 
     #[test]
     pub fn  test_mid_point_value_estimation_policy(&self)   {
-        assert_equals(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 10), 0.0);
-        assert_equals(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 11), 0.0);
-        assert_equals(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 12), 0.0);
-        assert_equals(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 13), 0.0);
-        assert_equals(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 14), 0.0);
-        assert_equals(0.5 * (BIN2::get_lower_bound() + BIN2::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN2, 1), 0.0);
-        assert_equals(0.5 * (BIN2::get_lower_bound() + BIN2::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN2, 2), 0.0);
-        assert_equals(0.5 * (BIN2::get_lower_bound() + BIN2::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN2, 3), 0.0);
-        assert_equals(0.5 * (BIN2::get_lower_bound() + BIN2::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN2, 4), 0.0);
-        assert_equals(0.5 * (BIN3::get_lower_bound() + BIN3::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN3, 30), 0.0);
-        assert_equals(0.5 * (BIN3::get_lower_bound() + BIN3::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN3, 31), 0.0);
-        assert_equals(0.5 * (BIN3::get_lower_bound() + BIN3::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN3, 32), 0.0);
-        assert_equals(0.5 * (BIN3::get_lower_bound() + BIN3::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN3, 33), 0.0);
-        assert_equals(0.5 * (BIN4::get_lower_bound() + BIN4::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN4, 1), 0.0);
-        assert_equals(0.5 * (BIN4::get_lower_bound() + BIN4::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN4, 2), 0.0);
-        assert_equals(0.5 * (BIN4::get_lower_bound() + BIN4::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN4, 3), 0.0);
+        assert_eq!(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 10), 0.0);
+        assert_eq!(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 11), 0.0);
+        assert_eq!(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 12), 0.0);
+        assert_eq!(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 13), 0.0);
+        assert_eq!(0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 14), 0.0);
+        assert_eq!(0.5 * (BIN2::get_lower_bound() + BIN2::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN2, 1), 0.0);
+        assert_eq!(0.5 * (BIN2::get_lower_bound() + BIN2::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN2, 2), 0.0);
+        assert_eq!(0.5 * (BIN2::get_lower_bound() + BIN2::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN2, 3), 0.0);
+        assert_eq!(0.5 * (BIN2::get_lower_bound() + BIN2::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN2, 4), 0.0);
+        assert_eq!(0.5 * (BIN3::get_lower_bound() + BIN3::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN3, 30), 0.0);
+        assert_eq!(0.5 * (BIN3::get_lower_bound() + BIN3::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN3, 31), 0.0);
+        assert_eq!(0.5 * (BIN3::get_lower_bound() + BIN3::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN3, 32), 0.0);
+        assert_eq!(0.5 * (BIN3::get_lower_bound() + BIN3::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN3, 33), 0.0);
+        assert_eq!(0.5 * (BIN4::get_lower_bound() + BIN4::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN4, 1), 0.0);
+        assert_eq!(0.5 * (BIN4::get_lower_bound() + BIN4::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN4, 2), 0.0);
+        assert_eq!(0.5 * (BIN4::get_lower_bound() + BIN4::get_upper_bound()), &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN4, 3), 0.0);
     }
 
     #[test]
     pub fn  test_uniform_value_estimation_policy(&self)   {
-        assert_equals(3.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 10), 0.0);
-        assert_equals(4.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 11), 0.0);
-        assert_equals(5.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 12), 0.0);
-        assert_equals(6.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 13), 0.0);
-        assert_equals(7.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 14), 0.0);
-        assert_equals(3.0 + 2.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN2, 1), 0.0);
-        assert_equals(3.0 + 4.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN2, 2), 0.0);
-        assert_equals(3.0 + 6.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN2, 3), 1e-9);
-        assert_equals(3.0 + 8.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN2, 4), 0.0);
-        assert_equals(3.0 + 1.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN3, 30), 0.0);
-        assert_equals(3.0 + 3.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN3, 31), 0.0);
-        assert_equals(3.0 + 5.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN3, 32), 0.0);
-        assert_equals(3.0 + 7.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN3, 33), 0.0);
-        assert_equals(4.25, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN4, 1), 1e-3);
-        assert_equals(5.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN4, 2), 1e-3);
-        assert_equals(6.75, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN4, 3), 1e-3);
+        assert_eq!(3.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 10), 0.0);
+        assert_eq!(4.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 11), 0.0);
+        assert_eq!(5.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 12), 0.0);
+        assert_eq!(6.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 13), 0.0);
+        assert_eq!(7.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 14), 0.0);
+        assert_eq!(3.0 + 2.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN2, 1), 0.0);
+        assert_eq!(3.0 + 4.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN2, 2), 0.0);
+        assert_eq!(3.0 + 6.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN2, 3), 1e-9);
+        assert_eq!(3.0 + 8.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN2, 4), 0.0);
+        assert_eq!(3.0 + 1.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN3, 30), 0.0);
+        assert_eq!(3.0 + 3.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN3, 31), 0.0);
+        assert_eq!(3.0 + 5.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN3, 32), 0.0);
+        assert_eq!(3.0 + 7.0 / 9.0 * 5.0, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN3, 33), 0.0);
+        assert_eq!(4.25, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN4, 1), 1e-3);
+        assert_eq!(5.5, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN4, 2), 1e-3);
+        assert_eq!(6.75, &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN4, 3), 1e-3);
     }
 
     #[test]
@@ -157,4 +157,3 @@ impl ValueEstimatorImplsTest {
         }
     }
 }
-

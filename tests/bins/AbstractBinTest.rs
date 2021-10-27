@@ -50,7 +50,6 @@ impl AbstractBinTest {
                 return histogram;
             }
         };
-        assert_equals("Bin [binIndex=434, lowerBound=Infinity, upperBound=-Infinity, binCount=423489324, lessCount=2343, greaterCount=42304, isUnderflowBin=false, isOverflowBin=false]", &bin.to_string());
+        assert_eq!("Bin [bin_index=434, lowerBound=Infinity, upperBound=-Infinity, binCount=423489324, lessCount=2343, greaterCount=42304, isUnderflowBin=false, isOverflowBin=false]", &bin.to_string());
     }
 }
-

@@ -46,8 +46,7 @@ pub trait QuantileEstimator {
    * @param sortedValues a sorted double array
    * @return the quantile estimate
    */
-    fn default  estimate_quantile(&self,  p: f64,  sorted_values: &Vec<f64>) -> f64  {
+    fn estimate_quantile(&self,  p: f64,  sorted_values: &Vec<f64>) -> f64  {
         return self.estimate_quantile(p,  i: & -> sorted_values[i as i32], sorted_values.len());
     }
 }
-

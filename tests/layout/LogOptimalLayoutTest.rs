@@ -29,13 +29,13 @@ impl LogOptimalLayoutTest {
     pub fn  test_overflow_and_underflow_indices(&self)   {
         {
              let layout: LogOptimalLayout = LogOptimalLayout::create(1e-7, 1e-6, -1e12, 1e12);
-            assert_equals(30933622, &layout.get_overflow_bin_index());
-            assert_equals(-30933623, &layout.get_underflow_bin_index());
+            assert_eq!(30933622, &layout.get_overflow_bin_index());
+            assert_eq!(-30933623, &layout.get_underflow_bin_index());
         }
         {
              let layout: LogOptimalLayout = LogOptimalLayout::create(1e-7, 1e-6, 1e12, 1e12);
-            assert_equals(30933622, &layout.get_overflow_bin_index());
-            assert_equals(30933620, &layout.get_underflow_bin_index());
+            assert_eq!(30933622, &layout.get_overflow_bin_index());
+            assert_eq!(30933620, &layout.get_underflow_bin_index());
         }
     }
 
@@ -47,13 +47,13 @@ impl LogOptimalLayoutTest {
          let absolute_bin_width_limit: f64 = 1e-9;
          let layout: LogOptimalLayout = LogOptimalLayout::create(absolute_bin_width_limit, relative_bin_width_limit, value_range_lower_bound, value_range_upper_bound);
          let deserialized_layout: LogOptimalLayout = SerializationTestUtil::test_serialization(layout, LogOptimalLayout::write, LogOptimalLayout::read, "003E112E0BE826D6953F50624DD2F1A9FCCBBF03CAE303");
-        assert_equals(deserialized_layout, layout);
+        assert_eq!(deserialized_layout, layout);
     }
 
     #[test]
     pub fn  test_to_string(&self)   {
          let layout: Layout = LogOptimalLayout::create(1e-8, 1e-2, -1e6, 1e6);
-        assert_equals("LogOptimalLayout [absoluteBinWidthLimit=1.0E-8, relativeBinWidthLimit=0.01, underflowBinIndex=-2878, overflowBinIndex=2877]", &layout.to_string());
+        assert_eq!("LogOptimalLayout [absoluteBinWidthLimit=1.0E-8, relativeBinWidthLimit=0.01, underflowBinIndex=-2878, overflowBinIndex=2877]", &layout.to_string());
     }
 
     #[test]
@@ -62,8 +62,8 @@ impl LogOptimalLayoutTest {
          let histogram: Histogram = Histogram::create_static(layout);
         histogram.add_value(0);
         histogram.add_value(10);
-        assert_equals(9.999999999999999E-9, &histogram.get_first_non_empty_bin().get_width(), 0);
-        assert_equals(0.08473892129759442, &histogram.get_last_non_empty_bin().get_width(), 0);
+        assert_eq!(9.999999999999999E-9, &histogram.get_first_non_empty_bin().get_width(), 0);
+        assert_eq!(0.08473892129759442, &histogram.get_last_non_empty_bin().get_width(), 0);
     }
 
     #[test]
@@ -90,7 +90,7 @@ impl LogOptimalLayoutTest {
                  let first_normal_idx: i32 = LogOptimalLayout::calculate_first_normal_index(relative_bin_width_limit);
                  let unsigned_value_bits_normal_limit_approximate: i64 = LogOptimalLayout::calculate_unsigned_value_bits_normal_limit_approximate(factor_subnormal, first_normal_idx);
                  let unsigned_value_bits_normal_limit: i64 = LogOptimalLayout::calculate_unsigned_value_bits_normal_limit(factor_subnormal, first_normal_idx);
-                 let unsigned_normal_limit: f64 = Double::long_bits_to_double(unsigned_value_bits_normal_limit);
+                 let unsigned_normal_limit: f64 = f64::from_bits(unsigned_value_bits_normal_limit);
                  let offset_approximate: f64 = LogOptimalLayout::calculate_offset_approximate(unsigned_normal_limit, factor_normal, first_normal_idx);
                  let offset: f64 = LogOptimalLayout::calculate_offset(unsigned_value_bits_normal_limit, factor_normal, first_normal_idx);
                 assert_that(&Algorithms::map_double_to_long(offset_approximate)).is_close_to(&Algorithms::map_double_to_long(offset), &Offset::offset(1));
@@ -101,7 +101,7 @@ impl LogOptimalLayoutTest {
 
     #[test]
     pub fn  test_hash_code(&self)   {
-        assert_equals(-1348565571, &self.create_layout(1e-6, 1e-4, -10, 1000).hash_code());
+        assert_eq!(-1348565571, &self.create_layout(1e-6, 1e-4, -10, 1000).hash_code());
     }
 
     #[test]
@@ -118,4 +118,3 @@ impl LogOptimalLayoutTest {
         }
     }
 }
-

@@ -82,7 +82,7 @@ impl LogLinearLayout {
         return LogLinearLayout::new(absolute_bin_width_limit, relative_bin_width_limit, underflow_bin_index, overflow_bin_index, factor_normal, factor_subnormal, offset, unsigned_value_bits_normal_limit);
     }
 
-    fn new( absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  underflow_bin_index: i32,  overflow_bin_index: i32,  factor_normal: f64,  factor_subnormal: f64,  offset: f64,  unsigned_value_bits_normal_limit: i64) -> LogLinearLayout {
+    fn new( absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  underflow_bin_index: usize,  overflow_bin_index: usize,  factor_normal: f64,  factor_subnormal: f64,  offset: f64,  unsigned_value_bits_normal_limit: i64) -> LogLinearLayout {
         let .absoluteBinWidthLimit = absolute_bin_width_limit;
         let .relativeBinWidthLimit = relative_bin_width_limit;
         let .underflowBinIndex = underflow_bin_index;
@@ -93,16 +93,16 @@ impl LogLinearLayout {
         let .unsignedValueBitsNormalLimit = unsigned_value_bits_normal_limit;
     }
 
-    fn  calculate_unsigned_value_bits_normal_limit( factor_subnormal: f64,  first_normal_idx: i32) -> i64  {
-        return Algorithms::find_first( l: & -> ::calculate_sub_normal_idx(l, factor_subnormal) >= first_normal_idx, 0, &Double::double_to_raw_long_bits(Double::POSITIVE_INFINITY), &::calculate_unsigned_value_bits_normal_limit_approximate(factor_subnormal, first_normal_idx));
+    fn  calculate_unsigned_value_bits_normal_limit( factor_subnormal: f64,  first_normal_idx: usize) -> i64  {
+        return Algorithms::find_first_guess( l: & -> ::calculate_sub_normal_idx(l, factor_subnormal) >= first_normal_idx, 0, &Double::double_to_raw_long_bits(f64::INFINITY), &::calculate_unsigned_value_bits_normal_limit_approximate(factor_subnormal, first_normal_idx));
     }
 
-    fn  calculate_unsigned_value_bits_normal_limit_approximate( factor_subnormal: f64,  first_normal_idx: i32) -> i64  {
+    fn  calculate_unsigned_value_bits_normal_limit_approximate( factor_subnormal: f64,  first_normal_idx: usize) -> i64  {
         return Algorithms::map_double_to_long(first_normal_idx / factor_subnormal);
     }
 
-    fn  calculate_first_normal_index( relative_bin_width_limit: f64) -> i32  {
-        return StrictMath::ceil(1.0 / relative_bin_width_limit) as i32;
+    fn  calculate_first_normal_index( relative_bin_width_limit: f64) -> usize  {
+        return StrictMath::ceil(1.0 / relative_bin_width_limit) as usize;
     }
 
     fn  calculate_factor_normal( relative_bin_width_limit: f64) -> f64  {
@@ -113,15 +113,15 @@ impl LogLinearLayout {
         return 1.0 / absolute_bin_width_limit;
     }
 
-    fn  calculate_offset( unsigned_value_bits_normal_limit: i64,  factor_normal: f64,  first_normal_idx: i32) -> f64  {
-        return Algorithms::map_long_to_double(&Algorithms::find_first( l: & -> {
+    fn  calculate_offset( unsigned_value_bits_normal_limit: i64,  factor_normal: f64,  first_normal_idx: usize) -> f64  {
+        return Algorithms::map_long_to_double(&Algorithms::find_first_guess( l: & -> {
              let offset_candidate: f64 = Algorithms::map_long_to_double(l);
              let bin_index: i32 = ::calculate_normal_idx(unsigned_value_bits_normal_limit, factor_normal, offset_candidate);
             return bin_index >= first_normal_idx;
         }, Algorithms::NEGATIVE_INFINITY_MAPPED_TO_LONG, Algorithms::POSITIVE_INFINITY_MAPPED_TO_LONG, &Algorithms::map_double_to_long(&::calculate_offset_approximate(unsigned_value_bits_normal_limit, factor_normal, first_normal_idx))));
     }
 
-    fn  calculate_offset_approximate( unsigned_value_bits_normal_limit: i64,  factor_normal: f64,  first_normal_idx: i32) -> f64  {
+    fn  calculate_offset_approximate( unsigned_value_bits_normal_limit: i64,  factor_normal: f64,  first_normal_idx: usize) -> f64  {
         return first_normal_idx - factor_normal * ::map_to_bin_index_helper(unsigned_value_bits_normal_limit);
     }
 
@@ -133,24 +133,24 @@ impl LogLinearLayout {
    */
     fn  map_to_bin_index_helper( unsigned_value_bits: i64) -> f64  {
          let exponent: i64 = unsigned_value_bits >> /* >>> */ 52;
-         let mantissa_plus1: f64 = Double::long_bits_to_double((unsigned_value_bits & 0x000fffffffffffff) | 0x3ff0000000000000);
+         let mantissa_plus1: f64 = f64::from_bits((unsigned_value_bits & 0x000fffffffffffff) | 0x3ff0000000000000);
         return mantissa_plus1 + exponent;
     }
 
-    fn  calculate_normal_idx( unsigned_value_bits: i64,  factor_normal: f64,  offset: f64) -> i32  {
-        return (factor_normal * ::map_to_bin_index_helper(unsigned_value_bits) + offset) as i32;
+    fn  calculate_normal_idx( unsigned_value_bits: i64,  factor_normal: f64,  offset: f64) -> usize  {
+        return (factor_normal * ::map_to_bin_index_helper(unsigned_value_bits) + offset) as usize;
     }
 
-    fn  calculate_sub_normal_idx( unsigned_value_bits: i64,  factor_subnormal: f64) -> i32  {
-        return (factor_subnormal * Double::long_bits_to_double(unsigned_value_bits)) as i32;
+    fn  calculate_sub_normal_idx( unsigned_value_bits: i64,  factor_subnormal: f64) -> usize  {
+        return (factor_subnormal * f64::from_bits(unsigned_value_bits)) as usize;
     }
 
     // Unfortunately this mapping is not platform-independent. It would be independent if the strictfp
     // keyword was used for this method and all called methods. Due to a performance penalty (see
     // https://bugs.openjdk.java.net/browse/JDK-8136414) of strictfp, which is hopefully fixed in Java
     // 15, we have omitted strictfp here in the meantime.
-    fn  map_to_bin_index( value: f64,  factor_normal: f64,  factor_subnormal: f64,  unsigned_value_bits_normal_limit: i64,  offset: f64) -> i32  {
-         let value_bits: i64 = Double::double_to_raw_long_bits(value);
+    fn  map_to_bin_index( value: f64,  factor_normal: f64,  factor_subnormal: f64,  unsigned_value_bits_normal_limit: i64,  offset: f64) -> usize  {
+         let value_bits: i64 = value.to_bits();
          let unsigned_value_bits: i64 = value_bits & 0x7fffffffffffffff;
          let mut idx: i32;
         if unsigned_value_bits >= unsigned_value_bits_normal_limit {
@@ -161,15 +161,15 @@ impl LogLinearLayout {
         return  if (value_bits >= 0) { idx } else { ~idx };
     }
 
-    pub fn  map_to_bin_index(&self,  value: f64) -> i32  {
+    pub fn  map_to_bin_index(&self,  value: f64) -> usize  {
         return ::map_to_bin_index(value, self.factor_normal, self.factor_subnormal, self.unsigned_value_bits_normal_limit, self.offset);
     }
 
-    pub fn  get_underflow_bin_index(&self) -> i32  {
+    pub fn  get_underflow_bin_index(&self) -> usize  {
         return self.underflow_bin_index;
     }
 
-    pub fn  get_overflow_bin_index(&self) -> i32  {
+    pub fn  get_overflow_bin_index(&self) -> usize  {
         return self.overflow_bin_index;
     }
 
@@ -244,7 +244,7 @@ impl LogLinearLayout {
 
     fn  get_bin_lower_bound_approximation_helper(&self,  idx: i32) -> f64  {
          let x: f64 = idx * self.absolute_bin_width_limit;
-        if x < Double::long_bits_to_double(self.unsigned_value_bits_normal_limit) {
+        if x < f64::from_bits(self.unsigned_value_bits_normal_limit) {
             return x;
         } else {
              let s: f64 = (idx - self.offset) / self.factor_normal;
@@ -258,4 +258,3 @@ impl LogLinearLayout {
         return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", get_class().get_simple_name(), self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);
     }
 }
-

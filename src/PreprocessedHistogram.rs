@@ -17,9 +17,10 @@
 
 /** A preprocessed and immutable histogram that allows fast order statistic queries. */
 
- const EMPTY_BIN_INDICES;
+const EMPTY_BIN_INDICES;
 
- const EMPTY_ACCUMULATED_COUNTS;
+const EMPTY_ACCUMULATED_COUNTS;
+
 struct PreprocessedHistogram {
     super: AbstractHistogram;
 
@@ -128,7 +129,7 @@ impl PreprocessedHistogram {
     struct AbstractBinExtended {
         super: AbstractBin;
     }
-    
+
     impl AbstractBinExtended {
 
         pub fn  get_non_empty_index(&self) -> i32 ;
@@ -160,7 +161,7 @@ impl PreprocessedHistogram {
 
          let non_empty_bin_index: i32;
     }
-    
+
     impl BinCopyImpl {
 
         fn new( non_empty_bin_index: i32) -> BinCopyImpl {
@@ -179,7 +180,7 @@ impl PreprocessedHistogram {
 
          let non_empty_bin_index: i32;
     }
-    
+
     impl BinIteratorImpl {
 
         fn new( non_empty_bin_index: i32) -> BinIteratorImpl {
@@ -241,4 +242,3 @@ impl PreprocessedHistogram {
         return false;
     }
 }
-

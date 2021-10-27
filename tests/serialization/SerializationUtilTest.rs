@@ -52,10 +52,10 @@ impl SerializationUtilTest {
             compressed_histogram = SerializationUtil::write_compressed(histogram_dynamic);
             deserialized_histogram = SerializationUtil::read_as_dynamic(layout, &serialized_histogram);
             decompressed_histogram = SerializationUtil::read_compressed_as_dynamic(layout, &compressed_histogram);
-            assert_equals(histogram_dynamic, deserialized_histogram);
-            assert_equals(histogram_dynamic, decompressed_histogram);
-            assert_equals(&histogram_dynamic.hash_code(), &deserialized_histogram.hash_code());
-            assert_equals(&histogram_dynamic.hash_code(), &decompressed_histogram.hash_code());
+            assert_eq!(histogram_dynamic, deserialized_histogram);
+            assert_eq!(histogram_dynamic, decompressed_histogram);
+            assert_eq!(&histogram_dynamic.hash_code(), &deserialized_histogram.hash_code());
+            assert_eq!(&histogram_dynamic.hash_code(), &decompressed_histogram.hash_code());
         }
         {
              let serialized_histogram: Vec<i8>;
@@ -66,10 +66,10 @@ impl SerializationUtilTest {
             compressed_histogram = SerializationUtil::write_compressed(histogram_dynamic);
             deserialized_histogram = SerializationUtil::read_as_dynamic(layout, &serialized_histogram);
             decompressed_histogram = SerializationUtil::read_compressed_as_dynamic(layout, &compressed_histogram);
-            assert_equals(histogram_dynamic, deserialized_histogram);
-            assert_equals(histogram_dynamic, decompressed_histogram);
-            assert_equals(&histogram_dynamic.hash_code(), &deserialized_histogram.hash_code());
-            assert_equals(&histogram_dynamic.hash_code(), &decompressed_histogram.hash_code());
+            assert_eq!(histogram_dynamic, deserialized_histogram);
+            assert_eq!(histogram_dynamic, decompressed_histogram);
+            assert_eq!(&histogram_dynamic.hash_code(), &deserialized_histogram.hash_code());
+            assert_eq!(&histogram_dynamic.hash_code(), &decompressed_histogram.hash_code());
         }
         {
              let serialized_histogram: Vec<i8>;
@@ -80,10 +80,10 @@ impl SerializationUtilTest {
             compressed_histogram = SerializationUtil::write_compressed(histogram_static);
             deserialized_histogram = SerializationUtil::read_as_static(layout, &serialized_histogram);
             decompressed_histogram = SerializationUtil::read_compressed_as_static(layout, &compressed_histogram);
-            assert_equals(histogram_static, deserialized_histogram);
-            assert_equals(histogram_static, decompressed_histogram);
-            assert_equals(&histogram_static.hash_code(), &deserialized_histogram.hash_code());
-            assert_equals(&histogram_static.hash_code(), &decompressed_histogram.hash_code());
+            assert_eq!(histogram_static, deserialized_histogram);
+            assert_eq!(histogram_static, decompressed_histogram);
+            assert_eq!(&histogram_static.hash_code(), &deserialized_histogram.hash_code());
+            assert_eq!(&histogram_static.hash_code(), &decompressed_histogram.hash_code());
         }
         {
              let serialized_histogram: Vec<i8>;
@@ -94,10 +94,10 @@ impl SerializationUtilTest {
             compressed_histogram = SerializationUtil::write_compressed(histogram_preprocessed);
             deserialized_histogram = SerializationUtil::read_as_preprocessed(layout, &serialized_histogram);
             decompressed_histogram = SerializationUtil::read_compressed_as_preprocessed(layout, &compressed_histogram);
-            assert_equals(histogram_preprocessed, deserialized_histogram);
-            assert_equals(histogram_preprocessed, decompressed_histogram);
-            assert_equals(&histogram_preprocessed.hash_code(), &deserialized_histogram.hash_code());
-            assert_equals(&histogram_preprocessed.hash_code(), &decompressed_histogram.hash_code());
+            assert_eq!(histogram_preprocessed, deserialized_histogram);
+            assert_eq!(histogram_preprocessed, decompressed_histogram);
+            assert_eq!(&histogram_preprocessed.hash_code(), &deserialized_histogram.hash_code());
+            assert_eq!(&histogram_preprocessed.hash_code(), &decompressed_histogram.hash_code());
         }
     }
 
@@ -110,8 +110,8 @@ impl SerializationUtilTest {
         histogram.add_ascending_sequence( i: & -> i + 1, 50);
          let serialized_histogram: Vec<i8> = SerializationUtil::write(histogram);
          let compressed_histogram: Vec<i8> = SerializationUtil::write_compressed(histogram);
-        assert_equals(&expected_serialized_histogram_hex_string, &SerializationTestUtil::byte_array_to_hex_string(&serialized_histogram));
-        assert_equals(&expected_compressed_histogram_hex_string, &SerializationTestUtil::byte_array_to_hex_string(&compressed_histogram));
+        assert_eq!(&expected_serialized_histogram_hex_string, &SerializationTestUtil::byte_array_to_hex_string(&serialized_histogram));
+        assert_eq!(&expected_compressed_histogram_hex_string, &SerializationTestUtil::byte_array_to_hex_string(&compressed_histogram));
     }
 
     #[test]
@@ -135,7 +135,7 @@ impl SerializationUtilTest {
             }  0 => break
         }
 
-        assert_equals(histogram, &SerializationUtil::from_byte_array(serialization_reader, &serialized_histogram));
+        assert_eq!(histogram, &SerializationUtil::from_byte_array(serialization_reader, &serialized_histogram));
     }
 
     #[test]

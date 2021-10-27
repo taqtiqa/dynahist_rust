@@ -28,19 +28,19 @@ impl LogLinearLayoutTest {
 
     #[test]
     pub fn  test_map_to_bin_index_helper_special_values(&self)   {
-        assert_equals(2049.0, &LogLinearLayout::map_to_bin_index_helper(Long::MAX_VALUE), 0.0);
-        assert_equals(2049.0, &LogLinearLayout::map_to_bin_index_helper(0x7fffffffffffffff), 0.0);
-        assert_equals(2048.5, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::NaN)), 0.0);
-        assert_equals(2048.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::POSITIVE_INFINITY)), 0.0);
-        assert_equals(2.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::MIN_NORMAL)), 0.0);
-        assert_equals(1.0, &LogLinearLayout::map_to_bin_index_helper(0), 0.0);
-        assert_equals(1022.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(0.25)), 0.0);
-        assert_equals(1023.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(0.5)), 0.0);
-        assert_equals(1024.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(1.0)), 0.0);
-        assert_equals(1025.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(2.0)), 0.0);
-        assert_equals(1026.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(4.0)), 0.0);
-        assert_equals(1027.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(8.0)), 0.0);
-        assert_equals(1028.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(16.0)), 0.0);
+        assert_eq!(2049.0, &LogLinearLayout::map_to_bin_index_helper(Long::MAX_VALUE), 0.0);
+        assert_eq!(2049.0, &LogLinearLayout::map_to_bin_index_helper(0x7fffffffffffffff), 0.0);
+        assert_eq!(2048.5, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::NaN)), 0.0);
+        assert_eq!(2048.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(f64::INFINITY)), 0.0);
+        assert_eq!(2.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::MIN_NORMAL)), 0.0);
+        assert_eq!(1.0, &LogLinearLayout::map_to_bin_index_helper(0), 0.0);
+        assert_eq!(1022.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.25)), 0.0);
+        assert_eq!(1023.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.5)), 0.0);
+        assert_eq!(1024.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(1.0)), 0.0);
+        assert_eq!(1025.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(2.0)), 0.0);
+        assert_eq!(1026.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(4.0)), 0.0);
+        assert_eq!(1027.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(8.0)), 0.0);
+        assert_eq!(1028.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(16.0)), 0.0);
     }
 
     pub fn  create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> AbstractLayout  {
@@ -51,13 +51,13 @@ impl LogLinearLayoutTest {
     pub fn  test_overflow_and_underflow_indices(&self)   {
         {
              let layout: LogLinearLayout = LogLinearLayout::create(1e-7, 1e-6, -1e12, 1e12);
-            assert_equals(44219012, &layout.get_overflow_bin_index());
-            assert_equals(-44219013, &layout.get_underflow_bin_index());
+            assert_eq!(44219012, &layout.get_overflow_bin_index());
+            assert_eq!(-44219013, &layout.get_underflow_bin_index());
         }
         {
              let layout: LogLinearLayout = LogLinearLayout::create(1e-7, 1e-6, 1e12, 1e12);
-            assert_equals(44219012, &layout.get_overflow_bin_index());
-            assert_equals(44219010, &layout.get_underflow_bin_index());
+            assert_eq!(44219012, &layout.get_overflow_bin_index());
+            assert_eq!(44219010, &layout.get_underflow_bin_index());
         }
     }
 
@@ -69,13 +69,13 @@ impl LogLinearLayoutTest {
          let absolute_bin_width_limit: f64 = 1e-9;
          let layout: LogLinearLayout = LogLinearLayout::create(absolute_bin_width_limit, relative_bin_width_limit, value_range_lower_bound, value_range_upper_bound);
          let deserialized_layout: LogLinearLayout = SerializationTestUtil::test_serialization(layout, LogLinearLayout::write, LogLinearLayout::read, "003E112E0BE826D6953F50624DD2F1A9FCDFFE048CB205");
-        assert_equals(deserialized_layout, layout);
+        assert_eq!(deserialized_layout, layout);
     }
 
     #[test]
     pub fn  test_to_string(&self)   {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
-        assert_equals("LogLinearLayout [absoluteBinWidthLimit=1.0E-8, relativeBinWidthLimit=0.01, underflowBinIndex=-4107, overflowBinIndex=4106]", &layout.to_string());
+        assert_eq!("LogLinearLayout [absoluteBinWidthLimit=1.0E-8, relativeBinWidthLimit=0.01, underflowBinIndex=-4107, overflowBinIndex=4106]", &layout.to_string());
     }
 
     #[test]
@@ -84,8 +84,8 @@ impl LogLinearLayoutTest {
          let histogram: Histogram = Histogram::create_static(layout);
         histogram.add_value(0);
         histogram.add_value(10);
-        assert_equals(9.999999999999999E-9, &histogram.get_first_non_empty_bin().get_width(), 0);
-        assert_equals(0.057622250121310614, &histogram.get_last_non_empty_bin().get_width(), 0);
+        assert_eq!(9.999999999999999E-9, &histogram.get_first_non_empty_bin().get_width(), 0);
+        assert_eq!(0.057622250121310614, &histogram.get_last_non_empty_bin().get_width(), 0);
     }
 
     #[test]
@@ -122,7 +122,6 @@ impl LogLinearLayoutTest {
 
     #[test]
     pub fn  test_hash_code(&self)   {
-        assert_equals(-1299004750, &self.create_layout(1e-6, 1e-4, -10, 1000).hash_code());
+        assert_eq!(-1299004750, &self.create_layout(1e-6, 1e-4, -10, 1000).hash_code());
     }
 }
-

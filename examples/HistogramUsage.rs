@@ -37,7 +37,7 @@ impl HistogramUsage {
     pub fn  create_histogram(&self)   {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
-        assert_equals(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=0, min=Infinity, max=-Infinity, counts={}]", histogram.get_class().get_simple_name(), layout), &histogram.to_string());
+        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=0, min=Infinity, max=-Infinity, counts={}]", histogram.get_class().get_simple_name(), layout), &histogram.to_string());
     }
 
     /** Add values using {@link Histogram#addValue(double)} adds a given value to the histogram. */
@@ -46,7 +46,7 @@ impl HistogramUsage {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5);
-        assert_equals(&PrintUtil::print(histogram), "-5.50000000000000000E+00 - -5.50000000000000000E+00 :                   1\n");
+        assert_eq!(&PrintUtil::print(histogram), "-5.50000000000000000E+00 - -5.50000000000000000E+00 :                   1\n");
     }
 
     /**
@@ -58,7 +58,7 @@ impl HistogramUsage {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5, 5);
-        assert_equals(&PrintUtil::print(histogram), "-5.50000000000000000E+00 - -5.50000000000000000E+00 :                   5\n");
+        assert_eq!(&PrintUtil::print(histogram), "-5.50000000000000000E+00 - -5.50000000000000000E+00 :                   5\n");
     }
 
     /**
@@ -71,7 +71,7 @@ impl HistogramUsage {
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(5.5);
          let median: f64 = histogram.get_quantile(0.5);
-        assert_equals(5.5, median, &Math::max(1e-5, 5.5 * 1e-2));
+        assert_eq!(5.5, median, &std::cmp::max(1e-5, 5.5 * 1e-2));
     }
 
     #[test]
@@ -88,7 +88,7 @@ impl HistogramUsage {
              }
          }
 
-        assert_equals(50, &histogram.get_quantile(0.5), &Math::max(1e-5, 50.0 * 1e-2));
+        assert_eq!(50, &histogram.get_quantile(0.5), &std::cmp::max(1e-5, 50.0 * 1e-2));
     }
 
     /**
@@ -111,8 +111,8 @@ impl HistogramUsage {
         histogram_total.add_value(5);
         histogram_total.add_value(-7.5);
         histogram1.add_histogram(histogram2);
-        assert_equals(histogram_total, histogram1);
-        assert_equals(&histogram_total.hash_code(), &histogram1.hash_code());
+        assert_eq!(histogram_total, histogram1);
+        assert_eq!(&histogram_total.hash_code(), &histogram1.hash_code());
     }
 
     /**
@@ -159,7 +159,7 @@ impl HistogramUsage {
             }  0 => break
         }
 
-        assert_equals(histogram, deserialized_histogram);
-        assert_equals(&histogram.hash_code(), &deserialized_histogram.hash_code());
+        assert_eq!(histogram, deserialized_histogram);
+        assert_eq!(&histogram.hash_code(), &deserialized_histogram.hash_code());
     }
 }

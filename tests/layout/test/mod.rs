@@ -17,35 +17,35 @@
 
 pub struct TestLayout {
 
-     let underflow_index: i32;
+     let underflow_index: usize;
 
-     let overflow_index: i32;
+     let overflow_index: usize;
 }
 
 impl Layout for TestLayout {
 
-    pub fn new( underflow_index: i32,  overflow_index: i32) -> TestLayout {
+    pub fn new( underflow_index: usize,  overflow_index: usize) -> TestLayout {
         check_argument(underflow_index < overflow_index);
         let .underflowIndex = underflow_index;
         let .overflowIndex = overflow_index;
     }
 
-    pub fn  map_to_bin_index(&self,  value: f64) -> i32  {
+    pub fn  map_to_bin_index(&self,  value: f64) -> usize  {
         if Double::is_na_n(value) {
             return Integer::MAX_VALUE;
         }
         if value >= 0.0 {
-            return (value + 0.5) as i32;
+            return (value + 0.5) as usize;
         } else {
-            return (value - 0.5) as i32;
+            return (value - 0.5) as usize;
         }
     }
 
-    pub fn  get_underflow_bin_index(&self) -> i32  {
+    pub fn  get_underflow_bin_index(&self) -> usize  {
         return self.underflow_index;
     }
 
-    pub fn  get_overflow_bin_index(&self) -> i32  {
+    pub fn  get_overflow_bin_index(&self) -> usize  {
         return self.overflow_index;
     }
 

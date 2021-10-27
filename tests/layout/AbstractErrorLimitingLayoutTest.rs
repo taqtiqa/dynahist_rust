@@ -23,16 +23,16 @@ impl AbstractErrorLimitingLayoutTest {
     pub fn  create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> AbstractLayout ;
 
     pub fn  assert_index_symmetry(&self,  idx: i32,  negative_idx: i32)   {
-        assert_equals(-idx - 1, negative_idx);
+        assert_eq!(-idx - 1, negative_idx);
     }
 
     #[test]
     pub fn  test1(&self)   {
          let layout: Layout = self.create_layout(1e-6, 0.001, 0, 1);
-        assert_true(layout.get_underflow_bin_index() >= layout.map_to_bin_index(Double::NEGATIVE_INFINITY));
-        assert_true(layout.get_overflow_bin_index() <= layout.map_to_bin_index(Double::POSITIVE_INFINITY));
-        assert_equals(Double::NEGATIVE_INFINITY, &layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), 0.0);
-        assert_equals(Double::POSITIVE_INFINITY, &layout.get_bin_upper_bound(&layout.get_overflow_bin_index()), 0.0);
+        assert_true(layout.get_underflow_bin_index() >= layout.map_to_bin_index(f64::NEG_INFINITY));
+        assert_true(layout.get_overflow_bin_index() <= layout.map_to_bin_index(f64::INFINITY));
+        assert_eq!(f64::NEG_INFINITY, &layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), 0.0);
+        assert_eq!(f64::INFINITY, &layout.get_bin_upper_bound(&layout.get_overflow_bin_index()), 0.0);
     }
 
     #[test]
@@ -69,7 +69,7 @@ impl AbstractErrorLimitingLayoutTest {
                      let upper_bound: f64 = layout.get_bin_upper_bound(idx);
                     assert_that(lower_bound).is_less_than_or_equal_to(value);
                     assert_that(upper_bound).is_greater_than_or_equal_to(value);
-                     let is_relative_bin_width_limit_fulfilled: bool = Math::abs(upper_bound - lower_bound) / Math::max(&Math::abs(lower_bound), &Math::abs(upper_bound)) <= relative_bin_width_limit * (1.0 + eps);
+                     let is_relative_bin_width_limit_fulfilled: bool = Math::abs(upper_bound - lower_bound) / std::cmp::max(&Math::abs(lower_bound), &Math::abs(upper_bound)) <= relative_bin_width_limit * (1.0 + eps);
                      let is_absolute_bin_width_limit_fulfilled: bool = Math::abs(upper_bound - lower_bound) <= absolute_bin_width_limit * (1.0 + eps);
                     assert_true(is_absolute_bin_width_limit_fulfilled || is_relative_bin_width_limit_fulfilled);
                 }
@@ -79,7 +79,7 @@ impl AbstractErrorLimitingLayoutTest {
                         {
                              let lower_bound: f64 = layout.get_bin_lower_bound(i);
                              let upper_bound: f64 = layout.get_bin_upper_bound(i);
-                             let is_relative_bin_width_limit_fulfilled: bool = Math::abs(upper_bound - lower_bound) / Math::max(&Math::abs(lower_bound), &Math::abs(upper_bound)) <= relative_bin_width_limit * (1.0 + eps);
+                             let is_relative_bin_width_limit_fulfilled: bool = Math::abs(upper_bound - lower_bound) / std::cmp::max(&Math::abs(lower_bound), &Math::abs(upper_bound)) <= relative_bin_width_limit * (1.0 + eps);
                              let is_absolute_bin_width_limit_fulfilled: bool = Math::abs(upper_bound - lower_bound) <= absolute_bin_width_limit * (1.0 + eps);
                             assert_true(is_absolute_bin_width_limit_fulfilled || is_relative_bin_width_limit_fulfilled);
                         }
@@ -98,8 +98,8 @@ impl AbstractErrorLimitingLayoutTest {
              let bin_index: i32 = layout.get_underflow_bin_index() + 1;
             while bin_index < layout.get_overflow_bin_index() {
                 {
-                    assert_equals(bin_index, &layout.map_to_bin_index(&layout.get_bin_lower_bound(bin_index)));
-                    assert_equals(bin_index, &layout.map_to_bin_index(&layout.get_bin_upper_bound(bin_index)));
+                    assert_eq!(bin_index, &layout.map_to_bin_index(&layout.get_bin_lower_bound(bin_index)));
+                    assert_eq!(bin_index, &layout.map_to_bin_index(&layout.get_bin_upper_bound(bin_index)));
                 }
                 bin_index += 1;
              }
@@ -118,12 +118,12 @@ impl AbstractErrorLimitingLayoutTest {
             while transition_idx <= layout.get_overflow_bin_index() {
                 {
                      let transition: f64 = layout.get_bin_lower_bound_approximation(transition_idx);
-                     let transition_low: f64 = Math::min(transition * (1.0 - eps * relative_bin_width_limit), transition - eps * absolute_bin_width_limit);
-                     let transition_high: f64 = Math::max(transition * (1.0 + eps * relative_bin_width_limit), transition + eps * absolute_bin_width_limit);
+                     let transition_low: f64 = std::cmp::min(transition * (1.0 - eps * relative_bin_width_limit), transition - eps * absolute_bin_width_limit);
+                     let transition_high: f64 = std::cmp::max(transition * (1.0 + eps * relative_bin_width_limit), transition + eps * absolute_bin_width_limit);
                      let bin_index_low: i32 = transition_idx - 1;
                      let bin_index_high: i32 = transition_idx;
-                    assert_equals(bin_index_low, &layout.map_to_bin_index(transition_low));
-                    assert_equals(bin_index_high, &layout.map_to_bin_index(transition_high));
+                    assert_eq!(bin_index_low, &layout.map_to_bin_index(transition_low));
+                    assert_eq!(bin_index_high, &layout.map_to_bin_index(transition_high));
                 }
                 transition_idx += 1;
              }
@@ -143,8 +143,8 @@ impl AbstractErrorLimitingLayoutTest {
 
     #[test]
     pub fn  test_create(&self)   {
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, -1e6, Double::POSITIVE_INFINITY));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, Double::NEGATIVE_INFINITY, 1e6));
+        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, -1e6, f64::INFINITY));
+        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, f64::NEG_INFINITY, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, 1e6, 1e-6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, 1, Double::NaN));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, Double::NaN, 1));
@@ -155,8 +155,8 @@ impl AbstractErrorLimitingLayoutTest {
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(Double::MIN_NORMAL, 0, 0, Double::MAX_VALUE));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(-1, 1e-2, -1e6, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, -1, -1e6, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(Double::POSITIVE_INFINITY, 1, -1e6, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1, Double::POSITIVE_INFINITY, -1e6, 1e6));
+        assert_throws(IllegalArgumentException.class, () -> self.create_layout(f64::INFINITY, 1, -1e6, 1e6));
+        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1, f64::INFINITY, -1e6, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1, 0, -2, Integer::MAX_VALUE - 3));
         // no exception should be thrown in this case
         self.create_layout(1, 0, -2, Integer::MAX_VALUE - 4);
@@ -165,7 +165,6 @@ impl AbstractErrorLimitingLayoutTest {
     #[test]
     pub fn  test_same_equals(&self)   {
          let layout: Layout = self.create_layout(1e-8, 1e-2, -1e6, 1e6);
-        assert_equals(layout, layout);
+        assert_eq!(layout, layout);
     }
 }
-

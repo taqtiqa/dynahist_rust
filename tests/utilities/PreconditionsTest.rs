@@ -39,7 +39,7 @@ impl PreconditionsTest {
     #[test]
     pub fn  test_check_argument_with_message_false(&self)   {
          let e: IllegalArgumentException = assert_throws(IllegalArgumentException.class, () -> Preconditions::check_argument(false, &MSG));
-        assert_equals(&MSG, &e.get_message());
+        assert_eq!(&MSG, &e.get_message());
     }
 
     #[test]
@@ -50,7 +50,7 @@ impl PreconditionsTest {
     #[test]
     pub fn  test_check_argument_with_message_and_value_false(&self)   {
          let e: IllegalArgumentException = assert_throws(IllegalArgumentException.class, () -> Preconditions::check_argument(false, &FORMAT_STRING, VALUE));
-        assert_equals(&String::format(null as Locale, &FORMAT_STRING, VALUE), &e.get_message());
+        assert_eq!(&String::format(null as Locale, &FORMAT_STRING, VALUE), &e.get_message());
     }
 
     #[test]
@@ -58,4 +58,3 @@ impl PreconditionsTest {
         Preconditions::check_argument(true, &MSG);
     }
 }
-

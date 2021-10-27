@@ -62,7 +62,7 @@ pub trait Histogram {
    *
    * @return the number of added values greater than {@link Layout#getNormalRangeUpperBound()}
    */
-    fn default  get_overflow_count(&self) -> i64  {
+    fn get_overflow_count(&self) -> i64  {
         if !self.is_empty() {
              let it: BinIterator = self.get_last_non_empty_bin();
             if it.is_overflow_bin() {
@@ -77,7 +77,7 @@ pub trait Histogram {
    *
    * @return the number of added values less than {@link Layout#getNormalRangeLowerBound()}
    */
-    fn default  get_underflow_count(&self) -> i64  {
+    fn get_underflow_count(&self) -> i64  {
         if !self.is_empty() {
              let it: BinIterator = self.get_first_non_empty_bin();
             if it.is_underflow_bin() {
@@ -106,7 +106,7 @@ pub trait Histogram {
     /**
    * Returns the maximum of all added values.
    *
-   * <p>Returns {@link Double#NEGATIVE_INFINITY} if the histogram is empty.
+   * <p>Returns {@link f64::NEG_INFINITY} if the histogram is empty.
    *
    * @return the maximum of all added values
    */
@@ -115,7 +115,7 @@ pub trait Histogram {
     /**
    * Returns the number of values added to histogram bin with given index.
    *
-   * @param binIndex the histogram bin index
+   * @param bin_index the histogram bin index
    * @return the number of values added to histogram bin with given index
    */
     fn  get_count(&self,  bin_index: i32) -> i64 ;
@@ -259,7 +259,7 @@ pub trait Histogram {
    * @throws ArithmeticException if the total count of the histogram would overflow
    * @throws UnsupportedOperationException if modifications are not supported
    */
-    fn default  add_value(&self,  value: f64) -> Histogram  {
+    fn add_value(&self,  value: f64) -> Histogram  {
         return self.add_value(value, 1);
     }
 
@@ -445,4 +445,3 @@ pub trait Histogram {
    */
     fn  non_empty_bins_descending(&self) -> Iterable<Bin> ;
 }
-

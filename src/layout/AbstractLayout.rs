@@ -27,33 +27,32 @@ impl AbstractLayout {
 
     pub fn  get_bin_lower_bound(&self,  bin_index: i32) -> f64  {
         if bin_index <= get_underflow_bin_index() {
-            return Double::NEGATIVE_INFINITY;
+            return f64::NEG_INFINITY;
         }
-         let effective_bin_index: i32 = Math::min(&get_overflow_bin_index(), bin_index);
+         let effective_bin_index: i32 = std::cmp::min(&get_overflow_bin_index(), bin_index);
          let approximate_bin_lower_bound: f64 = self.get_bin_lower_bound_approximation(effective_bin_index);
-        return map_long_to_double(&find_first( l: & -> map_to_bin_index(&map_long_to_double(l)) >= effective_bin_index, NEGATIVE_INFINITY_MAPPED_TO_LONG, POSITIVE_INFINITY_MAPPED_TO_LONG, &map_double_to_long(approximate_bin_lower_bound)));
+        return map_long_to_double(&find_first_guess( l: & -> map_to_bin_index(&map_long_to_double(l)) >= effective_bin_index, NEGATIVE_INFINITY_MAPPED_TO_LONG, POSITIVE_INFINITY_MAPPED_TO_LONG, &map_double_to_long(approximate_bin_lower_bound)));
     }
 
     pub fn  get_bin_upper_bound(&self,  bin_index: i32) -> f64  {
         if bin_index >= get_overflow_bin_index() {
-            return Double::POSITIVE_INFINITY;
+            return f64::INFINITY;
         }
-         let effective_bin_index: i32 = Math::max(&get_underflow_bin_index(), bin_index);
+         let effective_bin_index: i32 = std::cmp::max(&get_underflow_bin_index(), bin_index);
          let approximate_bin_upper_bound: f64 = self.get_bin_lower_bound_approximation(effective_bin_index + 1);
-        return map_long_to_double(~find_first( l: & -> map_to_bin_index(&map_long_to_double(~l)) <= effective_bin_index, ~POSITIVE_INFINITY_MAPPED_TO_LONG, ~NEGATIVE_INFINITY_MAPPED_TO_LONG, ~map_double_to_long(approximate_bin_upper_bound)));
+        return map_long_to_double(~find_first_guess( l: & -> map_to_bin_index(&map_long_to_double(~l)) <= effective_bin_index, ~POSITIVE_INFINITY_MAPPED_TO_LONG, ~NEGATIVE_INFINITY_MAPPED_TO_LONG, ~map_double_to_long(approximate_bin_upper_bound)));
     }
 
     /**
    * Gives an approximation of the lower bound of bin with given bin index.
    *
-   * <p>The method must be defined for all values greater than {@link #getUnderflowBinIndex()} and
-   * smaller than or equal to {@link #getOverflowBinIndex()}.
+   * <p>The method must be defined for all values greater than {@link #get_underflow_bin_index()} and
+   * smaller than or equal to {@link #get_overflow_bin_index()}.
    *
    * <p>The return value must not be {@link Double#NaN}.
    *
-   * @param binIndex the bin index
+   * @param bin_index the bin index
    * @return an approximation of the lower bound
    */
     pub fn  get_bin_lower_bound_approximation(&self,  bin_index: i32) -> f64 ;
 }
-

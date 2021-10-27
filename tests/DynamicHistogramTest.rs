@@ -32,7 +32,7 @@ impl DynamicHistogramTest {
     pub fn  test_get_estimated_footprint_in_byte(&self)   {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
-        assert_equals(82, &histogram.get_estimated_footprint_in_bytes());
+        assert_eq!(82, &histogram.get_estimated_footprint_in_bytes());
     }
 
     #[test]
@@ -44,4 +44,3 @@ impl DynamicHistogramTest {
         assert_throws(IllegalArgumentException.class, () -> histogram.ensure_count_array(0, &layout.get_overflow_bin_index(), 3 as i8));
     }
 }
-

@@ -46,7 +46,7 @@ impl PreprocessedHistogramTest {
     pub fn  test_get_estimated_footprint_in_byte(&self)   {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let preprocessed_histogram: Histogram = Histogram::create_dynamic(layout)::get_preprocessed_copy();
-        assert_equals(72, &preprocessed_histogram.get_estimated_footprint_in_bytes());
+        assert_eq!(72, &preprocessed_histogram.get_estimated_footprint_in_bytes());
     }
 
     #[test]
@@ -76,8 +76,8 @@ impl PreprocessedHistogramTest {
          let serialized_histogram: Vec<i8> = byte_array_output_stream.to_byte_array();
          let data_input_stream: DataInputStream = DataInputStream::new(ByteArrayInputStream::new(&serialized_histogram));
          let deserialized_histogram: Histogram = Histogram::read_as_preprocessed(layout, &data_input_stream);
-        assert_equals(histogram, deserialized_histogram);
-        assert_equals(&histogram.hash_code(), &deserialized_histogram.hash_code());
+        assert_eq!(histogram, deserialized_histogram);
+        assert_eq!(&histogram.hash_code(), &deserialized_histogram.hash_code());
     }
 
     #[test]
@@ -87,4 +87,3 @@ impl PreprocessedHistogramTest {
         assert_false(&histogram.is_mutable());
     }
 }
-

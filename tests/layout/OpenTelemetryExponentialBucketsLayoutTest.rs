@@ -38,177 +38,177 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     #[test]
     pub fn  test_mapping0(&self)   {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(0);
-        assert_equals(0, &layout.map_to_bin_index(&Double::long_bits_to_double(0)));
-        assert_equals(1, &layout.map_to_bin_index(&Double::long_bits_to_double(1)));
-        assert_equals(2, &layout.map_to_bin_index(&Double::long_bits_to_double(2)));
-        assert_equals(2, &layout.map_to_bin_index(&Double::long_bits_to_double(3)));
-        assert_equals(3, &layout.map_to_bin_index(&Double::long_bits_to_double(4)));
-        assert_equals(3, &layout.map_to_bin_index(&Double::long_bits_to_double(5)));
-        assert_equals(3, &layout.map_to_bin_index(&Double::long_bits_to_double(6)));
-        assert_equals(3, &layout.map_to_bin_index(&Double::long_bits_to_double(7)));
-        assert_equals(4, &layout.map_to_bin_index(&Double::long_bits_to_double(8)));
-        assert_equals(4, &layout.map_to_bin_index(&Double::long_bits_to_double(9)));
-        assert_equals(4, &layout.map_to_bin_index(&Double::long_bits_to_double(10)));
-        assert_equals(4, &layout.map_to_bin_index(&Double::long_bits_to_double(11)));
-        assert_equals(4, &layout.map_to_bin_index(&Double::long_bits_to_double(12)));
-        assert_equals(4, &layout.map_to_bin_index(&Double::long_bits_to_double(13)));
-        assert_equals(53, &layout.map_to_bin_index(Double::MIN_NORMAL));
-        assert_equals(1074, &layout.map_to_bin_index(0.5));
-        assert_equals(1075, &layout.map_to_bin_index(1));
-        assert_equals(2097, &layout.map_to_bin_index(Double::MAX_VALUE / 2.0));
-        assert_equals(2098, &layout.map_to_bin_index(Double::MAX_VALUE));
-        assert_equals(2099, &layout.map_to_bin_index(Double::POSITIVE_INFINITY));
-        assert_equals(2099, &// "smallest" NaN
-        layout.map_to_bin_index(&Double::long_bits_to_double(0x7ff0000000000001)));
-        assert_equals(2099, &// standard NaN
-        layout.map_to_bin_index(&Double::long_bits_to_double(0x7ff8000000000000)));
-        assert_equals(2099, &// "greatest" NaN
-        layout.map_to_bin_index(&Double::long_bits_to_double(0x7fffffffffffffff)));
-        assert_equals(0, &layout.map_to_bin_index(-Double::long_bits_to_double(0)));
-        assert_equals(-1, &layout.map_to_bin_index(-Double::long_bits_to_double(1)));
-        assert_equals(-2, &layout.map_to_bin_index(-Double::long_bits_to_double(2)));
-        assert_equals(-2, &layout.map_to_bin_index(-Double::long_bits_to_double(3)));
-        assert_equals(-3, &layout.map_to_bin_index(-Double::long_bits_to_double(4)));
-        assert_equals(-3, &layout.map_to_bin_index(-Double::long_bits_to_double(5)));
-        assert_equals(-3, &layout.map_to_bin_index(-Double::long_bits_to_double(6)));
-        assert_equals(-3, &layout.map_to_bin_index(-Double::long_bits_to_double(7)));
-        assert_equals(-4, &layout.map_to_bin_index(-Double::long_bits_to_double(8)));
-        assert_equals(-4, &layout.map_to_bin_index(-Double::long_bits_to_double(9)));
-        assert_equals(-4, &layout.map_to_bin_index(-Double::long_bits_to_double(10)));
-        assert_equals(-4, &layout.map_to_bin_index(-Double::long_bits_to_double(11)));
-        assert_equals(-4, &layout.map_to_bin_index(-Double::long_bits_to_double(12)));
-        assert_equals(-4, &layout.map_to_bin_index(-Double::long_bits_to_double(13)));
-        assert_equals(-53, &layout.map_to_bin_index(-Double::MIN_NORMAL));
-        assert_equals(-1074, &layout.map_to_bin_index(-0.5));
-        assert_equals(-1075, &layout.map_to_bin_index(-1));
-        assert_equals(-2097, &layout.map_to_bin_index(-Double::MAX_VALUE / 2.0));
-        assert_equals(-2098, &layout.map_to_bin_index(-Double::MAX_VALUE));
-        assert_equals(-2099, &layout.map_to_bin_index(-Double::POSITIVE_INFINITY));
-        assert_equals(-2099, &layout.map_to_bin_index(&Double::long_bits_to_double(0xfff0000000000001)));
-        assert_equals(-2099, &layout.map_to_bin_index(&Double::long_bits_to_double(0xfff8000000000000)));
-        assert_equals(-2099, &layout.map_to_bin_index(&Double::long_bits_to_double(0xffffffffffffffff)));
+        assert_eq!(0, &layout.map_to_bin_index(&f64::from_bits(0)));
+        assert_eq!(1, &layout.map_to_bin_index(&f64::from_bits(1)));
+        assert_eq!(2, &layout.map_to_bin_index(&f64::from_bits(2)));
+        assert_eq!(2, &layout.map_to_bin_index(&f64::from_bits(3)));
+        assert_eq!(3, &layout.map_to_bin_index(&f64::from_bits(4)));
+        assert_eq!(3, &layout.map_to_bin_index(&f64::from_bits(5)));
+        assert_eq!(3, &layout.map_to_bin_index(&f64::from_bits(6)));
+        assert_eq!(3, &layout.map_to_bin_index(&f64::from_bits(7)));
+        assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(8)));
+        assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(9)));
+        assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(10)));
+        assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(11)));
+        assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(12)));
+        assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(13)));
+        assert_eq!(53, &layout.map_to_bin_index(Double::MIN_NORMAL));
+        assert_eq!(1074, &layout.map_to_bin_index(0.5));
+        assert_eq!(1075, &layout.map_to_bin_index(1));
+        assert_eq!(2097, &layout.map_to_bin_index(Double::MAX_VALUE / 2.0));
+        assert_eq!(2098, &layout.map_to_bin_index(Double::MAX_VALUE));
+        assert_eq!(2099, &layout.map_to_bin_index(f64::INFINITY));
+        assert_eq!(2099, &// "smallest" NaN
+        layout.map_to_bin_index(&f64::from_bits(0x7ff0000000000001)));
+        assert_eq!(2099, &// standard NaN
+        layout.map_to_bin_index(&f64::from_bits(0x7ff8000000000000)));
+        assert_eq!(2099, &// "greatest" NaN
+        layout.map_to_bin_index(&f64::from_bits(0x7fffffffffffffff)));
+        assert_eq!(0, &layout.map_to_bin_index(-f64::from_bits(0)));
+        assert_eq!(-1, &layout.map_to_bin_index(-f64::from_bits(1)));
+        assert_eq!(-2, &layout.map_to_bin_index(-f64::from_bits(2)));
+        assert_eq!(-2, &layout.map_to_bin_index(-f64::from_bits(3)));
+        assert_eq!(-3, &layout.map_to_bin_index(-f64::from_bits(4)));
+        assert_eq!(-3, &layout.map_to_bin_index(-f64::from_bits(5)));
+        assert_eq!(-3, &layout.map_to_bin_index(-f64::from_bits(6)));
+        assert_eq!(-3, &layout.map_to_bin_index(-f64::from_bits(7)));
+        assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(8)));
+        assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(9)));
+        assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(10)));
+        assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(11)));
+        assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(12)));
+        assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(13)));
+        assert_eq!(-53, &layout.map_to_bin_index(-Double::MIN_NORMAL));
+        assert_eq!(-1074, &layout.map_to_bin_index(-0.5));
+        assert_eq!(-1075, &layout.map_to_bin_index(-1));
+        assert_eq!(-2097, &layout.map_to_bin_index(-Double::MAX_VALUE / 2.0));
+        assert_eq!(-2098, &layout.map_to_bin_index(-Double::MAX_VALUE));
+        assert_eq!(-2099, &layout.map_to_bin_index(-f64::INFINITY));
+        assert_eq!(-2099, &layout.map_to_bin_index(&f64::from_bits(0xfff0000000000001)));
+        assert_eq!(-2099, &layout.map_to_bin_index(&f64::from_bits(0xfff8000000000000)));
+        assert_eq!(-2099, &layout.map_to_bin_index(&f64::from_bits(0xffffffffffffffff)));
     }
 
     #[test]
     pub fn  test_mapping1(&self)   {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(1);
-        assert_equals(0, &layout.map_to_bin_index(&Double::long_bits_to_double(0)));
-        assert_equals(1, &layout.map_to_bin_index(&Double::long_bits_to_double(1)));
-        assert_equals(2, &layout.map_to_bin_index(&Double::long_bits_to_double(2)));
-        assert_equals(3, &layout.map_to_bin_index(&Double::long_bits_to_double(3)));
-        assert_equals(4, &layout.map_to_bin_index(&Double::long_bits_to_double(4)));
-        assert_equals(4, &layout.map_to_bin_index(&Double::long_bits_to_double(5)));
-        assert_equals(5, &layout.map_to_bin_index(&Double::long_bits_to_double(6)));
-        assert_equals(5, &layout.map_to_bin_index(&Double::long_bits_to_double(7)));
-        assert_equals(6, &layout.map_to_bin_index(&Double::long_bits_to_double(8)));
-        assert_equals(6, &layout.map_to_bin_index(&Double::long_bits_to_double(9)));
-        assert_equals(6, &layout.map_to_bin_index(&Double::long_bits_to_double(10)));
-        assert_equals(6, &layout.map_to_bin_index(&Double::long_bits_to_double(11)));
-        assert_equals(7, &layout.map_to_bin_index(&Double::long_bits_to_double(12)));
-        assert_equals(7, &layout.map_to_bin_index(&Double::long_bits_to_double(13)));
-        assert_equals(104, &layout.map_to_bin_index(Double::MIN_NORMAL));
-        assert_equals(2146, &layout.map_to_bin_index(0.5));
-        assert_equals(2148, &layout.map_to_bin_index(1));
-        assert_equals(4193, &layout.map_to_bin_index(Double::MAX_VALUE / 2.0));
-        assert_equals(4195, &layout.map_to_bin_index(Double::MAX_VALUE));
-        assert_equals(4196, &layout.map_to_bin_index(Double::POSITIVE_INFINITY));
-        assert_equals(4196, &// "smallest" NaN
-        layout.map_to_bin_index(&Double::long_bits_to_double(0x7ff0000000000001)));
-        assert_equals(4197, &// standard NaN
-        layout.map_to_bin_index(&Double::long_bits_to_double(0x7ff8000000000000)));
-        assert_equals(4197, &// "greatest" NaN
-        layout.map_to_bin_index(&Double::long_bits_to_double(0x7fffffffffffffff)));
-        assert_equals(0, &layout.map_to_bin_index(-Double::long_bits_to_double(0)));
-        assert_equals(-1, &layout.map_to_bin_index(-Double::long_bits_to_double(1)));
-        assert_equals(-2, &layout.map_to_bin_index(-Double::long_bits_to_double(2)));
-        assert_equals(-3, &layout.map_to_bin_index(-Double::long_bits_to_double(3)));
-        assert_equals(-4, &layout.map_to_bin_index(-Double::long_bits_to_double(4)));
-        assert_equals(-4, &layout.map_to_bin_index(-Double::long_bits_to_double(5)));
-        assert_equals(-5, &layout.map_to_bin_index(-Double::long_bits_to_double(6)));
-        assert_equals(-5, &layout.map_to_bin_index(-Double::long_bits_to_double(7)));
-        assert_equals(-6, &layout.map_to_bin_index(-Double::long_bits_to_double(8)));
-        assert_equals(-6, &layout.map_to_bin_index(-Double::long_bits_to_double(9)));
-        assert_equals(-6, &layout.map_to_bin_index(-Double::long_bits_to_double(10)));
-        assert_equals(-6, &layout.map_to_bin_index(-Double::long_bits_to_double(11)));
-        assert_equals(-7, &layout.map_to_bin_index(-Double::long_bits_to_double(12)));
-        assert_equals(-7, &layout.map_to_bin_index(-Double::long_bits_to_double(13)));
-        assert_equals(-104, &layout.map_to_bin_index(-Double::MIN_NORMAL));
-        assert_equals(-2146, &layout.map_to_bin_index(-0.5));
-        assert_equals(-2148, &layout.map_to_bin_index(-1));
-        assert_equals(-4193, &layout.map_to_bin_index(-Double::MAX_VALUE / 2.0));
-        assert_equals(-4195, &layout.map_to_bin_index(-Double::MAX_VALUE));
-        assert_equals(-4196, &layout.map_to_bin_index(-Double::POSITIVE_INFINITY));
-        assert_equals(-4196, &layout.map_to_bin_index(&Double::long_bits_to_double(0xfff0000000000001)));
-        assert_equals(-4197, &layout.map_to_bin_index(&Double::long_bits_to_double(0xfff8000000000000)));
-        assert_equals(-4197, &layout.map_to_bin_index(&Double::long_bits_to_double(0xffffffffffffffff)));
+        assert_eq!(0, &layout.map_to_bin_index(&f64::from_bits(0)));
+        assert_eq!(1, &layout.map_to_bin_index(&f64::from_bits(1)));
+        assert_eq!(2, &layout.map_to_bin_index(&f64::from_bits(2)));
+        assert_eq!(3, &layout.map_to_bin_index(&f64::from_bits(3)));
+        assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(4)));
+        assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(5)));
+        assert_eq!(5, &layout.map_to_bin_index(&f64::from_bits(6)));
+        assert_eq!(5, &layout.map_to_bin_index(&f64::from_bits(7)));
+        assert_eq!(6, &layout.map_to_bin_index(&f64::from_bits(8)));
+        assert_eq!(6, &layout.map_to_bin_index(&f64::from_bits(9)));
+        assert_eq!(6, &layout.map_to_bin_index(&f64::from_bits(10)));
+        assert_eq!(6, &layout.map_to_bin_index(&f64::from_bits(11)));
+        assert_eq!(7, &layout.map_to_bin_index(&f64::from_bits(12)));
+        assert_eq!(7, &layout.map_to_bin_index(&f64::from_bits(13)));
+        assert_eq!(104, &layout.map_to_bin_index(Double::MIN_NORMAL));
+        assert_eq!(2146, &layout.map_to_bin_index(0.5));
+        assert_eq!(2148, &layout.map_to_bin_index(1));
+        assert_eq!(4193, &layout.map_to_bin_index(Double::MAX_VALUE / 2.0));
+        assert_eq!(4195, &layout.map_to_bin_index(Double::MAX_VALUE));
+        assert_eq!(4196, &layout.map_to_bin_index(f64::INFINITY));
+        assert_eq!(4196, &// "smallest" NaN
+        layout.map_to_bin_index(&f64::from_bits(0x7ff0000000000001)));
+        assert_eq!(4197, &// standard NaN
+        layout.map_to_bin_index(&f64::from_bits(0x7ff8000000000000)));
+        assert_eq!(4197, &// "greatest" NaN
+        layout.map_to_bin_index(&f64::from_bits(0x7fffffffffffffff)));
+        assert_eq!(0, &layout.map_to_bin_index(-f64::from_bits(0)));
+        assert_eq!(-1, &layout.map_to_bin_index(-f64::from_bits(1)));
+        assert_eq!(-2, &layout.map_to_bin_index(-f64::from_bits(2)));
+        assert_eq!(-3, &layout.map_to_bin_index(-f64::from_bits(3)));
+        assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(4)));
+        assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(5)));
+        assert_eq!(-5, &layout.map_to_bin_index(-f64::from_bits(6)));
+        assert_eq!(-5, &layout.map_to_bin_index(-f64::from_bits(7)));
+        assert_eq!(-6, &layout.map_to_bin_index(-f64::from_bits(8)));
+        assert_eq!(-6, &layout.map_to_bin_index(-f64::from_bits(9)));
+        assert_eq!(-6, &layout.map_to_bin_index(-f64::from_bits(10)));
+        assert_eq!(-6, &layout.map_to_bin_index(-f64::from_bits(11)));
+        assert_eq!(-7, &layout.map_to_bin_index(-f64::from_bits(12)));
+        assert_eq!(-7, &layout.map_to_bin_index(-f64::from_bits(13)));
+        assert_eq!(-104, &layout.map_to_bin_index(-Double::MIN_NORMAL));
+        assert_eq!(-2146, &layout.map_to_bin_index(-0.5));
+        assert_eq!(-2148, &layout.map_to_bin_index(-1));
+        assert_eq!(-4193, &layout.map_to_bin_index(-Double::MAX_VALUE / 2.0));
+        assert_eq!(-4195, &layout.map_to_bin_index(-Double::MAX_VALUE));
+        assert_eq!(-4196, &layout.map_to_bin_index(-f64::INFINITY));
+        assert_eq!(-4196, &layout.map_to_bin_index(&f64::from_bits(0xfff0000000000001)));
+        assert_eq!(-4197, &layout.map_to_bin_index(&f64::from_bits(0xfff8000000000000)));
+        assert_eq!(-4197, &layout.map_to_bin_index(&f64::from_bits(0xffffffffffffffff)));
     }
 
     #[test]
     pub fn  test_mapping2(&self)   {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(2);
-        assert_equals(0, &layout.map_to_bin_index(&Double::long_bits_to_double(0)));
-        assert_equals(1, &layout.map_to_bin_index(&Double::long_bits_to_double(1)));
-        assert_equals(2, &layout.map_to_bin_index(&Double::long_bits_to_double(2)));
-        assert_equals(3, &layout.map_to_bin_index(&Double::long_bits_to_double(3)));
-        assert_equals(4, &layout.map_to_bin_index(&Double::long_bits_to_double(4)));
-        assert_equals(5, &layout.map_to_bin_index(&Double::long_bits_to_double(5)));
-        assert_equals(6, &layout.map_to_bin_index(&Double::long_bits_to_double(6)));
-        assert_equals(7, &layout.map_to_bin_index(&Double::long_bits_to_double(7)));
-        assert_equals(8, &layout.map_to_bin_index(&Double::long_bits_to_double(8)));
-        assert_equals(8, &layout.map_to_bin_index(&Double::long_bits_to_double(9)));
-        assert_equals(9, &layout.map_to_bin_index(&Double::long_bits_to_double(10)));
-        assert_equals(9, &layout.map_to_bin_index(&Double::long_bits_to_double(11)));
-        assert_equals(10, &layout.map_to_bin_index(&Double::long_bits_to_double(12)));
-        assert_equals(10, &layout.map_to_bin_index(&Double::long_bits_to_double(13)));
-        assert_equals(11, &layout.map_to_bin_index(&Double::long_bits_to_double(14)));
-        assert_equals(11, &layout.map_to_bin_index(&Double::long_bits_to_double(15)));
-        assert_equals(12, &layout.map_to_bin_index(&Double::long_bits_to_double(16)));
-        assert_equals(12, &layout.map_to_bin_index(&Double::long_bits_to_double(17)));
-        assert_equals(12, &layout.map_to_bin_index(&Double::long_bits_to_double(18)));
-        assert_equals(12, &layout.map_to_bin_index(&Double::long_bits_to_double(19)));
-        assert_equals(13, &layout.map_to_bin_index(&Double::long_bits_to_double(20)));
-        assert_equals(204, &layout.map_to_bin_index(Double::MIN_NORMAL));
-        assert_equals(4288, &layout.map_to_bin_index(0.5));
-        assert_equals(4292, &layout.map_to_bin_index(1));
-        assert_equals(8383, &layout.map_to_bin_index(Double::MAX_VALUE / 2.0));
-        assert_equals(8387, &layout.map_to_bin_index(Double::MAX_VALUE));
-        assert_equals(8388, &layout.map_to_bin_index(Double::POSITIVE_INFINITY));
-        assert_equals(8388, &// "smallest" NaN
-        layout.map_to_bin_index(&Double::long_bits_to_double(0x7ff0000000000001)));
-        assert_equals(8390, &// standard NaN
-        layout.map_to_bin_index(&Double::long_bits_to_double(0x7ff8000000000000)));
-        assert_equals(8391, &// "greatest" NaN
-        layout.map_to_bin_index(&Double::long_bits_to_double(0x7fffffffffffffff)));
-        assert_equals(0, &layout.map_to_bin_index(-Double::long_bits_to_double(0)));
-        assert_equals(-1, &layout.map_to_bin_index(-Double::long_bits_to_double(1)));
-        assert_equals(-2, &layout.map_to_bin_index(-Double::long_bits_to_double(2)));
-        assert_equals(-3, &layout.map_to_bin_index(-Double::long_bits_to_double(3)));
-        assert_equals(-4, &layout.map_to_bin_index(-Double::long_bits_to_double(4)));
-        assert_equals(-5, &layout.map_to_bin_index(-Double::long_bits_to_double(5)));
-        assert_equals(-6, &layout.map_to_bin_index(-Double::long_bits_to_double(6)));
-        assert_equals(-7, &layout.map_to_bin_index(-Double::long_bits_to_double(7)));
-        assert_equals(-8, &layout.map_to_bin_index(-Double::long_bits_to_double(8)));
-        assert_equals(-8, &layout.map_to_bin_index(-Double::long_bits_to_double(9)));
-        assert_equals(-9, &layout.map_to_bin_index(-Double::long_bits_to_double(10)));
-        assert_equals(-9, &layout.map_to_bin_index(-Double::long_bits_to_double(11)));
-        assert_equals(-10, &layout.map_to_bin_index(-Double::long_bits_to_double(12)));
-        assert_equals(-10, &layout.map_to_bin_index(-Double::long_bits_to_double(13)));
-        assert_equals(-11, &layout.map_to_bin_index(-Double::long_bits_to_double(14)));
-        assert_equals(-11, &layout.map_to_bin_index(-Double::long_bits_to_double(15)));
-        assert_equals(-12, &layout.map_to_bin_index(-Double::long_bits_to_double(16)));
-        assert_equals(-12, &layout.map_to_bin_index(-Double::long_bits_to_double(17)));
-        assert_equals(-12, &layout.map_to_bin_index(-Double::long_bits_to_double(18)));
-        assert_equals(-12, &layout.map_to_bin_index(-Double::long_bits_to_double(19)));
-        assert_equals(-13, &layout.map_to_bin_index(-Double::long_bits_to_double(20)));
-        assert_equals(-204, &layout.map_to_bin_index(-Double::MIN_NORMAL));
-        assert_equals(-4288, &layout.map_to_bin_index(-0.5));
-        assert_equals(-4292, &layout.map_to_bin_index(-1));
-        assert_equals(-8383, &layout.map_to_bin_index(-Double::MAX_VALUE / 2.0));
-        assert_equals(-8387, &layout.map_to_bin_index(-Double::MAX_VALUE));
-        assert_equals(-8388, &layout.map_to_bin_index(-Double::POSITIVE_INFINITY));
-        assert_equals(-8388, &layout.map_to_bin_index(&Double::long_bits_to_double(0xfff0000000000001)));
-        assert_equals(-8390, &layout.map_to_bin_index(&Double::long_bits_to_double(0xfff8000000000000)));
-        assert_equals(-8391, &layout.map_to_bin_index(&Double::long_bits_to_double(0xffffffffffffffff)));
+        assert_eq!(0, &layout.map_to_bin_index(&f64::from_bits(0)));
+        assert_eq!(1, &layout.map_to_bin_index(&f64::from_bits(1)));
+        assert_eq!(2, &layout.map_to_bin_index(&f64::from_bits(2)));
+        assert_eq!(3, &layout.map_to_bin_index(&f64::from_bits(3)));
+        assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(4)));
+        assert_eq!(5, &layout.map_to_bin_index(&f64::from_bits(5)));
+        assert_eq!(6, &layout.map_to_bin_index(&f64::from_bits(6)));
+        assert_eq!(7, &layout.map_to_bin_index(&f64::from_bits(7)));
+        assert_eq!(8, &layout.map_to_bin_index(&f64::from_bits(8)));
+        assert_eq!(8, &layout.map_to_bin_index(&f64::from_bits(9)));
+        assert_eq!(9, &layout.map_to_bin_index(&f64::from_bits(10)));
+        assert_eq!(9, &layout.map_to_bin_index(&f64::from_bits(11)));
+        assert_eq!(10, &layout.map_to_bin_index(&f64::from_bits(12)));
+        assert_eq!(10, &layout.map_to_bin_index(&f64::from_bits(13)));
+        assert_eq!(11, &layout.map_to_bin_index(&f64::from_bits(14)));
+        assert_eq!(11, &layout.map_to_bin_index(&f64::from_bits(15)));
+        assert_eq!(12, &layout.map_to_bin_index(&f64::from_bits(16)));
+        assert_eq!(12, &layout.map_to_bin_index(&f64::from_bits(17)));
+        assert_eq!(12, &layout.map_to_bin_index(&f64::from_bits(18)));
+        assert_eq!(12, &layout.map_to_bin_index(&f64::from_bits(19)));
+        assert_eq!(13, &layout.map_to_bin_index(&f64::from_bits(20)));
+        assert_eq!(204, &layout.map_to_bin_index(Double::MIN_NORMAL));
+        assert_eq!(4288, &layout.map_to_bin_index(0.5));
+        assert_eq!(4292, &layout.map_to_bin_index(1));
+        assert_eq!(8383, &layout.map_to_bin_index(Double::MAX_VALUE / 2.0));
+        assert_eq!(8387, &layout.map_to_bin_index(Double::MAX_VALUE));
+        assert_eq!(8388, &layout.map_to_bin_index(f64::INFINITY));
+        assert_eq!(8388, &// "smallest" NaN
+        layout.map_to_bin_index(&f64::from_bits(0x7ff0000000000001)));
+        assert_eq!(8390, &// standard NaN
+        layout.map_to_bin_index(&f64::from_bits(0x7ff8000000000000)));
+        assert_eq!(8391, &// "greatest" NaN
+        layout.map_to_bin_index(&f64::from_bits(0x7fffffffffffffff)));
+        assert_eq!(0, &layout.map_to_bin_index(-f64::from_bits(0)));
+        assert_eq!(-1, &layout.map_to_bin_index(-f64::from_bits(1)));
+        assert_eq!(-2, &layout.map_to_bin_index(-f64::from_bits(2)));
+        assert_eq!(-3, &layout.map_to_bin_index(-f64::from_bits(3)));
+        assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(4)));
+        assert_eq!(-5, &layout.map_to_bin_index(-f64::from_bits(5)));
+        assert_eq!(-6, &layout.map_to_bin_index(-f64::from_bits(6)));
+        assert_eq!(-7, &layout.map_to_bin_index(-f64::from_bits(7)));
+        assert_eq!(-8, &layout.map_to_bin_index(-f64::from_bits(8)));
+        assert_eq!(-8, &layout.map_to_bin_index(-f64::from_bits(9)));
+        assert_eq!(-9, &layout.map_to_bin_index(-f64::from_bits(10)));
+        assert_eq!(-9, &layout.map_to_bin_index(-f64::from_bits(11)));
+        assert_eq!(-10, &layout.map_to_bin_index(-f64::from_bits(12)));
+        assert_eq!(-10, &layout.map_to_bin_index(-f64::from_bits(13)));
+        assert_eq!(-11, &layout.map_to_bin_index(-f64::from_bits(14)));
+        assert_eq!(-11, &layout.map_to_bin_index(-f64::from_bits(15)));
+        assert_eq!(-12, &layout.map_to_bin_index(-f64::from_bits(16)));
+        assert_eq!(-12, &layout.map_to_bin_index(-f64::from_bits(17)));
+        assert_eq!(-12, &layout.map_to_bin_index(-f64::from_bits(18)));
+        assert_eq!(-12, &layout.map_to_bin_index(-f64::from_bits(19)));
+        assert_eq!(-13, &layout.map_to_bin_index(-f64::from_bits(20)));
+        assert_eq!(-204, &layout.map_to_bin_index(-Double::MIN_NORMAL));
+        assert_eq!(-4288, &layout.map_to_bin_index(-0.5));
+        assert_eq!(-4292, &layout.map_to_bin_index(-1));
+        assert_eq!(-8383, &layout.map_to_bin_index(-Double::MAX_VALUE / 2.0));
+        assert_eq!(-8387, &layout.map_to_bin_index(-Double::MAX_VALUE));
+        assert_eq!(-8388, &layout.map_to_bin_index(-f64::INFINITY));
+        assert_eq!(-8388, &layout.map_to_bin_index(&f64::from_bits(0xfff0000000000001)));
+        assert_eq!(-8390, &layout.map_to_bin_index(&f64::from_bits(0xfff8000000000000)));
+        assert_eq!(-8391, &layout.map_to_bin_index(&f64::from_bits(0xffffffffffffffff)));
     }
 
     #[test]
@@ -261,8 +261,8 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
                          let mut i: i32 = 0;
                         while i < len {
                             {
-                                 let low: f64 =  if (i > 0.0) { Double::long_bits_to_double(0x3ff0000000000000 | boundaries[i - 1]) } else { 1.0 };
-                                 let high: f64 =  if (i < len - 1.0) { Double::long_bits_to_double(0x3ff0000000000000 | boundaries[i]) } else { 2.0 };
+                                 let low: f64 =  if (i > 0.0) { f64::from_bits(0x3ff0000000000000 | boundaries[i - 1]) } else { 1.0 };
+                                 let high: f64 =  if (i < len - 1.0) { f64::from_bits(0x3ff0000000000000 | boundaries[i]) } else { 2.0 };
                                 assert_that(low).is_less_than_or_equal_to(high);
                                 assert_that(low * relative_error_limit).is_greater_than_or_equal_to(high);
                             }
@@ -280,13 +280,13 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     #[test]
     pub fn  test_hash_code(&self)   {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
-        assert_equals(93, &layout.hash_code());
+        assert_eq!(93, &layout.hash_code());
     }
 
     #[test]
     pub fn  test_to_string(&self)   {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
-        assert_equals("OpenTelemetryExponentialBucketsLayout [precision=3]", &layout.to_string());
+        assert_eq!("OpenTelemetryExponentialBucketsLayout [precision=3]", &layout.to_string());
     }
 
     #[test]
@@ -334,8 +334,8 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
                                     assert_that(low).is_less_than_or_equal_to(high);
                                     assert_that(high * relative_error_limit).is_less_than_or_equal_to(low);
                                 } else {
-                                    assert_equals(0.0, low, 0.0);
-                                    assert_equals(0.0, high, 0.0);
+                                    assert_eq!(0.0, low, 0.0);
+                                    assert_eq!(0.0, high, 0.0);
                                 }
                             }
                             i += 1;
@@ -500,7 +500,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
             return actual.compare_to(&expected) >= 0;
         };
          let initial_guess: i64 = ::calculate_boundary_approximate(len, i);
-        return Algorithms::find_first(&predicate, 0x0000000000000000, 0x0010000000000000, initial_guess);
+        return Algorithms::find_first_guess(&predicate, 0x0000000000000000, 0x0010000000000000, initial_guess);
     }
 
     #[test]

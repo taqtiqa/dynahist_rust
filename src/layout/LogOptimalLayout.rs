@@ -85,7 +85,7 @@ impl LogOptimalLayout {
         return LogOptimalLayout::new(absolute_bin_width_limit, relative_bin_width_limit, underflow_bin_index, overflow_bin_index, factor_normal, factor_subnormal, offset, unsigned_value_bits_normal_limit);
     }
 
-    fn new( absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  underflow_bin_index: i32,  overflow_bin_index: i32,  factor_normal: f64,  factor_subnormal: f64,  offset: f64,  unsigned_value_bits_normal_limit: i64) -> LogOptimalLayout {
+    fn new( absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  underflow_bin_index: usize,  overflow_bin_index: usize,  factor_normal: f64,  factor_subnormal: f64,  offset: f64,  unsigned_value_bits_normal_limit: i64) -> LogOptimalLayout {
         let .absoluteBinWidthLimit = absolute_bin_width_limit;
         let .relativeBinWidthLimit = relative_bin_width_limit;
         let .underflowBinIndex = underflow_bin_index;
@@ -96,16 +96,16 @@ impl LogOptimalLayout {
         let .unsignedValueBitsNormalLimit = unsigned_value_bits_normal_limit;
     }
 
-    fn  calculate_unsigned_value_bits_normal_limit( factor_subnormal: f64,  first_normal_idx: i32) -> i64  {
-        return Algorithms::find_first( l: & -> ::calculate_sub_normal_idx(&Double::long_bits_to_double(l), factor_subnormal) >= first_normal_idx, 0, &Double::double_to_raw_long_bits(Double::POSITIVE_INFINITY), &::calculate_unsigned_value_bits_normal_limit_approximate(factor_subnormal, first_normal_idx));
+    fn  calculate_unsigned_value_bits_normal_limit( factor_subnormal: f64,  first_normal_idx: usize) -> i64  {
+        return Algorithms::find_first_guess( l: & -> ::calculate_sub_normal_idx(&f64::from_bits(l), factor_subnormal) >= first_normal_idx, 0, &Double::double_to_raw_long_bits(f64::INFINITY), &::calculate_unsigned_value_bits_normal_limit_approximate(factor_subnormal, first_normal_idx));
     }
 
     fn  calculate_unsigned_value_bits_normal_limit_approximate( factor_subnormal: f64,  first_normal_idx: i32) -> i64  {
         return Algorithms::map_double_to_long(first_normal_idx / factor_subnormal);
     }
 
-    fn  calculate_first_normal_index( relative_bin_width_limit: f64) -> i32  {
-        return StrictMath::ceil(1.0 / relative_bin_width_limit) as i32;
+    fn  calculate_first_normal_index( relative_bin_width_limit: f64) -> usize  {
+        return StrictMath::ceil(1.0 / relative_bin_width_limit) as usize;
     }
 
     fn  calculate_factor_normal( relative_bin_width_limit: f64) -> f64  {
@@ -116,16 +116,16 @@ impl LogOptimalLayout {
         return 1.0 / absolute_bin_width_limit;
     }
 
-    fn  calculate_offset( unsigned_value_bits_normal_limit: i64,  factor_normal: f64,  first_normal_idx: i32) -> f64  {
-         let unsigned_normal_limit: f64 = Double::long_bits_to_double(unsigned_value_bits_normal_limit);
-        return Algorithms::map_long_to_double(&Algorithms::find_first( l: & -> {
+    fn  calculate_offset( unsigned_value_bits_normal_limit: i64,  factor_normal: f64,  first_normal_idx: usize) -> f64  {
+         let unsigned_normal_limit: f64 = f64::from_bits(unsigned_value_bits_normal_limit);
+        return Algorithms::map_long_to_double(&Algorithms::find_first_guess( l: & -> {
              let offset_candidate: f64 = Algorithms::map_long_to_double(l);
              let bin_index: i32 = ::calculate_normal_idx(unsigned_normal_limit, factor_normal, offset_candidate);
             return bin_index >= first_normal_idx;
         }, Algorithms::NEGATIVE_INFINITY_MAPPED_TO_LONG, Algorithms::POSITIVE_INFINITY_MAPPED_TO_LONG, &Algorithms::map_double_to_long(&::calculate_offset_approximate(unsigned_normal_limit, factor_normal, first_normal_idx))));
     }
 
-    fn  calculate_offset_approximate( unsigned_normal_limit: f64,  factor_normal: f64,  first_normal_idx: i32) -> f64  {
+    fn  calculate_offset_approximate( unsigned_normal_limit: f64,  factor_normal: f64,  first_normal_idx: usize) -> f64  {
         return first_normal_idx - factor_normal * ::map_to_bin_index_helper(unsigned_normal_limit);
     }
 
@@ -138,12 +138,12 @@ impl LogOptimalLayout {
         return Math::log(unsigned_value) - LOG_MIN_VALUE;
     }
 
-    fn  calculate_normal_idx( unsigned_value: f64,  factor_normal: f64,  offset: f64) -> i32  {
-        return (factor_normal * ::map_to_bin_index_helper(unsigned_value) + offset) as i32;
+    fn  calculate_normal_idx( unsigned_value: f64,  factor_normal: f64,  offset: f64) -> usize  {
+        return (factor_normal * ::map_to_bin_index_helper(unsigned_value) + offset) as usize;
     }
 
     fn  calculate_sub_normal_idx( unsigned_value: f64,  factor_subnormal: f64) -> i32  {
-        return (factor_subnormal * unsigned_value) as i32;
+        return (factor_subnormal * unsigned_value) as usize;
     }
 
     // Unfortunately this mapping is not platform-independent. It would be independent if the strictfp
@@ -151,10 +151,10 @@ impl LogOptimalLayout {
     // https://bugs.openjdk.java.net/browse/JDK-8136414) of strictfp, which is hopefully fixed in Java
     // 15, we have omitted strictfp here in the meantime.
     fn  map_to_bin_index( value: f64,  factor_normal: f64,  factor_subnormal: f64,  unsigned_value_bits_normal_limit: i64,  offset: f64) -> i32  {
-         let value_bits: i64 = Double::double_to_raw_long_bits(value);
+         let value_bits: i64 = value.to_bits();
          let unsigned_value_bits: i64 = value_bits & 0x7fffffffffffffff;
          let mut idx: i32;
-         let unsigned_value: f64 = Double::long_bits_to_double(unsigned_value_bits);
+         let unsigned_value: f64 = f64::from_bits(unsigned_value_bits);
         if unsigned_value_bits >= 0x7ff0000000000000 {
             idx = 0x7fffffff;
         } else if unsigned_value_bits >= unsigned_value_bits_normal_limit {
@@ -165,15 +165,15 @@ impl LogOptimalLayout {
         return  if (value_bits >= 0) { idx } else { ~idx };
     }
 
-    pub fn  map_to_bin_index(&self,  value: f64) -> i32  {
+    pub fn  map_to_bin_index(&self,  value: f64) -> usize  {
         return ::map_to_bin_index(value, self.factor_normal, self.factor_subnormal, self.unsigned_value_bits_normal_limit, self.offset);
     }
 
-    pub fn  get_underflow_bin_index(&self) -> i32  {
+    pub fn  get_underflow_bin_index(&self) -> usize  {
         return self.underflow_bin_index;
     }
 
-    pub fn  get_overflow_bin_index(&self) -> i32  {
+    pub fn  get_overflow_bin_index(&self) -> usize  {
         return self.overflow_bin_index;
     }
 
@@ -248,7 +248,7 @@ impl LogOptimalLayout {
 
     fn  get_bin_lower_bound_approximation_helper(&self,  idx: i32) -> f64  {
          let x: f64 = idx * self.absolute_bin_width_limit;
-        if x < Double::long_bits_to_double(self.unsigned_value_bits_normal_limit) {
+        if x < f64::from_bits(self.unsigned_value_bits_normal_limit) {
             return x;
         } else {
              let s: f64 = (idx - self.offset) / self.factor_normal + LOG_MIN_VALUE;
@@ -260,4 +260,3 @@ impl LogOptimalLayout {
         return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", get_class().get_simple_name(), self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);
     }
 }
-

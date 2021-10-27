@@ -153,23 +153,23 @@ impl OpenTelemetryExponentialBucketsLayout {
         return (exponent << precision) + k + index_offset;
     }
 
-    pub fn  map_to_bin_index(&self,  value: f64) -> i32  {
-         let value_bits: i64 = Double::double_to_raw_long_bits(value);
+    pub fn  map_to_bin_index(&self,  value: f64) -> usize  {
+         let value_bits: i64 = value.to_bits();
          let index: i32 = ::map_to_bin_index_helper(value_bits, &self.indices, &self.boundaries, self.precision, self.first_normal_value_bits, self.index_offset);
         return  if (value_bits >= 0) { index } else { -index };
     }
 
-    pub fn  get_underflow_bin_index(&self) -> i32  {
+    pub fn  get_underflow_bin_index(&self) -> usize  {
         return self.underflow_bin_index;
     }
 
-    pub fn  get_overflow_bin_index(&self) -> i32  {
+    pub fn  get_overflow_bin_index(&self) -> usize  {
         return self.overflow_bin_index;
     }
 
-    fn  get_bin_lower_bound_approximation_helper(&self,  abs_bin_index: i32) -> f64  {
+    fn  get_bin_lower_bound_approximation_helper(&self,  abs_bin_index: usize) -> f64  {
         if abs_bin_index < self.first_normal_value_bits {
-            return Double::long_bits_to_double(abs_bin_index as i64);
+            return f64::from_bits(abs_bin_index as i64);
         } else {
              let k: i32 = (abs_bin_index - self.index_offset) & (~(0xFFFFFFFF << self.precision));
              let mut exponent: i32 = (abs_bin_index - self.index_offset) >> self.precision;
@@ -181,11 +181,11 @@ impl OpenTelemetryExponentialBucketsLayout {
                 mantissa >>= /* >>>= */ shift;
                 exponent = 0;
             }
-            return Double::long_bits_to_double(mantissa | ((exponent as i64) << 52));
+            return f64::from_bits(mantissa | ((exponent as i64) << 52));
         }
     }
 
-    pub fn  get_bin_lower_bound_approximation(&self,  bin_index: i32) -> f64  {
+    pub fn  get_bin_lower_bound_approximation(&self,  bin_index: usize) -> f64  {
         if bin_index == 0 {
             return -0.0;
         } else if bin_index > 0 {
@@ -228,4 +228,3 @@ impl OpenTelemetryExponentialBucketsLayout {
         return Ok(OpenTelemetryExponentialBucketsLayout::create(tmp_precision));
     }
 }
-

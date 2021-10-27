@@ -77,7 +77,7 @@ enum ValueEstimatorImpls implements ValueEstimator {
     MID_POINT() {
 
         pub fn  get_estimate_from_bin(&self,  bin: &Bin,  rank: i64) -> f64  {
-            return Math::max(&bin.get_lower_bound(), &Math::min(&bin.get_upper_bound(), (bin.get_lower_bound() + bin.get_upper_bound()) * 0.5));
+            return std::cmp::max(&bin.get_lower_bound(), &std::cmp::min(&bin.get_upper_bound(), (bin.get_lower_bound() + bin.get_upper_bound()) * 0.5));
         }
     }
     ;

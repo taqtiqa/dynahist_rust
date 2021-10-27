@@ -48,28 +48,28 @@ impl LayoutSerializationTest {
          let deserialized_log_optimal_layout: Layout = SerializationTestUtil::test_serialization(log_optimal_layout, Layout::writeWithTypeInfo, Layout::readWithTypeInfo, "70C0EF16C3809948003F847AE147AE147B3FA999999999999AC6018603");
          let deserialized_otel_exp_bucket_layout: Layout = SerializationTestUtil::test_serialization(otel_exp_bucket_layout, Layout::writeWithTypeInfo, Layout::readWithTypeInfo, "F6E717A16F0A6A4A0006");
          let deserialized_custom_layout: Layout = SerializationTestUtil::test_serialization(custom_layout, Layout::writeWithTypeInfo, Layout::readWithTypeInfo, "7F862C3808DF6FCD0004BFF00000000000003FF000000000000040000000000000004008000000000000");
-        assert_equals(log_linear_layout, deserialized_log_linear_layout);
-        assert_equals(log_quadratic_layout, deserialized_log_quadratic_layout);
-        assert_equals(log_optimal_layout, deserialized_log_optimal_layout);
-        assert_equals(otel_exp_bucket_layout, deserialized_otel_exp_bucket_layout);
-        assert_equals(custom_layout, deserialized_custom_layout);
+        assert_eq!(log_linear_layout, deserialized_log_linear_layout);
+        assert_eq!(log_quadratic_layout, deserialized_log_quadratic_layout);
+        assert_eq!(log_optimal_layout, deserialized_log_optimal_layout);
+        assert_eq!(otel_exp_bucket_layout, deserialized_otel_exp_bucket_layout);
+        assert_eq!(custom_layout, deserialized_custom_layout);
     }
 
     #[derive(Layout)]
     struct BaseTestLayout {
     }
-    
+
     impl BaseTestLayout {
 
-        pub fn  map_to_bin_index(&self,  value: f64) -> i32  {
+        pub fn  map_to_bin_index(&self,  value: f64) -> usize  {
             throw UnsupportedOperationException::new();
         }
 
-        pub fn  get_underflow_bin_index(&self) -> i32  {
+        pub fn  get_underflow_bin_index(&self) -> usize  {
             throw UnsupportedOperationException::new();
         }
 
-        pub fn  get_overflow_bin_index(&self) -> i32  {
+        pub fn  get_overflow_bin_index(&self) -> usize  {
             throw UnsupportedOperationException::new();
         }
     }
@@ -80,14 +80,14 @@ impl LayoutSerializationTest {
         struct TestLayout1 {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout1 {
         }
 
         struct TestLayout2 {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout2 {
         }
 
@@ -111,7 +111,7 @@ impl LayoutSerializationTest {
         struct TestLayout {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout {
         }
 
@@ -132,14 +132,14 @@ impl LayoutSerializationTest {
         struct TestLayout1 {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout1 {
         }
 
         struct TestLayout2 {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout2 {
         }
 
@@ -160,7 +160,7 @@ impl LayoutSerializationTest {
         struct TestLayout {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout {
         }
 
@@ -181,7 +181,7 @@ impl LayoutSerializationTest {
         struct TestLayout {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout {
         }
 
@@ -203,14 +203,14 @@ impl LayoutSerializationTest {
         struct TestLayout1 {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout1 {
         }
 
         struct TestLayout2 {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout2 {
         }
 
@@ -232,7 +232,7 @@ impl LayoutSerializationTest {
         struct TestLayout {
             super: BaseTestLayout;
         }
-        
+
         impl TestLayout {
         }
 
@@ -246,4 +246,3 @@ impl LayoutSerializationTest {
         assert_throws(IOException.class, () -> SerializationTestUtil::from_byte_array(Layout::readWithTypeInfo, &data));
     }
 }
-

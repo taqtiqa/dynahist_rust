@@ -155,13 +155,13 @@ impl DynamicHistogram {
          let is_expansion_necessary: bool = false;
         if self.counts.len() > 0 {
             if min_absolute_index < current_min_absolute_index {
-                new_min_absolute_index = Math::max(get_layout().get_underflow_bin_index() + 1, &Math::min(min_absolute_index, Math::ceil(current_min_absolute_index - current_num_counters * GROW_FACTOR) as i32));
+                new_min_absolute_index = std::cmp::max(get_layout().get_underflow_bin_index() + 1, &std::cmp::min(min_absolute_index, Math::ceil(current_min_absolute_index - current_num_counters * GROW_FACTOR) as i32));
                 is_expansion_necessary = true;
             } else {
                 new_min_absolute_index = current_min_absolute_index;
             }
             if max_absolute_index > current_max_absolute_index {
-                new_max_absolute_index = Math::min(get_layout().get_overflow_bin_index() - 1, &Math::max(max_absolute_index, Math::ceil(current_max_absolute_index + current_num_counters * GROW_FACTOR) as i32));
+                new_max_absolute_index = std::cmp::min(get_layout().get_overflow_bin_index() - 1, &std::cmp::max(max_absolute_index, Math::ceil(current_max_absolute_index + current_num_counters * GROW_FACTOR) as i32));
                 is_expansion_necessary = true;
             } else {
                 new_max_absolute_index = current_max_absolute_index;
@@ -228,7 +228,7 @@ impl DynamicHistogram {
                 {
                      let desired_mode: i8;
                     if histogram instanceof DynamicHistogram {
-                        desired_mode = Math::max(self.mode, (histogram as DynamicHistogram)::mode) as i8;
+                        desired_mode = std::cmp::max(self.mode, (histogram as DynamicHistogram)::mode) as i8;
                     } else {
                         desired_mode = self.mode;
                     }
@@ -275,4 +275,3 @@ impl DynamicHistogram {
         return ::get_count(&self.counts, bin_index - self.index_offset, self.mode);
     }
 }
-
