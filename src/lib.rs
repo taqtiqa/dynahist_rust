@@ -1,7 +1,13 @@
 // Enumerated errors
-pub mod errors;
+mod errors;
 
-// Utility traits and structs for testing and building Histograms
-pub mod utilities;
+// Utility traits and structs for testing and building Histograms.
+mod utilities;
 
-pub mod layout;
+// Histogram bucket traits and structs.
+mod bins;
+
+// Histogram bucket layouts;
+mod layouts;
+
+pub mod histogram;

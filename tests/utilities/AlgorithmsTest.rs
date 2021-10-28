@@ -1,88 +1,78 @@
-/*
- * Copyright 2020-2021 Dynatrace LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-// package com::dynatrace::dynahist::util;
+// Copyright 2021 Mark van de Vyver
+// Copyright 2020-2021 Dynatrace LLC
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 pub struct AlgorithmsTest {
 }
 
-impl AlgorithmsTest {
+impl Preconditions for AlgorithmsTest { }
+
+impl Algorithms for AlgorithmsTest {
 
     #[test]
-    pub fn  test_interpolate(&self)   {
-        assert_eq!(4.5, &Algorithms::interpolate(3.5, 3, 4, 4, 5), 0.0);
-        assert_eq!(4.5, &Algorithms::interpolate(3, 3, 4, 3, 5), 0.0);
-        assert_eq!(4.5, &Algorithms::interpolate(2, 3, 4, 3, 5), 0.0);
-        assert_eq!(4, &Algorithms::interpolate(2, 3, 4, 4, 5), 0.0);
-        assert_eq!(5, &Algorithms::interpolate(6, 3, 4, 4, 5), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(2, 3, f64::INFINITY, 4, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(3.5, 3, f64::INFINITY, 4, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(5, 3, f64::INFINITY, 4, f64::INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(2, 3, f64::NEG_INFINITY, 4, f64::INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(3.5, 3, f64::NEG_INFINITY, 4, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(5, 3, f64::NEG_INFINITY, 4, f64::INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(2, 3, f64::NEG_INFINITY, 4, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(3.5, 3, f64::NEG_INFINITY, 4, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(5, 3, f64::NEG_INFINITY, 4, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(2, 3, f64::INFINITY, 4, f64::NEG_INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(3.5, 3, f64::INFINITY, 4, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(5, 3, f64::INFINITY, 4, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(-1, 0, f64::INFINITY, 0, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(0, 0, f64::INFINITY, 0, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(1, 0, f64::INFINITY, 0, f64::INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(-1, 0, f64::NEG_INFINITY, 0, f64::INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(0, 0, f64::NEG_INFINITY, 0, f64::INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(1, 0, f64::NEG_INFINITY, 0, f64::INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(-1, 0, f64::INFINITY, 0, f64::NEG_INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(0, 0, f64::INFINITY, 0, f64::NEG_INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(1, 0, f64::INFINITY, 0, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(-1, 0, f64::NEG_INFINITY, 0, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(0, 0, f64::NEG_INFINITY, 0, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(1, 0, f64::NEG_INFINITY, 0, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(-1, 0, f64::INFINITY, 0, 0), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(0, 0, f64::INFINITY, 0, 0), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(1, 0, f64::INFINITY, 0, 0), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(-1, 0, f64::NEG_INFINITY, 0, 0), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(0, 0, f64::NEG_INFINITY, 0, 0), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(1, 0, f64::NEG_INFINITY, 0, 0), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(-1, 0, 0, 0, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(0, 0, 0, 0, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(1, 0, 0, 0, f64::INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(-1, 0, 0, 0, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(0, 0, 0, 0, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(1, 0, 0, 0, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(-1, -1, f64::INFINITY, 1, 0), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(0, -1, f64::INFINITY, 1, 0), 0.0);
-        assert_eq!(0, &Algorithms::interpolate(1, -1, f64::INFINITY, 1, 0), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(-1, -1, f64::NEG_INFINITY, 1, 0), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(0, -1, f64::NEG_INFINITY, 1, 0), 0.0);
-        assert_eq!(0, &Algorithms::interpolate(1, -1, f64::NEG_INFINITY, 1, 0), 0.0);
-        assert_eq!(0, &Algorithms::interpolate(-1, -1, 0, 1, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(0, -1, 0, 1, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(1, -1, 0, 1, f64::INFINITY), 0.0);
-        assert_eq!(0, &Algorithms::interpolate(-1, -1, 0, 1, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(0, -1, 0, 1, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(1, -1, 0, 1, f64::NEG_INFINITY), 0.0);
-        assert_that(&Algorithms::interpolate(&Math::next_up(1e30), 1e30, 1e30, 1e300, 1e300)).is_close_to(&Math::next_up(1e30), &Percentage::with_percentage(1e-6));
-        assert_that(&Algorithms::interpolate(&Math::next_up(1e30), 1e300, 1e300, 1e30, 1e30)).is_close_to(&Math::next_up(1e30), &Percentage::with_percentage(1e-6));
-        assert_that(&Algorithms::interpolate(&Math::next_down(-1e30), -1e30, -1e30, -1e300, -1e300)).is_close_to(&Math::next_down(-1e30), &Percentage::with_percentage(1e-6));
-        assert_that(&Algorithms::interpolate(&Math::next_down(-1e30), -1e300, -1e300, -1e30, -1e30)).is_close_to(&Math::next_down(-1e30), &Percentage::with_percentage(1e-6));
+    fn  test_interpolate(&self)   {
+        assert_eq!(4.5, interpolate(3.5, 3, 4, 4, 5), 0.0);
+        assert_eq!(4.5, interpolate(3, 3, 4, 3, 5), 0.0);
+        assert_eq!(4.5, interpolate(2, 3, 4, 3, 5), 0.0);
+        assert_eq!(4, interpolate(2, 3, 4, 4, 5), 0.0);
+        assert_eq!(5, interpolate(6, 3, 4, 4, 5), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(2, 3, f64::INFINITY, 4, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(3.5, 3, f64::INFINITY, 4, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(5, 3, f64::INFINITY, 4, f64::INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(2, 3, f64::NEG_INFINITY, 4, f64::INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(3.5, 3, f64::NEG_INFINITY, 4, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(5, 3, f64::NEG_INFINITY, 4, f64::INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(2, 3, f64::NEG_INFINITY, 4, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(3.5, 3, f64::NEG_INFINITY, 4, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(5, 3, f64::NEG_INFINITY, 4, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(2, 3, f64::INFINITY, 4, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(3.5, 3, f64::INFINITY, 4, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(5, 3, f64::INFINITY, 4, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(-1, 0, f64::INFINITY, 0, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(0, 0, f64::INFINITY, 0, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(1, 0, f64::INFINITY, 0, f64::INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(-1, 0, f64::NEG_INFINITY, 0, f64::INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(0, 0, f64::NEG_INFINITY, 0, f64::INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(1, 0, f64::NEG_INFINITY, 0, f64::INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(-1, 0, f64::INFINITY, 0, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(0, 0, f64::INFINITY, 0, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(1, 0, f64::INFINITY, 0, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(-1, 0, f64::NEG_INFINITY, 0, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(0, 0, f64::NEG_INFINITY, 0, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(1, 0, f64::NEG_INFINITY, 0, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(-1, 0, f64::INFINITY, 0, 0), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(0, 0, f64::INFINITY, 0, 0), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(1, 0, f64::INFINITY, 0, 0), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(-1, 0, f64::NEG_INFINITY, 0, 0), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(0, 0, f64::NEG_INFINITY, 0, 0), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(1, 0, f64::NEG_INFINITY, 0, 0), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(-1, 0, 0, 0, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(0, 0, 0, 0, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(1, 0, 0, 0, f64::INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(-1, 0, 0, 0, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(0, 0, 0, 0, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(1, 0, 0, 0, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(-1, -1, f64::INFINITY, 1, 0), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(0, -1, f64::INFINITY, 1, 0), 0.0);
+        assert_eq!(0, interpolate(1, -1, f64::INFINITY, 1, 0), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(-1, -1, f64::NEG_INFINITY, 1, 0), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(0, -1, f64::NEG_INFINITY, 1, 0), 0.0);
+        assert_eq!(0, interpolate(1, -1, f64::NEG_INFINITY, 1, 0), 0.0);
+        assert_eq!(0, interpolate(-1, -1, 0, 1, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(0, -1, 0, 1, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(1, -1, 0, 1, f64::INFINITY), 0.0);
+        assert_eq!(0, interpolate(-1, -1, 0, 1, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(0, -1, 0, 1, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(1, -1, 0, 1, f64::NEG_INFINITY), 0.0);
+        assert_that(interpolate(next_up(1e30), 1e30, 1e30, 1e300, 1e300)).is_close_to(&Math::next_up(1e30), &Percentage::with_percentage(1e-6));
+        assert_that(interpolate(&Math::next_up(1e30), 1e300, 1e300, 1e30, 1e30)).is_close_to(&Math::next_up(1e30), &Percentage::with_percentage(1e-6));
+        assert_that(interpolate(&Math::next_down(-1e30), -1e30, -1e30, -1e300, -1e300)).is_close_to(&Math::next_down(-1e30), &Percentage::with_percentage(1e-6));
+        assert_that(interpolate(&Math::next_down(-1e30), -1e300, -1e300, -1e30, -1e30)).is_close_to(&Math::next_down(-1e30), &Percentage::with_percentage(1e-6));
     }
 
     #[test]
-    pub fn  test_interpolate_symmetry(&self)   {
+    fn  test_interpolate_symmetry(&self)   {
          let random: Random = Random::new(0);
          let num_test_cycles: i32 = 1000;
          {
@@ -108,7 +98,7 @@ impl AlgorithmsTest {
     }
 
     #[test]
-    pub fn  test_interpolate_monotonicity(&self)   {
+    fn test_interpolate_monotonicity(&self)   {
          let random: Random = Random::new(0);
          let num_test_cycles: i32 = 1000;
          {
@@ -141,47 +131,47 @@ impl AlgorithmsTest {
     }
 
     #[test]
-    pub fn  test_interpolate_na_n(&self)   {
-        assert_eq!(Double::NaN, &Algorithms::interpolate(Double::NaN, 3, 4, 4, 5), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(3.5, Double::NaN, 4, 4, 5), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(3.5, 3, 4, Double::NaN, 5), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(3.5, f64::NEG_INFINITY, 4, f64::INFINITY, 5), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(3.5, 2, f64::NEG_INFINITY, 4, f64::INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(3.5, f64::NEG_INFINITY, 3, f64::INFINITY, 4), 0.0);
-        assert_eq!(3, &Algorithms::interpolate(3, f64::NEG_INFINITY, 3, f64::INFINITY, 3), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(0, f64::NEG_INFINITY, 0, f64::INFINITY, 1), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(0, f64::NEG_INFINITY, 0, f64::INFINITY, -1), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(0, f64::NEG_INFINITY, 1, f64::INFINITY, 0), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(0, f64::NEG_INFINITY, -1, f64::INFINITY, 0), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(0, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(1, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(1.5, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(2, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(3, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(0, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::INFINITY, &Algorithms::interpolate(1, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::interpolate(1.5, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(2, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
-        assert_eq!(f64::NEG_INFINITY, &Algorithms::interpolate(3, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
+    fn  test_interpolate_na_n(&self)   {
+        assert_eq!(f64::NAN, interpolate(f64::NAN, 3, 4, 4, 5), 0.0);
+        assert_eq!(f64::NAN, interpolate(3.5, f64::NAN, 4, 4, 5), 0.0);
+        assert_eq!(f64::NAN, interpolate(3.5, 3, 4, f64::NAN, 5), 0.0);
+        assert_eq!(f64::NAN, interpolate(3.5, f64::NEG_INFINITY, 4, f64::INFINITY, 5), 0.0);
+        assert_eq!(f64::NAN, interpolate(3.5, 2, f64::NEG_INFINITY, 4, f64::INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(3.5, f64::NEG_INFINITY, 3, f64::INFINITY, 4), 0.0);
+        assert_eq!(3, interpolate(3, f64::NEG_INFINITY, 3, f64::INFINITY, 3), 0.0);
+        assert_eq!(f64::NAN, interpolate(0, f64::NEG_INFINITY, 0, f64::INFINITY, 1), 0.0);
+        assert_eq!(f64::NAN, interpolate(0, f64::NEG_INFINITY, 0, f64::INFINITY, -1), 0.0);
+        assert_eq!(f64::NAN, interpolate(0, f64::NEG_INFINITY, 1, f64::INFINITY, 0), 0.0);
+        assert_eq!(f64::NAN, interpolate(0, f64::NEG_INFINITY, -1, f64::INFINITY, 0), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(0, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(1, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(1.5, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(2, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(3, 1, f64::NEG_INFINITY, 2, f64::INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(0, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::INFINITY, interpolate(1, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NAN, interpolate(1.5, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(2, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
+        assert_eq!(f64::NEG_INFINITY, interpolate(3, 1, f64::INFINITY, 2, f64::NEG_INFINITY), 0.0);
     }
 
     #[test]
-    pub fn  test_calculate_midpoint(&self)   {
-        assert_eq!(-1, &Algorithms::calculate_midpoint(Long::MIN_VALUE, Long::MAX_VALUE));
-        assert_eq!(-1, &Algorithms::calculate_midpoint(Long::MIN_VALUE, Long::MAX_VALUE - 1));
-        assert_eq!(-2, &Algorithms::calculate_midpoint(Long::MIN_VALUE, Long::MAX_VALUE - 2));
-        assert_eq!(-2, &Algorithms::calculate_midpoint(Long::MIN_VALUE, Long::MAX_VALUE - 3));
-        assert_eq!(0, &Algorithms::calculate_midpoint(Long::MIN_VALUE + 1, Long::MAX_VALUE));
-        assert_eq!(0, &Algorithms::calculate_midpoint(Long::MIN_VALUE + 2, Long::MAX_VALUE));
-        assert_eq!(Long::MAX_VALUE, &Algorithms::calculate_midpoint(Long::MAX_VALUE, Long::MAX_VALUE));
-        assert_eq!(Long::MAX_VALUE - 1, &Algorithms::calculate_midpoint(Long::MAX_VALUE - 1, Long::MAX_VALUE));
-        assert_eq!(Long::MAX_VALUE - 1, &Algorithms::calculate_midpoint(Long::MAX_VALUE - 2, Long::MAX_VALUE));
-        assert_eq!(Long::MIN_VALUE, &Algorithms::calculate_midpoint(Long::MIN_VALUE, Long::MIN_VALUE));
-        assert_eq!(Long::MIN_VALUE, &Algorithms::calculate_midpoint(Long::MIN_VALUE + 1, Long::MIN_VALUE));
-        assert_eq!(Long::MIN_VALUE + 1, &Algorithms::calculate_midpoint(Long::MIN_VALUE + 2, Long::MIN_VALUE));
-        assert_eq!(Long::MIN_VALUE + 1, &Algorithms::calculate_midpoint(Long::MIN_VALUE + 3, Long::MIN_VALUE));
-        assert_eq!(Long::MIN_VALUE / 2, &Algorithms::calculate_midpoint(0, Long::MIN_VALUE));
-        assert_eq!(Long::MAX_VALUE / 2, &Algorithms::calculate_midpoint(0, Long::MAX_VALUE));
+    fn test_calculate_midpoint(&self)   {
+        assert_eq!(-1, &Algorithms::calculate_midpoint(i64::MIN, i64::MAX));
+        assert_eq!(-1, &Algorithms::calculate_midpoint(i64::MIN, i64::MAX - 1));
+        assert_eq!(-2, &Algorithms::calculate_midpoint(i64::MIN, i64::MAX - 2));
+        assert_eq!(-2, &Algorithms::calculate_midpoint(i64::MIN, i64::MAX - 3));
+        assert_eq!(0, &Algorithms::calculate_midpoint(i64::MIN + 1, i64::MAX));
+        assert_eq!(0, &Algorithms::calculate_midpoint(i64::MIN + 2, i64::MAX));
+        assert_eq!(i64::MAX, &Algorithms::calculate_midpoint(i64::MAX, i64::MAX));
+        assert_eq!(i64::MAX - 1, &Algorithms::calculate_midpoint(i64::MAX - 1, i64::MAX));
+        assert_eq!(i64::MAX - 1, &Algorithms::calculate_midpoint(i64::MAX - 2, i64::MAX));
+        assert_eq!(i64::MIN, &Algorithms::calculate_midpoint(i64::MIN, i64::MIN));
+        assert_eq!(i64::MIN, &Algorithms::calculate_midpoint(i64::MIN + 1, i64::MIN));
+        assert_eq!(i64::MIN + 1, &Algorithms::calculate_midpoint(i64::MIN + 2, i64::MIN));
+        assert_eq!(i64::MIN + 1, &Algorithms::calculate_midpoint(i64::MIN + 3, i64::MIN));
+        assert_eq!(i64::MIN / 2, &Algorithms::calculate_midpoint(0, i64::MIN));
+        assert_eq!(i64::MAX / 2, &Algorithms::calculate_midpoint(0, i64::MAX));
         assert_eq!(-5, &Algorithms::calculate_midpoint(-4, -6));
         assert_eq!(-6, &Algorithms::calculate_midpoint(-4, -7));
         assert_eq!(-6, &Algorithms::calculate_midpoint(-5, -7));
@@ -196,38 +186,38 @@ impl AlgorithmsTest {
     }
 
     #[test]
-    pub fn  test_map_double_to_long(&self)   {
+    fn test_map_double_to_long(&self)   {
         assert_eq!(0, &Algorithms::map_double_to_long(0));
-        assert_eq!(1, &Algorithms::map_double_to_long(Double::MIN_VALUE));
-        assert_eq!(0x7fefffffffffffff, &Algorithms::map_double_to_long(Double::MAX_VALUE));
+        assert_eq!(1, &Algorithms::map_double_to_long(f64::MIN));
+        assert_eq!(0x7fefffffffffffff, &Algorithms::map_double_to_long(f64::MAX));
         assert_eq!(0x7ff0000000000000, &Algorithms::map_double_to_long(f64::INFINITY));
         assert_eq!(-1, &Algorithms::map_double_to_long(-0.0));
-        assert_eq!(-2, &Algorithms::map_double_to_long(-Double::MIN_VALUE));
-        assert_eq!(0x8010000000000000, &Algorithms::map_double_to_long(-Double::MAX_VALUE));
+        assert_eq!(-2, &Algorithms::map_double_to_long(-f64::MIN));
+        assert_eq!(0x8010000000000000, &Algorithms::map_double_to_long(-f64::MAX));
         assert_eq!(0x800fffffffffffff, &Algorithms::map_double_to_long(f64::NEG_INFINITY));
-        assert_eq!(0x7ff8000000000000, &Algorithms::map_double_to_long(Double::NaN));
+        assert_eq!(0x7ff8000000000000, &Algorithms::map_double_to_long(f64::NAN));
     }
 
     #[test]
-    pub fn  test_long_to_double(&self)   {
+    fn test_long_to_double(&self)   {
         assert_eq!(0, &Algorithms::map_long_to_double(0), 0.0);
-        assert_eq!(Double::MIN_VALUE, &Algorithms::map_long_to_double(1), 0.0);
-        assert_eq!(Double::MAX_VALUE, &Algorithms::map_long_to_double(0x7fefffffffffffff), 0.0);
+        assert_eq!(f64::MIN, &Algorithms::map_long_to_double(1), 0.0);
+        assert_eq!(f64::MAX, &Algorithms::map_long_to_double(0x7fefffffffffffff), 0.0);
         assert_eq!(f64::INFINITY, &Algorithms::map_long_to_double(0x7ff0000000000000), 0.0);
         assert_eq!(-0.0, &Algorithms::map_long_to_double(-1), 0.0);
-        assert_eq!(-Double::MIN_VALUE, &Algorithms::map_long_to_double(-2), 0.0);
-        assert_eq!(-Double::MAX_VALUE, &Algorithms::map_long_to_double(-1 - 0x7fefffffffffffff), 0.0);
+        assert_eq!(-f64::MIN, &Algorithms::map_long_to_double(-2), 0.0);
+        assert_eq!(-f64::MAX, &Algorithms::map_long_to_double(-1 - 0x7fefffffffffffff), 0.0);
         assert_eq!(f64::NEG_INFINITY, &Algorithms::map_long_to_double(-1 - 0x7ff0000000000000), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::map_long_to_double(0x7ff8000000000000), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::map_long_to_double(Long::MAX_VALUE), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::map_long_to_double(0x7ff0000000000000 + 1), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::map_long_to_double(0x800fffffffffffff - 1), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::map_long_to_double(-2 - 0x7ff0000000000000), 0.0);
-        assert_eq!(Double::NaN, &Algorithms::map_long_to_double(Long::MIN_VALUE), 0.0);
+        assert_eq!(f64::NAN, &Algorithms::map_long_to_double(0x7ff8000000000000), 0.0);
+        assert_eq!(f64::NAN, &Algorithms::map_long_to_double(i64::MAX), 0.0);
+        assert_eq!(f64::NAN, &Algorithms::map_long_to_double(0x7ff0000000000000 + 1), 0.0);
+        assert_eq!(f64::NAN, &Algorithms::map_long_to_double(0x800fffffffffffff - 1), 0.0);
+        assert_eq!(f64::NAN, &Algorithms::map_long_to_double(-2 - 0x7ff0000000000000), 0.0);
+        assert_eq!(f64::NAN, &Algorithms::map_long_to_double(i64::MIN), 0.0);
     }
 
     #[test]
-    pub fn  test_double_mapping(&self)   {
+    fn test_double_mapping(&self)   {
          let cycles: i32 = 100000;
          let rnd: Random = Random::new(0);
          {
@@ -244,28 +234,28 @@ impl AlgorithmsTest {
     }
 
     #[test]
-    pub fn  test_find_first(&self)   {
+    fn test_find_first(&self)   {
          let max_num_evaluations: i32 = 65;
-        self.test_find_first(3, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(Long::MAX_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(Long::MAX_VALUE - 1, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(Long::MIN_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(Long::MIN_VALUE + 1, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(0, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(0, -1, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(0, Long::MIN_VALUE, 1, max_num_evaluations);
+        self.test_find_first(3, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(i64::MAX, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(i64::MAX - 1, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(i64::MIN, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(i64::MIN + 1, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(0, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(0, -1, i64::MAX, max_num_evaluations);
+        self.test_find_first(0, i64::MIN, 1, max_num_evaluations);
         self.test_find_first(0, -1, 1, max_num_evaluations);
         self.test_find_first(0, -1, 0, max_num_evaluations);
         self.test_find_first(0, 0, 1, max_num_evaluations);
         self.test_find_first(0, 0, 0, max_num_evaluations);
-        self.test_find_first(1, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(10, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(100, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(Long::MAX_VALUE - 2, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(Long::MAX_VALUE - 1, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(Long::MAX_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        self.test_find_first(0, 0, Long::MAX_VALUE, max_num_evaluations);
-        assert_throws(IllegalArgumentException.class, () -> Algorithms::find_first( l: & -> false, 0, Long::MAX_VALUE));
+        self.test_find_first(1, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(10, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(100, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(i64::MAX - 2, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(i64::MAX - 1, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(i64::MAX, i64::MIN, i64::MAX, max_num_evaluations);
+        self.test_find_first(0, 0, i64::MAX, max_num_evaluations);
+        assert_throws(IllegalArgumentException.class, () -> Algorithms::find_first( l: & -> false, 0, i64::MAX));
     // assertThrows(IllegalArgumentException.class, () -> Algorithms.findFirst(l -> false, 1, -1));
     // assertThrows(IllegalArgumentException.class, () -> Algorithms.findFirst(l -> false, -1, 1, 2));
     // assertThrows(IllegalArgumentException.class, () -> Algorithms.findFirst(l -> false, -1, 1, -2));
@@ -292,42 +282,42 @@ impl AlgorithmsTest {
     }
 
     #[test]
-    pub fn  test_find_first_with_initial_guess(&self)   {
+    fn test_find_first_with_initial_guess(&self)   {
          let max_num_evaluations: i32 = 128;
-        ::test_find_first_with_initial_guess(Long::MAX_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, Long::MIN_VALUE, max_num_evaluations);
-        ::test_find_first_with_initial_guess(Long::MIN_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        ::test_find_first_with_initial_guess(Long::MAX_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, Long::MIN_VALUE + 1, max_num_evaluations);
-        ::test_find_first_with_initial_guess(Long::MIN_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, Long::MAX_VALUE - 1, max_num_evaluations);
-        ::test_find_first_with_initial_guess(Long::MAX_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, Long::MAX_VALUE, max_num_evaluations);
-        ::test_find_first_with_initial_guess(Long::MIN_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, Long::MIN_VALUE, max_num_evaluations);
-        ::test_find_first_with_initial_guess(Long::MAX_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, Long::MAX_VALUE - 1, max_num_evaluations);
-        ::test_find_first_with_initial_guess(Long::MIN_VALUE, Long::MIN_VALUE, Long::MAX_VALUE, Long::MIN_VALUE + 1, max_num_evaluations);
-        assert_throws(IllegalArgumentException.class, () -> Algorithms::find_first_guess( l: & -> false, Long::MIN_VALUE, Long::MAX_VALUE, 0));
+        ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MIN, max_num_evaluations);
+        ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MAX, max_num_evaluations);
+        ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MIN + 1, max_num_evaluations);
+        ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MAX - 1, max_num_evaluations);
+        ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MAX, max_num_evaluations);
+        ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MIN, max_num_evaluations);
+        ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MAX - 1, max_num_evaluations);
+        ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MIN + 1, max_num_evaluations);
+        assert_throws(IllegalArgumentException.class, () -> Algorithms::find_first_guess( l: & -> false, i64::MIN, i64::MAX, 0));
     }
 
     #[test]
-    pub fn  test_find_first_with_initial_guess2(&self)   {
+    fn test_find_first_with_initial_guess2(&self)   {
          let max_num_evaluations_with_initial_guess: i32 = 128;
          let max_num_evaluations: i32 = 65;
          {
              let mut j: i32 = 0;
             while j < 100 {
                 {
-                     let first_true_index: i64 = Long::MAX_VALUE - j;
+                     let first_true_index: i64 = i64::MAX - j;
                      {
                          let mut i: i32 = 0;
                         while i < 100 {
                             {
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, Long::MAX_VALUE - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, -1 - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, Long::MIN_VALUE + i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
                             }
                             i += 1;
                          }
                      }
 
-                    self.test_find_first(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
+                    self.test_find_first(first_true_index, i64::MIN, i64::MAX, max_num_evaluations);
                 }
                 j += 1;
              }
@@ -337,21 +327,21 @@ impl AlgorithmsTest {
              let mut j: i32 = 0;
             while j < 100 {
                 {
-                     let first_true_index: i64 = Long::MIN_VALUE + j;
+                     let first_true_index: i64 = i64::MIN + j;
                      {
                          let mut i: i32 = 0;
                         while i < 100 {
                             {
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, Long::MAX_VALUE - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, -1 - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, Long::MIN_VALUE + i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
                             }
                             i += 1;
                          }
                      }
 
-                    self.test_find_first(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
+                    self.test_find_first(first_true_index, i64::MIN, i64::MAX, max_num_evaluations);
                 }
                 j += 1;
              }
@@ -366,16 +356,16 @@ impl AlgorithmsTest {
                          let mut i: i32 = 0;
                         while i < 100 {
                             {
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, Long::MAX_VALUE - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, -1 - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, Long::MIN_VALUE + i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
                             }
                             i += 1;
                          }
                      }
 
-                    self.test_find_first(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
+                    self.test_find_first(first_true_index, i64::MIN, i64::MAX, max_num_evaluations);
                 }
                 j += 1;
              }
@@ -390,16 +380,16 @@ impl AlgorithmsTest {
                          let mut i: i32 = 0;
                         while i < 100 {
                             {
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, Long::MAX_VALUE - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, -1 - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, Long::MIN_VALUE + i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
+                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
                             }
                             i += 1;
                          }
                      }
 
-                    self.test_find_first(first_true_index, Long::MIN_VALUE, Long::MAX_VALUE, max_num_evaluations);
+                    self.test_find_first(first_true_index, i64::MIN, i64::MAX, max_num_evaluations);
                 }
                 j += 1;
              }
@@ -413,12 +403,12 @@ impl AlgorithmsTest {
                          let mut i: i32 = 0;
                         while i <= j {
                             {
-                                 let first_true_index: i64 = Long::MAX_VALUE - i;
+                                 let first_true_index: i64 = i64::MAX - i;
                                  {
                                      let mut k: i32 = 0;
                                     while k <= j {
                                         {
-                                            ::test_find_first_with_initial_guess(first_true_index, Long::MAX_VALUE - j, Long::MAX_VALUE, Long::MAX_VALUE - k, max_num_evaluations_with_initial_guess);
+                                            ::test_find_first_with_initial_guess(first_true_index, i64::MAX - j, i64::MAX, i64::MAX - k, max_num_evaluations_with_initial_guess);
                                         }
                                         k += 1;
                                      }
@@ -442,12 +432,12 @@ impl AlgorithmsTest {
                          let mut i: i32 = 0;
                         while i <= j {
                             {
-                                 let first_true_index: i64 = Long::MIN_VALUE + i;
+                                 let first_true_index: i64 = i64::MIN + i;
                                  {
                                      let mut k: i32 = 0;
                                     while k <= j {
                                         {
-                                            ::test_find_first_with_initial_guess(first_true_index, Long::MIN_VALUE, Long::MIN_VALUE + j, Long::MIN_VALUE + k, max_num_evaluations_with_initial_guess);
+                                            ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MIN + j, i64::MIN + k, max_num_evaluations_with_initial_guess);
                                         }
                                         k += 1;
                                      }
@@ -466,17 +456,17 @@ impl AlgorithmsTest {
     }
 
     #[test]
-    pub fn  test_find_first_with_initial_guess3(&self)   {
-        ::test_find_first_with_initial_guess(1, Long::MIN_VALUE, Long::MAX_VALUE, 0, 2);
-        ::test_find_first_with_initial_guess(134325, Long::MIN_VALUE, Long::MAX_VALUE, 134324, 2);
-        ::test_find_first_with_initial_guess(0, Long::MIN_VALUE, Long::MAX_VALUE, 1, 4);
-        ::test_find_first_with_initial_guess(134324, Long::MIN_VALUE, Long::MAX_VALUE, 134325, 4);
-        ::test_find_first_with_initial_guess(2, Long::MIN_VALUE, Long::MAX_VALUE, 0, 4);
-        ::test_find_first_with_initial_guess(3, Long::MIN_VALUE, Long::MAX_VALUE, 0, 4);
+    fn test_find_first_with_initial_guess3(&self)   {
+        ::test_find_first_with_initial_guess(1, i64::MIN, i64::MAX, 0, 2);
+        ::test_find_first_with_initial_guess(134325, i64::MIN, i64::MAX, 134324, 2);
+        ::test_find_first_with_initial_guess(0, i64::MIN, i64::MAX, 1, 4);
+        ::test_find_first_with_initial_guess(134324, i64::MIN, i64::MAX, 134325, 4);
+        ::test_find_first_with_initial_guess(2, i64::MIN, i64::MAX, 0, 4);
+        ::test_find_first_with_initial_guess(3, i64::MIN, i64::MAX, 0, 4);
     }
 
     #[test]
-    pub fn  test_interpolate_random(&self)   {
+    fn test_interpolate_random(&self)   {
          let random: SplittableRandom = SplittableRandom::new(0);
          let num_iterations: i32 = 1000;
          let a: i64 = 10;
@@ -497,7 +487,7 @@ impl AlgorithmsTest {
                     }
                      let y1: f64 = random.next_double(-1, 1);
                      let y2: f64 = random.next_double(-1, 1);
-                     let previous_y: f64 = Double::NaN;
+                     let previous_y: f64 = f64::NAN;
                      {
                          let mut j: i64 = 0;
                         while j < a + b + c {
@@ -505,7 +495,7 @@ impl AlgorithmsTest {
                                  let x: f64 = Algorithms::map_long_to_double(l + j - a);
                                  let y: f64 = Algorithms::interpolate(x, x1, y1, x2, y2);
                                 assert_that(y).is_between(&std::cmp::min(y1, y2), &std::cmp::max(y1, y2));
-                                if !Double::is_na_n(previous_y) {
+                                if !previous_y.is_nan() {
                                     if (y1 <= y2 && x1 <= x2) || (y1 >= y2 && x1 >= x2) {
                                         assert_that(y).is_greater_than_or_equal_to(previous_y);
                                     }
@@ -527,7 +517,7 @@ impl AlgorithmsTest {
     }
 
     #[test]
-    pub fn  test_interpolate_equal_x(&self)   {
+    fn test_interpolate_equal_x(&self)   {
          let random: SplittableRandom = SplittableRandom::new(0);
          let num_iterations: i32 = 1000;
          {
@@ -538,9 +528,9 @@ impl AlgorithmsTest {
                      let y1: f64 = random.next_double(-10, 10);
                      let y2: f64 = random.next_double(-10, 10);
                      let expected_y: f64 = 0.5 * y1 + 0.5 * y2;
-                    assert_eq!(expected_y, &Algorithms::interpolate(&Math::next_down(x), x, y1, x, y2), 0.0);
-                    assert_eq!(expected_y, &Algorithms::interpolate(x, x, y1, x, y2), 0.0);
-                    assert_eq!(expected_y, &Algorithms::interpolate(&Math::next_up(x), x, y1, x, y2), 0.0);
+                    assert_eq!(expected_y, interpolate(&Math::next_down(x), x, y1, x, y2), 0.0);
+                    assert_eq!(expected_y, interpolate(x, x, y1, x, y2), 0.0);
+                    assert_eq!(expected_y, interpolate(&Math::next_up(x), x, y1, x, y2), 0.0);
                 }
                 i += 1;
              }
@@ -549,36 +539,36 @@ impl AlgorithmsTest {
     }
 
     #[test]
-    pub fn  test_interpolate_negative_zero(&self)   {
+    fn test_interpolate_negative_zero(&self)   {
         assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(-0.0 * 5.0));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(-0.0, -1.0, -0.0, -0.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(-0.0, -0.0, -0.0, -0.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(f64::INFINITY, -0.0, -0.0, -0.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(f64::NEG_INFINITY, -0.0, -0.0, -0.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(f64::NEG_INFINITY, -10.0, -0.0, 10.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(-100.0, -10.0, -0.0, 10.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(-10.0, -10.0, -0.0, 10.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(-1.0, -10.0, -0.0, 10.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(0.0, -10.0, -0.0, 10.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(1.0, -10.0, -0.0, 10.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(10.0, -10.0, -0.0, 10.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(100.0, -10.0, -0.0, 10.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(f64::INFINITY, -10.0, -0.0, 10.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(f64::NEG_INFINITY, -10.0, 0.0, 10.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(-100.0, -10.0, 0.0, 10.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(-10.0, -10.0, 0.0, 10.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(-1.0, -10.0, 0.0, 10.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(0.0, -10.0, 0.0, 10.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(1.0, -10.0, 0.0, 10.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(10.0, -10.0, 0.0, 10.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(100.0, -10.0, 0.0, 10.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(f64::INFINITY, -10.0, 0.0, 10.0, -0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(5.0, 5.0, -0.0, 5.0, 0.0)));
-        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(&Algorithms::interpolate(5.0, 5.0, 0.0, 5.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(-0.0, -1.0, -0.0, -0.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(-0.0, -0.0, -0.0, -0.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(f64::INFINITY, -0.0, -0.0, -0.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(f64::NEG_INFINITY, -0.0, -0.0, -0.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(f64::NEG_INFINITY, -10.0, -0.0, 10.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(-100.0, -10.0, -0.0, 10.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(-10.0, -10.0, -0.0, 10.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(-1.0, -10.0, -0.0, 10.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(0.0, -10.0, -0.0, 10.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(1.0, -10.0, -0.0, 10.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(10.0, -10.0, -0.0, 10.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(100.0, -10.0, -0.0, 10.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(f64::INFINITY, -10.0, -0.0, 10.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(f64::NEG_INFINITY, -10.0, 0.0, 10.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(-100.0, -10.0, 0.0, 10.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(-10.0, -10.0, 0.0, 10.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(-1.0, -10.0, 0.0, 10.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(0.0, -10.0, 0.0, 10.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(1.0, -10.0, 0.0, 10.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(10.0, -10.0, 0.0, 10.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(100.0, -10.0, 0.0, 10.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(f64::INFINITY, -10.0, 0.0, 10.0, -0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(5.0, 5.0, -0.0, 5.0, 0.0)));
+        assert_eq!(&Algorithms::map_double_to_long(0.0), &Algorithms::map_double_to_long(interpolate(5.0, 5.0, 0.0, 5.0, -0.0)));
     }
 
     #[test]
-    pub fn  test_clip(&self)   {
+    fn test_clip(&self)   {
         assert_eq!(-3, &Algorithms::clip(1, -3, -3));
         assert_eq!(3, &Algorithms::clip(1, 3, 7));
         assert_eq!(5, &Algorithms::clip(5, 3, 7));

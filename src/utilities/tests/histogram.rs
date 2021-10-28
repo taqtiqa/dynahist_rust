@@ -1,19 +1,7 @@
-/*
- * Copyright 2020-2021 Dynatrace LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-// package com::dynatrace::dynahist;
+// Copyright 2021 Mark van de Vyver
+// Copyright 2020-2021 Dynatrace LLC
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 pub struct HistogramTest {
 }
@@ -117,12 +105,12 @@ trait Histogram {
             }
         }
     /*
-     * final Map<Integer, Long> nonEmptyBinsFromOrderAccess = new TreeMap<>(); { if
-     * (!histogramData.isEmpty()) { for (long rank = 0; rank < totalCount;
-     * ++order) { BinIterator bin = histogramData.getBinByRank(rank);
-     * nonEmptyBinsFromOrderAccess.compute(bin.getBinIndex(), (idx, count) -> (count
-     * == null)?1:count+1); } } }
-     */
+     /// final Map<Integer, Long> nonEmptyBinsFromOrderAccess = new TreeMap<>(); { if
+     /// (!histogramData.isEmpty()) { for (long rank = 0; rank < totalCount;
+     /// ++order) { BinIterator bin = histogramData.getBinByRank(rank);
+     /// nonEmptyBinsFromOrderAccess.compute(bin.getBinIndex(), (idx, count) -> (count
+     /// == null)?1:count+1); } } }
+     ///
          let non_empty_bins: Map<Integer, Long> = non_empty_bins_from_get_count;
         assert_eq!(&non_empty_bins, &non_empty_bins_from_get_count);
         assert_eq!(&non_empty_bins, &non_empty_bins_from_forward_bin_iteration);

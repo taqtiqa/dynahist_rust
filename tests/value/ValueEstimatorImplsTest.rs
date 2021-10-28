@@ -1,19 +1,7 @@
-/*
- * Copyright 2020-2021 Dynatrace LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-// package com::dynatrace::dynahist::value;
+// Copyright 2021 Mark van de Vyver
+// Copyright 2020-2021 Dynatrace LLC
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 
  const BIN1: Bin = ::create_bin(10, 5, 20, 3, 8, 77);
@@ -152,8 +140,8 @@ impl ValueEstimatorImplsTest {
             Assertions::assert_that(&Double::double_to_long_bits(&value_estimator.get_estimate_from_bin(&::create_bin(0, 2, 0, -2.0, -0.0, 34), 1)))::is_less_than(0);
             Assertions::assert_that(&Double::double_to_long_bits(&value_estimator.get_estimate_from_bin(&::create_bin(0, 1, 0, -2.0, -0.0, 34), 0)))::is_less_than(0);
             Assertions::assert_that(&Double::double_to_long_bits(&value_estimator.get_estimate_from_bin(&::create_bin(0, 1, 0, -0.0, -0.0, 34), 0)))::is_less_than(0);
-            Assertions::assert_that(&Double::double_to_long_bits(&value_estimator.get_estimate_from_bin(&::create_bin(0, Long::MAX_VALUE, 0, -3.0, -0.0, 34), Long::MAX_VALUE - 1)))::is_less_than(0);
-            Assertions::assert_that(&Double::double_to_long_bits(&value_estimator.get_estimate_from_bin(&::create_bin(0, Long::MAX_VALUE, 0, -0.0, -0.0, 34), Long::MAX_VALUE - 1)))::is_less_than(0);
+            Assertions::assert_that(&Double::double_to_long_bits(&value_estimator.get_estimate_from_bin(&::create_bin(0, i64::MAX, 0, -3.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
+            Assertions::assert_that(&Double::double_to_long_bits(&value_estimator.get_estimate_from_bin(&::create_bin(0, i64::MAX, 0, -0.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
         }
     }
 }

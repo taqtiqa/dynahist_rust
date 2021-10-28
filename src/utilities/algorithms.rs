@@ -1,19 +1,7 @@
-/*
- * Copyright 2020-2021 Dynatrace LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-// package com::dynatrace::dynahist::util;
+// Copyright 2021 Mark van de Vyver
+// Copyright 2020-2021 Dynatrace LLC
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use float_next_after::NextAfter;
 
@@ -38,21 +26,20 @@ assert_eq!(POSITIVE_INFINITY_MAPPED_TO_LONG, isize::MAX);
 pub trait Algorithms: Preconditions {
     //fn new() -> Box<dyn Algorithms>  {}
 
-    /**
-     * Interpolates the y-value at given x-value from two given points (x1, y1) and (x2, y2).
-     *
-     * This implementation is strictly symmetric. Meaning that interpolate(x,x1,y1,x2,y2) ==
-     * interpolate(x,x2,y2,x1,y1) always holds. Furthermore, it is guaranteed that the return value is
-     * always in the range [min(y1,y2),max(y1,y2)]. In addition, this interpolation function is
-     * monotonic in x.
-     *
-     * @param x the x-value
-     * @param x1 the x-value of point 1
-     * @param y1 the y-value of point 1
-     * @param x2 the x-value of point 2
-     * @param y2 the y-value of point 2
-     * @return the interpolated y-value
-     */
+    /// Interpolates the y-value at given x-value from two given points (x1, y1) and (x2, y2).
+    ///
+    /// This implementation is strictly symmetric. Meaning that interpolate(x,x1,y1,x2,y2) ==
+    /// interpolate(x,x2,y2,x1,y1) always holds. Furthermore, it is guaranteed that the return value is
+    /// always in the range [min(y1,y2),max(y1,y2)]. In addition, this interpolation function is
+    /// monotonic in x.
+    ///
+    /// @param x the x-value
+    /// @param x1 the x-value of point 1
+    /// @param y1 the y-value of point 1
+    /// @param x2 the x-value of point 2
+    /// @param y2 the y-value of point 2
+    /// @return the interpolated y-value
+    ///
     fn interpolate(x: f64, x1: f64, y1: f64, x2: f64, y2: f64) -> f64 {
         // Java implementation uses java.lang.Double.doubleToLongBits().
         // Infinity in long bits: 9218868437227405312
@@ -103,68 +90,64 @@ pub trait Algorithms: Preconditions {
         }
     }
 
-    /**
-     * Calculates the midpoint of two given {@code long} values rounded down to the nearest {@code
-     * long} value.
-     *
-     * <p>This implementation works for any values which would lead to over- or underflows when
-     * calculating the midpoint using (a + b) / 2 directly. Furthermore, this implementation is
-     * branch-free.
-     *
-     * @param a the first value
-     * @param b the second value
-     * @return the midpoint
-     */
+    /// Calculates the midpoint of two given {@code long} values rounded down to the nearest {@code
+    /// long} value.
+    ///
+    /// This implementation works for any values which would lead to over- or underflows when
+    /// calculating the midpoint using (a + b) / 2 directly. Furthermore, this implementation is
+    /// branch-free.
+    ///
+    /// @param a the first value
+    /// @param b the second value
+    /// @return the midpoint
+    ///
     fn calculate_midpoint(a: i64, b: i64) -> i64 {
         let a2: i64 = (a ^ 0x8000000000000000) >> /* >>> */ 1;
         let b2: i64 = (b ^ 0x8000000000000000) >> /* >>> */ 1;
         return ((a2 + b2) + (a & b & 1)) ^ 0x8000000000000000;
     }
 
-    /**
-     * Bidirectional mapping of a {@code double} value to a {@code long} value.
-     *
-     * <p>Except for {@link Double#NaN} values, the natural ordering of double values as defined by
-     * {@link Double#compare(double, double)} will be maintained.
-     *
-     * <p>Inverse mapping can be performed using {@link #mapLongToDouble(long)}.
-     *
-     * @param x the value
-     * @return the corresponding long value
-     */
+    /// Bidirectional mapping of a {@code double} value to a {@code long} value.
+    ///
+    /// Except for {@link Double#NaN} values, the natural ordering of double values as defined by
+    /// {@link Double#compare(double, double)} will be maintained.
+    ///
+    /// Inverse mapping can be performed using {@link #mapLongToDouble(long)}.
+    ///
+    /// @param x the value
+    /// @return the corresponding long value
+    ///
     fn map_double_to_long(x: f64) -> i64 {
         let l: i64 = x.to_bits();
         return ((l >> 62) >> /* >>> */ 1) ^ l;
     }
 
-    /**
-     * Bidirectional mapping of a {@code long} value to a {@code double} value.
-     *
-     * <p>Inverse mapping can be performed using {@link #mapDoubleToLong(double)}.
-     *
-     * @param l long value
-     * @return the corresponding double value
-     */
+    /// Bidirectional mapping of a {@code long} value to a {@code double} value.
+    ///
+    /// Inverse mapping can be performed using {@link #mapDoubleToLong(double)}.
+    ///
+    /// @param l long value
+    /// @return the corresponding double value
+    ///
     fn map_long_to_double(l: i64) -> f64 {
         // Java implementation uses Double::long_bits_to_double
         return f64::from_bits(((l >> 62) >> /* >>> */ 1) ^ l);
     }
 
-    /**
-     * Finds the first long value in the range [min, max] for which the given predicate returns {@code
-     * true}.
-     *
-     * <p>The predicate must return {@code false} for all long values smaller than some value X from
-     * [min, max] and must return {@code true} for all long values equal to or greater than X. The
-     * return value of this function will be X.
-     *
-     * <p>The time complexity is logarithmic in terms of the interval length max - min.
-     *
-     * @param predicate the predicate
-     * @param min the lower bound of the search interval
-     * @param max the upper bound of the search interval
-     * @return the smallest value for which the predicate evaluates to {@code true}
-     */
+    /// Finds the first long value in the range [min, max] for which the given predicate returns {@code
+    /// true}.
+    ///
+    /// The predicate must return {@code false} for all long values smaller than some value X from
+    /// [min, max] and must return {@code true} for all long values equal to or greater than X. The
+    /// return value of this function will be X.
+    ///
+    /// The time complexity is logarithmic in terms of the interval length max - min.
+    ///
+    /// @param predicate the predicate
+    /// @param min the lower bound of the search interval
+    /// @param max the upper bound of the search interval
+    /// @return the smallest value for which the predicate evaluates to {@code true}
+    ///
     fn find_first(predicate: &i64, min: i64, max: i64) -> i64 {
         Self::check_argument(min <= max);
         let mut low: i64 = min;
@@ -188,25 +171,24 @@ pub trait Algorithms: Preconditions {
         return high;
     }
 
-    /**
-     * Finds the first long value in the range [min, max] for which the given
-     *  predicate returns {@code true}.
-     *
-     * <p>The predicate must return {@code false} for all long values smaller than some value X from
-     * [min, max] and must return {@code true} for all long values equal to or greater than X. The
-     * return value of this function will be X.
-     *
-     * <p>The time complexity is logarithmic in terms of the interval length max - min.
-     *
-     * <p>This function allows to give an initial guess which might speed up finding X, if the initial
-     * guess is already close to X.
-     *
-     * @param predicate the predicate
-     * @param min the lower bound of the search interval
-     * @param max the upper bound of the search interval
-     * @param initialGuess an initial guess
-     * @return the smallest value for which the predicate evaluates to {@code true}
-     */
+    /// Finds the first long value in the range [min, max] for which the given
+    ///  predicate returns {@code true}.
+    ///
+    /// The predicate must return {@code false} for all long values smaller than some value X from
+    /// [min, max] and must return {@code true} for all long values equal to or greater than X. The
+    /// return value of this function will be X.
+    ///
+    /// The time complexity is logarithmic in terms of the interval length max - min.
+    ///
+    /// This function allows to give an initial guess which might speed up finding X, if the initial
+    /// guess is already close to X.
+    ///
+    /// @param predicate the predicate
+    /// @param min the lower bound of the search interval
+    /// @param max the upper bound of the search interval
+    /// @param initialGuess an initial guess
+    /// @return the smallest value for which the predicate evaluates to {@code true}
+    ///
     fn find_first_guess<P>(predicate: P, min: i64, max: i64, initial_guess: i64) -> i64
     where
         P: Fn(i64) -> bool,
@@ -239,7 +221,11 @@ pub trait Algorithms: Preconditions {
             loop {
                 {
                     low = high;
-                    Self::check_argument_value(low != max, &INVALID_PREDICATE_MSG_FORMAT_STRING, max);
+                    Self::check_argument_value(
+                        low != max,
+                        &INVALID_PREDICATE_MSG_FORMAT_STRING,
+                        max,
+                    );
                     high = low + increment;
                     if high <= low || high > max {
                         high = max;
@@ -262,15 +248,14 @@ pub trait Algorithms: Preconditions {
         return high;
     }
 
-    /**
-     * Clips a given value to a given interval.
-     *
-     * @param value the value
-     * @param min the minimum value of the interval (inclusive)
-     * @param max the maximum value of the interval (inclusive)
-     * @return the clipped value
-     */
-    fn clip(value: i32, min: i32, max: i32)  -> Result<i32, DynaHistError>  {
+    /// Clips a given value to a given interval.
+    ///
+    /// @param value the value
+    /// @param min the minimum value of the interval (inclusive)
+    /// @param max the maximum value of the interval (inclusive)
+    /// @return the clipped value
+    ///
+    fn clip(value: i32, min: i32, max: i32) -> Result<i32, DynaHistError> {
         if value >= min && value <= max {
             return value;
         } else {

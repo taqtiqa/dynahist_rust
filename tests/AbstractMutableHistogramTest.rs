@@ -1,19 +1,7 @@
-/*
- * Copyright 2020-2021 Dynatrace LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-// package com::dynatrace::dynahist;
+// Copyright 2021 Mark van de Vyver
+// Copyright 2020-2021 Dynatrace LLC
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 pub struct AbstractMutableHistogramTest {
     super: AbstractHistogramTest;
@@ -34,7 +22,7 @@ impl AbstractMutableHistogramTest {
     pub fn  test_count_overflow(&self)   {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
-        histogram.add_value(10.0, Long::MAX_VALUE);
+        histogram.add_value(10.0, i64::MAX);
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
         assert_throws(ArithmeticException.class, () -> histogram.add_value(90.0));
@@ -48,7 +36,7 @@ impl AbstractMutableHistogramTest {
          let histogram: Histogram = create(layout);
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
-        assert_throws(IllegalArgumentException.class, () -> histogram.add_value(Double::NaN));
+        assert_throws(IllegalArgumentException.class, () -> histogram.add_value(f64::NAN));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
@@ -288,8 +276,8 @@ impl AbstractMutableHistogramTest {
         for  let value: f64 in values {
              let histogram1: Histogram = create(layout);
              let histogram2: Histogram = create(layout);
-            histogram1.add_value(value, Long::MAX_VALUE);
-            histogram2.add_ascending_sequence( j: & -> value, Long::MAX_VALUE);
+            histogram1.add_value(value, i64::MAX);
+            histogram2.add_ascending_sequence( j: & -> value, i64::MAX);
             assert_eq!(histogram1, histogram2);
         }
     }
@@ -301,7 +289,7 @@ impl AbstractMutableHistogramTest {
          let values: vec![Vec<f64>; 5] = vec![f64::NEG_INFINITY, -5.5, -0.1, 5.3, f64::INFINITY, ]
         ;
         assert_throws(IllegalArgumentException.class, () -> histogram.add_ascending_sequence( j: & -> values[j as i32], -1));
-        histogram.add_value(1, Long::MAX_VALUE);
+        histogram.add_value(1, i64::MAX);
     // assertThrows(
     //     ArithmeticException.class,
     //     () -> histogram.addAscendingSequence(j -> values[(int) j], Long.MAX_VALUE));
@@ -706,7 +694,7 @@ impl AbstractMutableHistogramTest {
          let histogram1: Histogram = create(layout);
          let histogram2: Histogram = create(layout);
         histogram1.add_value(5, 1000000);
-        histogram2.add_value(5, Long::MAX_VALUE);
+        histogram2.add_value(5, i64::MAX);
         assert_throws(ArithmeticException.class, () -> histogram1.add_histogram(histogram2));
     }
 
@@ -770,7 +758,7 @@ impl AbstractMutableHistogramTest {
     pub fn  test_total_count_overflow(&self)   {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = create(layout);
-        histogram.add_value(1, Long::MAX_VALUE);
+        histogram.add_value(1, i64::MAX);
         assert_throws(ArithmeticException.class, () -> histogram.add_value(2));
     }
 

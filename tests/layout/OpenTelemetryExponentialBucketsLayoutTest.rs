@@ -1,19 +1,7 @@
-/*
- * Copyright 2020-2021 Dynatrace LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-// package com::dynatrace::dynahist::layout;
+// Copyright 2021 Mark van de Vyver
+// Copyright 2020-2021 Dynatrace LLC
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 pub struct OpenTelemetryExponentialBucketsLayoutTest {
 }
@@ -55,8 +43,8 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(53, &layout.map_to_bin_index(Double::MIN_NORMAL));
         assert_eq!(1074, &layout.map_to_bin_index(0.5));
         assert_eq!(1075, &layout.map_to_bin_index(1));
-        assert_eq!(2097, &layout.map_to_bin_index(Double::MAX_VALUE / 2.0));
-        assert_eq!(2098, &layout.map_to_bin_index(Double::MAX_VALUE));
+        assert_eq!(2097, &layout.map_to_bin_index(f64::MAX / 2.0));
+        assert_eq!(2098, &layout.map_to_bin_index(f64::MAX));
         assert_eq!(2099, &layout.map_to_bin_index(f64::INFINITY));
         assert_eq!(2099, &// "smallest" NaN
         layout.map_to_bin_index(&f64::from_bits(0x7ff0000000000001)));
@@ -81,8 +69,8 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(-53, &layout.map_to_bin_index(-Double::MIN_NORMAL));
         assert_eq!(-1074, &layout.map_to_bin_index(-0.5));
         assert_eq!(-1075, &layout.map_to_bin_index(-1));
-        assert_eq!(-2097, &layout.map_to_bin_index(-Double::MAX_VALUE / 2.0));
-        assert_eq!(-2098, &layout.map_to_bin_index(-Double::MAX_VALUE));
+        assert_eq!(-2097, &layout.map_to_bin_index(-f64::MAX / 2.0));
+        assert_eq!(-2098, &layout.map_to_bin_index(-f64::MAX));
         assert_eq!(-2099, &layout.map_to_bin_index(-f64::INFINITY));
         assert_eq!(-2099, &layout.map_to_bin_index(&f64::from_bits(0xfff0000000000001)));
         assert_eq!(-2099, &layout.map_to_bin_index(&f64::from_bits(0xfff8000000000000)));
@@ -109,8 +97,8 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(104, &layout.map_to_bin_index(Double::MIN_NORMAL));
         assert_eq!(2146, &layout.map_to_bin_index(0.5));
         assert_eq!(2148, &layout.map_to_bin_index(1));
-        assert_eq!(4193, &layout.map_to_bin_index(Double::MAX_VALUE / 2.0));
-        assert_eq!(4195, &layout.map_to_bin_index(Double::MAX_VALUE));
+        assert_eq!(4193, &layout.map_to_bin_index(f64::MAX / 2.0));
+        assert_eq!(4195, &layout.map_to_bin_index(f64::MAX));
         assert_eq!(4196, &layout.map_to_bin_index(f64::INFINITY));
         assert_eq!(4196, &// "smallest" NaN
         layout.map_to_bin_index(&f64::from_bits(0x7ff0000000000001)));
@@ -135,8 +123,8 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(-104, &layout.map_to_bin_index(-Double::MIN_NORMAL));
         assert_eq!(-2146, &layout.map_to_bin_index(-0.5));
         assert_eq!(-2148, &layout.map_to_bin_index(-1));
-        assert_eq!(-4193, &layout.map_to_bin_index(-Double::MAX_VALUE / 2.0));
-        assert_eq!(-4195, &layout.map_to_bin_index(-Double::MAX_VALUE));
+        assert_eq!(-4193, &layout.map_to_bin_index(-f64::MAX / 2.0));
+        assert_eq!(-4195, &layout.map_to_bin_index(-f64::MAX));
         assert_eq!(-4196, &layout.map_to_bin_index(-f64::INFINITY));
         assert_eq!(-4196, &layout.map_to_bin_index(&f64::from_bits(0xfff0000000000001)));
         assert_eq!(-4197, &layout.map_to_bin_index(&f64::from_bits(0xfff8000000000000)));
@@ -170,8 +158,8 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(204, &layout.map_to_bin_index(Double::MIN_NORMAL));
         assert_eq!(4288, &layout.map_to_bin_index(0.5));
         assert_eq!(4292, &layout.map_to_bin_index(1));
-        assert_eq!(8383, &layout.map_to_bin_index(Double::MAX_VALUE / 2.0));
-        assert_eq!(8387, &layout.map_to_bin_index(Double::MAX_VALUE));
+        assert_eq!(8383, &layout.map_to_bin_index(f64::MAX / 2.0));
+        assert_eq!(8387, &layout.map_to_bin_index(f64::MAX));
         assert_eq!(8388, &layout.map_to_bin_index(f64::INFINITY));
         assert_eq!(8388, &// "smallest" NaN
         layout.map_to_bin_index(&f64::from_bits(0x7ff0000000000001)));
@@ -203,8 +191,8 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(-204, &layout.map_to_bin_index(-Double::MIN_NORMAL));
         assert_eq!(-4288, &layout.map_to_bin_index(-0.5));
         assert_eq!(-4292, &layout.map_to_bin_index(-1));
-        assert_eq!(-8383, &layout.map_to_bin_index(-Double::MAX_VALUE / 2.0));
-        assert_eq!(-8387, &layout.map_to_bin_index(-Double::MAX_VALUE));
+        assert_eq!(-8383, &layout.map_to_bin_index(-f64::MAX / 2.0));
+        assert_eq!(-8387, &layout.map_to_bin_index(-f64::MAX));
         assert_eq!(-8388, &layout.map_to_bin_index(-f64::INFINITY));
         assert_eq!(-8388, &layout.map_to_bin_index(&f64::from_bits(0xfff0000000000001)));
         assert_eq!(-8390, &layout.map_to_bin_index(&f64::from_bits(0xfff8000000000000)));

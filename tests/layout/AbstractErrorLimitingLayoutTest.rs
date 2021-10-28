@@ -1,26 +1,14 @@
-/*
- * Copyright 2020-2021 Dynatrace LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-// package com::dynatrace::dynahist::layout;
+// Copyright 2021 Mark van de Vyver
+// Copyright 2020-2021 Dynatrace LLC
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 pub struct AbstractErrorLimitingLayoutTest {
 }
 
 impl AbstractErrorLimitingLayoutTest {
 
-    pub fn  create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> AbstractLayout ;
+    pub fn  create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout ;
 
     pub fn  assert_index_symmetry(&self,  idx: i32,  negative_idx: i32)   {
         assert_eq!(-idx - 1, negative_idx);
@@ -112,7 +100,7 @@ impl AbstractErrorLimitingLayoutTest {
          let absolute_bin_width_limit: f64 = 1;
          let relative_bin_width_limit: f64 = 0.01;
          let eps: f64 = 1e-4;
-         let layout: AbstractLayout = self.create_layout(absolute_bin_width_limit, relative_bin_width_limit, 0, 2000);
+         let layout: GuessLayout = self.create_layout(absolute_bin_width_limit, relative_bin_width_limit, 0, 2000);
          {
              let transition_idx: i32 = 0;
             while transition_idx <= layout.get_overflow_bin_index() {
@@ -133,7 +121,7 @@ impl AbstractErrorLimitingLayoutTest {
 
     #[test]
     pub fn  test_create_equidistant_layout(&self)   {
-         let absolute_error_limits: vec![Vec<f64>; 4] = vec![Double::MIN_NORMAL, 1.0, 100.0, Double::MAX_VALUE / Integer::MAX_VALUE, ]
+         let absolute_error_limits: vec![Vec<f64>; 4] = vec![Double::MIN_NORMAL, 1.0, 100.0, f64::MAX / Integer::MAX_VALUE, ]
         ;
         for  let absolute_error_limit: f64 in absolute_error_limits {
             self.create_layout(absolute_error_limit, 0, 0, absolute_error_limit * (Integer::MAX_VALUE - 1.0));
@@ -146,13 +134,13 @@ impl AbstractErrorLimitingLayoutTest {
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, -1e6, f64::INFINITY));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, f64::NEG_INFINITY, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, 1e6, 1e-6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, 1, Double::NaN));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, Double::NaN, 1));
+        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, 1, f64::NAN));
+        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, f64::NAN, 1));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-10, 1e-6, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-10, Long::MIN_VALUE, 1e6));
+        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-10, i64::MIN, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-9, 1e-6, 1e6));
         self.create_layout(Double::MIN_NORMAL, 0, 0, 1000 * Double::MIN_NORMAL);
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(Double::MIN_NORMAL, 0, 0, Double::MAX_VALUE));
+        assert_throws(IllegalArgumentException.class, () -> self.create_layout(Double::MIN_NORMAL, 0, 0, f64::MAX));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(-1, 1e-2, -1e6, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, -1, -1e6, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(f64::INFINITY, 1, -1e6, 1e6));

@@ -1,19 +1,7 @@
-/*
- * Copyright 2020-2021 Dynatrace LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-// package com::dynatrace::dynahist;
+// Copyright 2021 Mark van de Vyver
+// Copyright 2020-2021 Dynatrace LLC
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
 
 
  const GROW_FACTOR: f64 = 0.25;
@@ -81,7 +69,7 @@ impl AbstractMutableHistogram {
         if histogram.is_empty() {
             return self;
         }
-        if histogram.get_total_count() > Long::MAX_VALUE - self.get_total_count() {
+        if histogram.get_total_count() > i64::MAX - self.get_total_count() {
             throw ArithmeticException::new(&OVERFLOW_MSG);
         }
          let layout: Layout = histogram.get_layout();
@@ -119,16 +107,16 @@ impl AbstractMutableHistogram {
         2 * Double::BYTES + super.get_estimated_footprint_in_bytes();
     }
 
-    /**
-   * Return value must be greater than or equal to {@link #maxAllocatedBinIndexExclusive()} if
-   * histogram is empty.
-   */
+
+   /// Return value must be greater than or equal to {@link #maxAllocatedBinIndexExclusive()} if
+   /// histogram is empty.
+   ///
     pub fn  min_allocated_bin_index_inclusive(&self) -> i32 ;
 
-    /**
-   * Return value must be less than or equal to {@link #minAllocatedBinIndexInclusive()} if
-   * histogram is empty.
-   */
+
+   /// Return value must be less than or equal to {@link #minAllocatedBinIndexInclusive()} if
+   /// histogram is empty.
+   ///
     pub fn  max_allocated_bin_index_exclusive(&self) -> i32 ;
 
     pub fn  get_allocated_bin_count(&self,  bin_index: i32) -> i64 ;
@@ -660,7 +648,7 @@ impl AbstractMutableHistogram {
             return self;
         }
         check_argument(length >= 0);
-        if length > Long::MAX_VALUE - self.get_total_count() {
+        if length > i64::MAX - self.get_total_count() {
             throw ArithmeticException::new(&OVERFLOW_MSG);
         }
         // add last value to update maximum
