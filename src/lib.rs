@@ -10,6 +10,9 @@ mod utilities;
 // Histogram bucket traits and structs.
 mod bins;
 
+// Bin value estimators
+mod values;
+
 // Histogram bucket layouts;
 mod layouts;
 

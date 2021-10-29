@@ -161,8 +161,8 @@ impl ValueEstimatorImplsTest {
     #[test]
     pub fn test_negative_zero(&self)   {
         //for let value_estimator: ValueEstimatorImpls in ValueEstimatorImpls::values() {
-            let value_estimator = &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(::create_bin(0, 2, 0, -0.0, -0.0, 34), 1);
-            assert!(to_bits_nan_collapse(value_estimator.get_estimate_from_bin(::create_bin(0, 2, 0, -0.0, -0.0, 34), 1)) < 0);
+            let value_estimate = &ValueEstimatorUniform::new().get_estimate_from_bin(::create_bin(0, 2, 0, -0.0, -0.0, 34), 1);
+            assert!(to_bits_nan_collapse(value_estimate) < 0);
             // assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 2, 0, -2.0, -0.0, 34), 1)))::is_less_than(0);
             // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 1, 0, -2.0, -0.0, 34), 0)))::is_less_than(0);
             // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 1, 0, -0.0, -0.0, 34), 0)))::is_less_than(0);
