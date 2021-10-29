@@ -61,7 +61,7 @@ impl SerializationTestUtil {
         return Ok(deserialized_data);
     }
 
-    pub fn  hex_string_to_byte_array( s: &String) -> Vec<i8>  {
+    pub fn hex_string_to_byte_array( s: &String) -> Vec<i8>  {
          let len: i32 = s.length();
         check_argument(len % 2 == 0);
          let mut data: [i8; len / 2] = [0; len / 2];
@@ -80,7 +80,7 @@ impl SerializationTestUtil {
         return data;
     }
 
-    pub fn  byte_array_to_hex_string( bytes: &Vec<i8>) -> String  {
+    pub fn byte_array_to_hex_string( bytes: &Vec<i8>) -> String  {
         check_argument(bytes.len() <= Integer::MAX_VALUE >> /* >>> */ 1);
          let hex_chars: [Option<char>; bytes.len() << 1] = [None; bytes.len() << 1];
          {

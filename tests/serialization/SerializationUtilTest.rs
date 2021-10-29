@@ -9,21 +9,21 @@ pub struct SerializationUtilTest {
 impl SerializationUtilTest {
 
     #[test]
-    pub fn  test_read_unsigned_var_int(&self)   {
+    pub fn test_read_unsigned_var_int(&self)   {
          let array : vec![i8; 9] = vec![-1, -2, -3, -4, -5, -6, -7, -8, -9, ]
         ;
         assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_int(DataInputStream::new(ByteArrayInputStream::new(&array))));
     }
 
     #[test]
-    pub fn  test_read_unsigned_var_long(&self)   {
+    pub fn test_read_unsigned_var_long(&self)   {
          let array : vec![i8; 10] = vec![-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, ]
         ;
         assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_long(DataInputStream::new(ByteArrayInputStream::new(&array))));
     }
 
     #[test]
-    pub fn  test_serialization(&self)  -> /*  throws IOException, DataFormatException */Result<Void, Rc<Exception>>   {
+    pub fn test_serialization(&self)  -> /*  throws IOException, DataFormatException */Result<Void, Rc<Exception>>   {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram_dynamic: Histogram = Histogram::create_dynamic(layout);
          let histogram_static: Histogram = Histogram::create_dynamic(layout);
@@ -90,7 +90,7 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn  test_write_and_write_compressed(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test_write_and_write_compressed(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let expected_serialized_histogram_hex_string: String = "00393FF00000000000004049000000000000BC0EF413800000000008000000080000100000800040010010010040100808082041082108221108912249249494A528";
@@ -103,7 +103,7 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn  test_from_byte_array(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test_from_byte_array(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let serialization_reader: SerializationReader<Histogram> =  data_input: & -> Histogram::read_as_dynamic(layout, data_input);
@@ -127,7 +127,7 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn  test_to_byte_array(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test_to_byte_array(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let serialization_writer: SerializationWriter<Histogram> = ( data: &,  data_output: &) -> histogram.write(data_output);

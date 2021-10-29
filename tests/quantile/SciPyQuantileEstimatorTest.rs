@@ -15,7 +15,7 @@ pub struct SciPyQuantileEstimatorTest {
 impl SciPyQuantileEstimatorTest {
 
     #[test]
-    pub fn  test(&self)   {
+    pub fn test(&self)   {
          let values: vec![Vec<f64>; 11] = vec![6.0, 47.0, 49.0, 15.0, 42.0, 41.0, 7.0, 39.0, 43.0, 40.0, 36.0, ]
         ;
         Arrays::sort(&values);
@@ -26,7 +26,7 @@ impl SciPyQuantileEstimatorTest {
     }
 
     #[test]
-    pub fn  test2(&self)   {
+    pub fn test2(&self)   {
          let values: vec![Vec<f64>; 2] = vec![3.0, 5.0, ]
         ;
         Arrays::sort(&values);
@@ -39,7 +39,7 @@ impl SciPyQuantileEstimatorTest {
     }
 
     #[test]
-    pub fn  test3(&self)   {
+    pub fn test3(&self)   {
          let values: vec![Vec<f64>; 2] = vec![3.0, 5.0, ]
         ;
         Arrays::sort(&values);
@@ -52,7 +52,7 @@ impl SciPyQuantileEstimatorTest {
     }
 
     #[test]
-    pub fn  test_single_value(&self)   {
+    pub fn test_single_value(&self)   {
          let value: f64 = 5;
          let values: vec![Vec<f64>; 1] = vec![value, ]
         ;
@@ -64,7 +64,7 @@ impl SciPyQuantileEstimatorTest {
     }
 
     #[test]
-    pub fn  test_no_values(&self)   {
+    pub fn test_no_values(&self)   {
          let values;
         for  let quantile_estimator: QuantileEstimator in QUANTILE_ESTIMATORS {
             for  let p: f64 in P_VALUES {
@@ -74,7 +74,7 @@ impl SciPyQuantileEstimatorTest {
     }
 
     #[test]
-    pub fn  test_median(&self)   {
+    pub fn test_median(&self)   {
          let values: Vec<f64> = IntStream::range(0, 20)::map_to_double( i: & -> i)::to_array();
          let true_median: f64 = 9.5;
          let alphap_values: vec![Vec<f64>; 11] = vec![0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, ]
@@ -90,7 +90,7 @@ impl SciPyQuantileEstimatorTest {
     }
 
     #[test]
-    pub fn  test_sci_py_quantile_estimator_constructor(&self)   {
+    pub fn test_sci_py_quantile_estimator_constructor(&self)   {
         assert_throws(IllegalArgumentException.class, () -> SciPyQuantileEstimator::create(-1, 1));
         assert_throws(IllegalArgumentException.class, () -> SciPyQuantileEstimator::create(2, 1));
         assert_throws(IllegalArgumentException.class, () -> SciPyQuantileEstimator::create(1, -1));
@@ -98,7 +98,7 @@ impl SciPyQuantileEstimatorTest {
     }
 
     #[test]
-    pub fn  test_to_string(&self)   {
+    pub fn test_to_string(&self)   {
          let alphap: f64 = 0.5;
          let betap: f64 = 0.7;
         assert_eq!("SciPyQuantileEstimator [alphap=0.5, betap=0.7]", &SciPyQuantileEstimator::create(alphap, betap)::to_string());

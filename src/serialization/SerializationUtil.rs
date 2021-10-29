@@ -15,7 +15,7 @@ impl SerializationUtil {
     fn new() -> SerializationUtil {
     }
 
-    pub fn  check_serial_version( expected_serial_version: i8,  current_serial_version: i32)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn check_serial_version( expected_serial_version: i8,  current_serial_version: i32)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
         if expected_serial_version != current_serial_version {
             throw IOException::new(&String::format(null as Locale, &INCOMPATIBLE_SERIAL_VERSION_MSG, expected_serial_version, current_serial_version));
         }
@@ -28,7 +28,7 @@ impl SerializationUtil {
    /// @param dataOutput the {@link DataOutput}
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  write_unsigned_var_long( value: i64,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn write_unsigned_var_long( value: i64,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
         while (value & 0xFFFFFFFFFFFFFF80) != 0 {
             data_output.write_byte((value as i32 & 0x7F) | 0x80);
             value >>= /* >>>= */ 7;
@@ -44,7 +44,7 @@ impl SerializationUtil {
    /// @param dataOutput the {@link DataOutput}
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  write_signed_var_int( value: i32,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn write_signed_var_int( value: i32,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
         ::write_unsigned_var_int((value << 1) ^ (value >> 31), &data_output);
     }
 
@@ -55,7 +55,7 @@ impl SerializationUtil {
    /// @param dataOutput the {@link DataOutput}
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  write_unsigned_var_int( value: i32,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn write_unsigned_var_int( value: i32,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
         while (value & 0xFFFFFF80) != 0 {
             data_output.write_byte((value & 0x7F) | 0x80);
             value >>= /* >>>= */ 7;
@@ -70,7 +70,7 @@ impl SerializationUtil {
    /// @return the read {@code long} value
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  read_unsigned_var_long( data_input: &DataInput) -> /*  throws IOException */Result<i64, Rc<Exception>>   {
+    pub fn read_unsigned_var_long( data_input: &DataInput) -> /*  throws IOException */Result<i64, Rc<Exception>>   {
          let mut value: i64 = 0;
          let mut i: i32 = 0;
          let mut b: i64;
@@ -91,7 +91,7 @@ impl SerializationUtil {
    /// @return the read {@code long} value
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  read_signed_var_int( data_input: &DataInput) -> /*  throws IOException */Result<i32, Rc<Exception>>   {
+    pub fn read_signed_var_int( data_input: &DataInput) -> /*  throws IOException */Result<i32, Rc<Exception>>   {
          let raw: i32 = ::read_unsigned_var_int(&data_input);
          let temp: i32 = (((raw << 31) >> 31) ^ raw) >> 1;
         return Ok(temp ^ (raw & (1 << 31)));
@@ -104,7 +104,7 @@ impl SerializationUtil {
    /// @return the read {@code int} value
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  read_unsigned_var_int( data_input: &DataInput) -> /*  throws IOException */Result<i32, Rc<Exception>>   {
+    pub fn read_unsigned_var_int( data_input: &DataInput) -> /*  throws IOException */Result<i32, Rc<Exception>>   {
          let mut value: i32 = 0;
          let mut i: i32 = 0;
          let mut b: i32;
@@ -129,7 +129,7 @@ impl SerializationUtil {
    /// @return the {@code byte[]}
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  write( histogram: &Histogram) -> /*  throws IOException */Result<Vec<i8>, Rc<Exception>>   {
+    pub fn write( histogram: &Histogram) -> /*  throws IOException */Result<Vec<i8>, Rc<Exception>>   {
         return Ok(::to_byte_array(Histogram::write, histogram));
     }
 
@@ -144,7 +144,7 @@ impl SerializationUtil {
    /// @return the {@link Histogram}
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  read_as_static( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    pub fn read_as_static( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
         return Ok(::from_byte_array( data_input: & -> Histogram::read_as_static(layout, data_input), &serialized_histogram));
     }
 
@@ -159,7 +159,7 @@ impl SerializationUtil {
    /// @return the {@link Histogram}
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  read_as_dynamic( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    pub fn read_as_dynamic( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
         return Ok(::from_byte_array( data_input: & -> Histogram::read_as_dynamic(layout, data_input), &serialized_histogram));
     }
 
@@ -174,7 +174,7 @@ impl SerializationUtil {
    /// @return the {@link Histogram}
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  read_as_preprocessed( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    pub fn read_as_preprocessed( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
         return Ok(::from_byte_array( data_input: & -> Histogram::read_as_preprocessed(layout, data_input), &serialized_histogram));
     }
 
@@ -190,7 +190,7 @@ impl SerializationUtil {
    /// @return the {@code byte[]}
    /// @throws IOException if an I/O error occurs
    ///
-    pub fn  write_compressed( histogram: &Histogram) -> /*  throws IOException */Result<Vec<i8>, Rc<Exception>>   {
+    pub fn write_compressed( histogram: &Histogram) -> /*  throws IOException */Result<Vec<i8>, Rc<Exception>>   {
         return Ok(::compress(&::write(histogram)));
     }
 
@@ -206,7 +206,7 @@ impl SerializationUtil {
    /// @throws IOException if an I/O error occurs
    /// @throws DataFormatException if a data format error occurs
    ///
-    pub fn  read_compressed_as_static( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws DataFormatException, IOException */Result<Histogram, Rc<Exception>>   {
+    pub fn read_compressed_as_static( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws DataFormatException, IOException */Result<Histogram, Rc<Exception>>   {
         return Ok(::read_as_static(layout, &::decompress(&serialized_histogram)));
     }
 
@@ -222,7 +222,7 @@ impl SerializationUtil {
    /// @throws IOException if an I/O error occurs
    /// @throws DataFormatException if a data format error occurs
    ///
-    pub fn  read_compressed_as_dynamic( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException, DataFormatException */Result<Histogram, Rc<Exception>>   {
+    pub fn read_compressed_as_dynamic( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException, DataFormatException */Result<Histogram, Rc<Exception>>   {
         return Ok(::read_as_dynamic(layout, &::decompress(&serialized_histogram)));
     }
 
@@ -238,11 +238,11 @@ impl SerializationUtil {
    /// @throws IOException if an I/O error occurs
    /// @throws DataFormatException if a data format error occurs
    ///
-    pub fn  read_compressed_as_preprocessed( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException, DataFormatException */Result<Histogram, Rc<Exception>>   {
+    pub fn read_compressed_as_preprocessed( layout: &Layout,  serialized_histogram: &Vec<i8>) -> /*  throws IOException, DataFormatException */Result<Histogram, Rc<Exception>>   {
         return Ok(::read_as_preprocessed(layout, &::decompress(&serialized_histogram)));
     }
 
-    fn  compress( data: &Vec<i8>) -> /*  throws IOException */Result<Vec<i8>, Rc<Exception>>   {
+    fn compress( data: &Vec<i8>) -> /*  throws IOException */Result<Vec<i8>, Rc<Exception>>   {
         let tryResult1 = 0;
         'try1: loop {
         ( let output_stream: ByteArrayOutputStream = ByteArrayOutputStream::new()) {
@@ -263,7 +263,7 @@ impl SerializationUtil {
 
     }
 
-    fn  decompress( data: &Vec<i8>) -> /*  throws DataFormatException, IOException */Result<Vec<i8>, Rc<Exception>>   {
+    fn decompress( data: &Vec<i8>) -> /*  throws DataFormatException, IOException */Result<Vec<i8>, Rc<Exception>>   {
         let tryResult1 = 0;
         'try1: loop {
         ( let output_stream: ByteArrayOutputStream = ByteArrayOutputStream::new(data.len())) {

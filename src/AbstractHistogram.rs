@@ -4,26 +4,25 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 
- const DEFAULT_QUANTILE_ESTIMATOR: QuantileEstimator = SciPyQuantileEstimator::create();
+const DEFAULT_QUANTILE_ESTIMATOR: QuantileEstimator = SciPyQuantileEstimator::create();
 
- const DEFAULT_VALUE_ESTIMATOR: ValueEstimator = ValueEstimator::UNIFORM;
+const DEFAULT_VALUE_ESTIMATOR: impl ValueEstimation = ValueEstimatorUniform.new();
 
- const ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES: i64 = 4;
+const ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES: i64 = 4;
 
  const ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES: i64 = 12;
 #[derive(Histogram)]
 struct AbstractHistogram {
-
-     let layout: Layout;
+    layout: impl Layout,
 }
 
 impl AbstractHistogram {
 
     pub fn new( layout: &Layout) -> AbstractHistogram {
-        let .layout = require_non_null(layout);
+        let layout = require_non_null(layout);
     }
 
-    fn  format_counts(&self) -> String  {
+    fn format_counts(&self) -> String  {
         if get_total_count() == 0 {
             return "{}";
         }
@@ -37,18 +36,18 @@ impl AbstractHistogram {
         return builder.to_string();
     }
 
-    pub fn  to_string(&self) -> String  {
+    pub fn to_string(&self) -> String  {
         return format!("{} [layout={}, underFlowCount={}, overFlowCount={}, totalCount={}, min={}, max={}, counts={}]", get_class().get_simple_name(), self.get_layout(), get_underflow_count(), get_overflow_count(), get_total_count(), get_min(), get_max(), self.format_counts());
     }
 
-    pub fn  hash_code(&self) -> i32  {
+    pub fn hash_code(&self) -> i32  {
          let prime: i32 = 31;
          let mut result: i32 = 1;
         result = prime * result + self.get_layout().hash_code();
          let mut temp: i64;
-        temp = Double::double_to_long_bits(&get_max());
+        temp = to_bits_nan_collapse(get_max());
         result = prime * result + (temp ^ (temp >> /* >>> */ 32)) as i32;
-        temp = Double::double_to_long_bits(&get_min());
+        temp = to_bits_nan_collapse(get_min());
         result = prime * result + (temp ^ (temp >> /* >>> */ 32)) as i32;
         // hash only count values together with bin indices that are larger than 0
         if get_total_count() > 0 {
@@ -66,7 +65,7 @@ impl AbstractHistogram {
         return result;
     }
 
-    pub fn  equals(&self,  obj: &Object) -> bool  {
+    pub fn equals(&self,  obj: &Object) -> bool  {
         if self == obj {
             return true;
         }
@@ -94,11 +93,11 @@ impl AbstractHistogram {
         return true;
     }
 
-    pub fn  get_layout(&self) -> Layout  {
+    pub fn get_layout(&self) -> Layout  {
         return self.layout;
     }
 
-    pub fn  get_bin_by_rank(&self,  rank: i64) -> BinIterator  {
+    pub fn get_bin_by_rank(&self,  rank: i64) -> BinIterator  {
          let total_count: i64 = get_total_count();
         check_argument(rank >= 0);
         check_argument(rank < total_count);
@@ -117,46 +116,46 @@ impl AbstractHistogram {
         return bin_iterator;
     }
 
-    pub fn  is_empty(&self) -> bool  {
+    pub fn is_empty(&self) -> bool  {
         return get_total_count() == 0;
     }
 
-    pub fn  get_value(&self,  rank: i64,  value_estimator: &ValueEstimator) -> f64  {
+    pub fn get_value_from_estimator(&self,   rank: i64,   value_estimator: &ValueEstimator) -> f64  {
         require_non_null(value_estimator);
         return value_estimator.get_value_estimate(self, rank);
     }
 
-    pub fn  get_value(&self,  rank: i64) -> f64  {
-        return self.get_value(rank, DEFAULT_VALUE_ESTIMATOR);
+    pub fn get_value(&self,  rank: i64) -> f64  {
+        return self.get_value_from_estimator(rank, DEFAULT_VALUE_ESTIMATOR);
     }
 
-    pub fn  get_preprocessed_copy(&self) -> Histogram  {
+    pub fn get_preprocessed_copy(&self) -> Histogram  {
         return PreprocessedHistogram::of(self);
     }
 
-    pub fn  get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator,  value_estimator: &ValueEstimator) -> f64  {
-        return quantile_estimator.estimate_quantile(p,  rank: & -> self.get_value(rank, value_estimator), &get_total_count());
+    pub fn get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator,  value_estimator: &ValueEstimator) -> f64  {
+        return quantile_estimator.estimate_quantile(p,  rank: & -> self.get_value_from_estimator(rank,  value_estimator),  &get_total_count());
     }
 
-    pub fn  get_quantile(&self,  p: f64,  value_estimator: &ValueEstimator) -> f64  {
+    pub fn get_quantile(&self,  p: f64,  value_estimator: &ValueEstimator) -> f64  {
         return self.get_quantile(p, DEFAULT_QUANTILE_ESTIMATOR, value_estimator);
     }
 
-    pub fn  get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator) -> f64  {
+    pub fn get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator) -> f64  {
         return self.get_quantile(p, quantile_estimator, DEFAULT_VALUE_ESTIMATOR);
     }
 
-    pub fn  get_quantile(&self,  p: f64) -> f64  {
+    pub fn get_quantile(&self,  p: f64) -> f64  {
         return self.get_quantile(p, DEFAULT_QUANTILE_ESTIMATOR);
     }
 
-    pub fn  get_estimated_footprint_in_bytes(&self) -> i64  {
+    pub fn get_estimated_footprint_in_bytes(&self) -> i64  {
         return // layout
         ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES + // object header for this object
         ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES;
     }
 
-    pub fn  add_histogram(&self,  histogram: &Histogram) -> Histogram  {
+    pub fn add_histogram(&self,  histogram: &Histogram) -> Histogram  {
         return self.add_histogram(histogram, DEFAULT_VALUE_ESTIMATOR);
     }
 
@@ -166,22 +165,22 @@ impl AbstractHistogram {
 
     impl AbstractNonEmptyBinsIterable {
 
-        pub fn  get_start(&self) -> BinIterator ;
+        pub fn get_start(&self) -> BinIterator ;
 
-        pub fn  advance_bin_iterator(&self,  bin_iterator: &BinIterator)  ;
+        pub fn advance_bin_iterator(&self,  bin_iterator: &BinIterator)  ;
 
-        pub fn  is_at_end(&self,  bin_iterator: &BinIterator) -> bool ;
+        pub fn is_at_end(&self,  bin_iterator: &BinIterator) -> bool ;
 
-        pub fn  iterator(&self) -> Iterator<Bin>  {
+        pub fn iterator(&self) -> Iterator<Bin>  {
             return Iterator<>::new() {
 
                  let mut it: BinIterator = null;
 
-                pub fn  has_next(&self) -> bool  {
+                pub fn has_next(&self) -> bool  {
                     return self.it == null || !self.is_at_end(self.it);
                 }
 
-                pub fn  next(&self) -> Bin  {
+                pub fn next(&self) -> Bin  {
                     if self.it != null {
                         self.advance_bin_iterator(self.it);
                     } else {
@@ -192,7 +191,7 @@ impl AbstractHistogram {
             };
         }
 
-        pub fn  for_each(&self,  action: &Consumer<? super Bin>)   {
+        pub fn for_each(&self,  action: &Consumer<? super Bin>)   {
              let it: BinIterator = self.get_start();
             action.accept(&it.get_bin_copy());
             while !self.is_at_end(it) {
@@ -203,43 +202,43 @@ impl AbstractHistogram {
     }
 
 
-    pub fn  non_empty_bins_ascending(&self) -> Iterable<Bin>  {
+    pub fn non_empty_bins_ascending(&self) -> Iterable<Bin>  {
         if self.is_empty() {
             return Collections::empty_list();
         }
 
         return AbstractNonEmptyBinsIterable::new() {
 
-            pub fn  get_start(&self) -> BinIterator  {
+            pub fn get_start(&self) -> BinIterator  {
                 return get_first_non_empty_bin();
             }
 
-            pub fn  advance_bin_iterator(&self,  bin_iterator: &BinIterator)   {
+            pub fn advance_bin_iterator(&self,  bin_iterator: &BinIterator)   {
                 bin_iterator.next();
             }
 
-            pub fn  is_at_end(&self,  bin_iterator: &BinIterator) -> bool  {
+            pub fn is_at_end(&self,  bin_iterator: &BinIterator) -> bool  {
                 return bin_iterator.is_last_non_empty_bin();
             }
         };
     }
 
-    pub fn  non_empty_bins_descending(&self) -> Iterable<Bin>  {
+    pub fn non_empty_bins_descending(&self) -> Iterable<Bin>  {
         if self.is_empty() {
             return Collections::empty_list();
         }
 
         return AbstractNonEmptyBinsIterable::new() {
 
-            pub fn  get_start(&self) -> BinIterator  {
+            pub fn get_start(&self) -> BinIterator  {
                 return get_last_non_empty_bin();
             }
 
-            pub fn  advance_bin_iterator(&self,  bin_iterator: &BinIterator)   {
+            pub fn advance_bin_iterator(&self,  bin_iterator: &BinIterator)   {
                 bin_iterator.previous();
             }
 
-            pub fn  is_at_end(&self,  bin_iterator: &BinIterator) -> bool  {
+            pub fn is_at_end(&self,  bin_iterator: &BinIterator) -> bool  {
                 return bin_iterator.is_first_non_empty_bin();
             }
         };

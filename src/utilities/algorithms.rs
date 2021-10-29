@@ -82,12 +82,22 @@ pub trait Algorithms: Preconditions {
     // The "canonical" NAN value is the bits of 0x7ff8000000000000L.
     // Whereas Java's Java.lang.Double.doubleToRawLongBits and Rust's
     // f64::to_bits do not collapse all bit patterns in this way.
+    //
     fn to_bits_nan_collapse(x: f64) {
         if x.is_nan() {
             f64::NAN.to_bits()
         } else {
             x.to_bits()
         }
+    }
+
+    // Replicate Java self.min_normal_f64():
+    // "A constant holding the smallest positive normal value of type float
+    // 2-126. It is equal to the hexadecimal floating-point literal
+    // 0x1.0p-126f and also equal to Float.intBitsToFloat(0x00800000)."
+    //
+    fn min_normal_f64() -> f64 {
+        f64::from_bits(0x00800000)
     }
 
     /// Calculates the midpoint of two given {@code long} values rounded down to the nearest {@code

@@ -10,17 +10,17 @@ pub struct LogLinearLayoutTest {
 impl LogLinearLayoutTest {
 
     #[test]
-    pub fn  test(&self)   {
+    pub fn test(&self)   {
         assert_true(4.0 * StrictMath::log1p(f64::MAX) <= 2840.0);
     }
 
     #[test]
-    pub fn  test_map_to_bin_index_helper_special_values(&self)   {
+    pub fn test_map_to_bin_index_helper_special_values(&self)   {
         assert_eq!(2049.0, &LogLinearLayout::map_to_bin_index_helper(i64::MAX), 0.0);
         assert_eq!(2049.0, &LogLinearLayout::map_to_bin_index_helper(0x7fffffffffffffff), 0.0);
-        assert_eq!(2048.5, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(f64::NAN)), 0.0);
-        assert_eq!(2048.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(f64::INFINITY)), 0.0);
-        assert_eq!(2.0, &LogLinearLayout::map_to_bin_index_helper(&Double::double_to_long_bits(Double::MIN_NORMAL)), 0.0);
+        assert_eq!(2048.5, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(f64::NAN)), 0.0);
+        assert_eq!(2048.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(f64::INFINITY)), 0.0);
+        assert_eq!(2.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(self.min_normal_f64())), 0.0);
         assert_eq!(1.0, &LogLinearLayout::map_to_bin_index_helper(0), 0.0);
         assert_eq!(1022.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.25)), 0.0);
         assert_eq!(1023.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.5)), 0.0);
@@ -31,12 +31,12 @@ impl LogLinearLayoutTest {
         assert_eq!(1028.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(16.0)), 0.0);
     }
 
-    pub fn  create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout  {
+    pub fn create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout  {
         return LogLinearLayout::create(absolute_bin_width_limit, relative_bin_width_limit, value_range_lower_bound, value_range_upper_bound);
     }
 
     #[test]
-    pub fn  test_overflow_and_underflow_indices(&self)   {
+    pub fn test_overflow_and_underflow_indices(&self)   {
         {
              let layout: LogLinearLayout = LogLinearLayout::create(1e-7, 1e-6, -1e12, 1e12);
             assert_eq!(44219012, &layout.get_overflow_bin_index());
@@ -50,7 +50,7 @@ impl LogLinearLayoutTest {
     }
 
     #[test]
-    pub fn  test_serialization(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test_serialization(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
          let value_range_upper_bound: f64 = 1e7;
          let value_range_lower_bound: f64 = -1e6;
          let relative_bin_width_limit: f64 = 1e-3;
@@ -61,13 +61,13 @@ impl LogLinearLayoutTest {
     }
 
     #[test]
-    pub fn  test_to_string(&self)   {
+    pub fn test_to_string(&self)   {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
         assert_eq!("LogLinearLayout [absoluteBinWidthLimit=1.0E-8, relativeBinWidthLimit=0.01, underflowBinIndex=-4107, overflowBinIndex=4106]", &layout.to_string());
     }
 
     #[test]
-    pub fn  test_get_width(&self)   {
+    pub fn test_get_width(&self)   {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_static(layout);
         histogram.add_value(0);
@@ -77,7 +77,7 @@ impl LogLinearLayoutTest {
     }
 
     #[test]
-    pub fn  test_equals(&self)   {
+    pub fn test_equals(&self)   {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
         assert_false(&layout.equals(null));
         assert_false(&layout.equals(&LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6)));
@@ -88,7 +88,7 @@ impl LogLinearLayoutTest {
     }
 
     #[test]
-    pub fn  test_initial_guesses(&self)   {
+    pub fn test_initial_guesses(&self)   {
          let absolute_bin_width_limits: vec![Vec<f64>; 10] = vec![1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
         ;
          let relative_bin_width_limits: vec![Vec<f64>; 12] = vec![0.0, 1e-100, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
@@ -109,7 +109,7 @@ impl LogLinearLayoutTest {
     }
 
     #[test]
-    pub fn  test_hash_code(&self)   {
+    pub fn test_hash_code(&self)   {
         assert_eq!(-1299004750, &self.create_layout(1e-6, 1e-4, -10, 1000).hash_code());
     }
 }

@@ -8,14 +8,14 @@ pub struct AbstractErrorLimitingLayoutTest {
 
 impl AbstractErrorLimitingLayoutTest {
 
-    pub fn  create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout ;
+    pub fn create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout ;
 
-    pub fn  assert_index_symmetry(&self,  idx: i32,  negative_idx: i32)   {
+    pub fn assert_index_symmetry(&self,  idx: i32,  negative_idx: i32)   {
         assert_eq!(-idx - 1, negative_idx);
     }
 
     #[test]
-    pub fn  test1(&self)   {
+    pub fn test1(&self)   {
          let layout: Layout = self.create_layout(1e-6, 0.001, 0, 1);
         assert_true(layout.get_underflow_bin_index() >= layout.map_to_bin_index(f64::NEG_INFINITY));
         assert_true(layout.get_overflow_bin_index() <= layout.map_to_bin_index(f64::INFINITY));
@@ -24,7 +24,7 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn  test_general(&self)   {
+    pub fn test_general(&self)   {
          let absolute_bin_width_limits: vec![Vec<f64>; 4] = vec![1e0, 1e1, 1e2, 1e3, ]
         ;
          let relative_bin_width_limits: vec![Vec<f64>; 8] = vec![0.0, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
@@ -80,7 +80,7 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn  test_large_layout(&self)   {
+    pub fn test_large_layout(&self)   {
          let layout: Layout = self.create_layout(1e-6, 1e-3, -1e12, 1e12);
          {
              let bin_index: i32 = layout.get_underflow_bin_index() + 1;
@@ -96,7 +96,7 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn  test_get_bin_lower_bound_approximation(&self)   {
+    pub fn test_get_bin_lower_bound_approximation(&self)   {
          let absolute_bin_width_limit: f64 = 1;
          let relative_bin_width_limit: f64 = 0.01;
          let eps: f64 = 1e-4;
@@ -120,8 +120,8 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn  test_create_equidistant_layout(&self)   {
-         let absolute_error_limits: vec![Vec<f64>; 4] = vec![Double::MIN_NORMAL, 1.0, 100.0, f64::MAX / Integer::MAX_VALUE, ]
+    pub fn test_create_equidistant_layout(&self)   {
+         let absolute_error_limits: vec![Vec<f64>; 4] = vec![self.min_normal_f64(), 1.0, 100.0, f64::MAX / Integer::MAX_VALUE, ]
         ;
         for  let absolute_error_limit: f64 in absolute_error_limits {
             self.create_layout(absolute_error_limit, 0, 0, absolute_error_limit * (Integer::MAX_VALUE - 1.0));
@@ -130,7 +130,7 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn  test_create(&self)   {
+    pub fn test_create(&self)   {
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, -1e6, f64::INFINITY));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, f64::NEG_INFINITY, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, 1e6, 1e-6));
@@ -139,8 +139,8 @@ impl AbstractErrorLimitingLayoutTest {
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-10, 1e-6, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-10, i64::MIN, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-9, 1e-6, 1e6));
-        self.create_layout(Double::MIN_NORMAL, 0, 0, 1000 * Double::MIN_NORMAL);
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(Double::MIN_NORMAL, 0, 0, f64::MAX));
+        self.create_layout(self.min_normal_f64(), 0, 0, 1000 * self.min_normal_f64());
+        assert_throws(IllegalArgumentException.class, () -> self.create_layout(self.min_normal_f64(), 0, 0, f64::MAX));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(-1, 1e-2, -1e6, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, -1, -1e6, 1e6));
         assert_throws(IllegalArgumentException.class, () -> self.create_layout(f64::INFINITY, 1, -1e6, 1e6));
@@ -151,7 +151,7 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn  test_same_equals(&self)   {
+    pub fn test_same_equals(&self)   {
          let layout: Layout = self.create_layout(1e-8, 1e-2, -1e6, 1e6);
         assert_eq!(layout, layout);
     }

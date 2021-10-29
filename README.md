@@ -22,6 +22,16 @@ The crate contains all upstream bin layout implementations:
 - OpenTelemetryLayout
 - CustomLayout
 
+https://docs.rs/approx/0.5.0/approx/
+https://docs.rs/bytestream/0.4.1/bytestream/
+https://docs.rs/decorum/0.3.1/decorum
+https://docs.rs/static_assertions/1.1.0/static_assertions/
+https://docs.rs/quickcheck/1.0.3/quickcheck/index.html
+
+https://docs.capnproto-rust.org/capnpc/
+https://rustrepo.com/repo/djkoloski-rust_serialization_benchmark-rust-testing
+https://rustrepo.com/repo/japaric-trust-rust-testing
+
 ## What is DynaHist
 
 Users are encouraged to read:

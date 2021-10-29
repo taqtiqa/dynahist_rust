@@ -23,7 +23,7 @@ impl LayoutSerialization {
 
     // new layout implementations must be registered before
     // serialization/deserialization
-    fn  register( definitions: &Vec<LayoutSerializationDefinition>)   {
+    fn register( definitions: &Vec<LayoutSerializationDefinition>)   {
         if definitions == null {
             return;
         }
@@ -46,7 +46,7 @@ impl LayoutSerialization {
         class_to_definitions = HashMap<>::new(&new_class_to_definitions);
     }
 
-    fn  write( layout: &Layout,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    fn write( layout: &Layout,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
          let definition: LayoutSerializationDefinition = class_to_definitions.get(&layout.get_class());
         if definition == null {
             throw IOException::new(format!("{} has not been registered for serialization!", layout.get_class()));
@@ -55,7 +55,7 @@ impl LayoutSerialization {
         definition.writer.write(layout, &data_output);
     }
 
-    fn  read( data_input: &DataInput) -> /*  throws IOException */Result<Layout, Rc<Exception>>   {
+    fn read( data_input: &DataInput) -> /*  throws IOException */Result<Layout, Rc<Exception>>   {
          let serialization_version: i64 = data_input.read_long();
          let definition: LayoutSerializationDefinition = serial_to_definitions.get(serialization_version);
         if definition == null {

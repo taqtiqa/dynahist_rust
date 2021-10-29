@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate static_assertions;
+
 // Enumerated errors
 mod errors;
 
@@ -11,3 +14,4 @@ mod bins;
 mod layouts;
 
 pub mod histogram;
+pub use crate::histogram::Histogram;

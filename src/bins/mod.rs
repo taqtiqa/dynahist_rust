@@ -1,3 +1,3 @@
-mod bin;
-mod abstract_bin;
-mod bin_iterator;
+pub(crate) mod abstract_bin;
+pub(crate) mod bin;
+pub(crate) mod bin_iterator;

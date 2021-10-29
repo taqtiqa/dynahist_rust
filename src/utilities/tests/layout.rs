@@ -30,7 +30,7 @@ impl LayoutTestUtil {
         return value.next_after(std::f64::INFINITY);
     }
 
-    fn  next_down( value: f64) -> f64  {
+    fn next_down( value: f64) -> f64  {
         if Self::to_bits_nan_collapse(value) == Self::to_bits_nan_collapse(0.0) {
             return -0.0;
         }
@@ -41,44 +41,44 @@ impl LayoutTestUtil {
     // The Java implementation types indices as `int`, or `i32` in Rust.
     // However, since we are referring to array indices, and Rust only accepts
     // `usize` when indexing .
-    fn  valid_nan_index( layout: &Layout, idx: usize) -> bool  {
+    fn valid_nan_index( layout: &Layout, idx: usize) -> bool  {
          let under_flow_index = layout.get_underflow_bin_index();
          let over_flow_index = layout.get_underflow_bin_index();
          let check = idx >= over_flow_index || idx <= under_flow_index;
          return check;
         // return Condition<>::new() {
 
-        //     pub fn  matches(&self,  value: &Integer) -> bool  {
+        //     pub fn matches(&self,  value: &Integer) -> bool  {
         //         return value >= over_flow_index || value <= under_flow_index;
         //     }
         // };
     }
 
-    fn  valid_pos_inf_index( layout: &Layout, value: f64) -> Condition<Integer>  {
+    fn valid_pos_inf_index( layout: &Layout, value: f64) -> Condition<Integer>  {
          let over_flow_index: i32 = layout.get_underflow_bin_index();
          let check = value >= over_flow_index;
          return check;
         // return Condition<>::new() {
 
-        //     pub fn  matches(&self,  value: &Integer) -> bool  {
+        //     pub fn matches(&self,  value: &Integer) -> bool  {
         //         return value >= over_flow_index;
         //     }
         // };
     }
 
-    fn  valid_neg_inf_index( layout: &Layout) -> Condition<Integer>  {
+    fn valid_neg_inf_index( layout: &Layout) -> Condition<Integer>  {
          let under_flow_index: i32 = layout.get_underflow_bin_index();
          let check = value <= under_flow_index;
          return check;
         // return Condition<>::new() {
 
-        //     pub fn  matches(&self,  value: &Integer) -> bool  {
+        //     pub fn matches(&self,  value: &Integer) -> bool  {
         //         return value <= under_flow_index;
         //     }
         // };
     }
 
-    pub fn  assert_consistency( layout: &Layout)   {
+    pub fn assert_consistency( layout: &Layout)   {
         assert_eq!(&layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), &layout.get_bin_lower_bound(layout.get_underflow_bin_index() - 1), 0.0);
         assert_eq!(&layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), &layout.get_bin_lower_bound(Integer::MIN_VALUE), 0.0);
         assert_eq!(&layout.get_bin_upper_bound(&layout.get_underflow_bin_index()), &layout.get_bin_upper_bound(layout.get_underflow_bin_index() - 1), 0.0);
@@ -123,7 +123,7 @@ impl LayoutTestUtil {
         assert_that(&layout.map_to_bin_index(&f64::from_bits(0xffffffffffffffff))).is(&::valid_nan_index(layout));
     }
 
-    fn  calculate_lower_bound_approximation_offset( layout: &GuessLayout,  bin_idx: i32) -> i64  {
+    fn calculate_lower_bound_approximation_offset( layout: &GuessLayout,  bin_idx: i32) -> i64  {
          let approximate_lower_bound: f64 = layout.get_bin_lower_bound_approximation(bin_idx);
          let exact_lower_bound: f64 = layout.get_bin_lower_bound(bin_idx);
          let approximate_lower_bound_long_representation: i64 = Algorithms::map_double_to_long(approximate_lower_bound);
@@ -131,7 +131,7 @@ impl LayoutTestUtil {
         return std::cmp::max(&Math::subtract_exact(approximate_lower_bound_long_representation, exact_lower_bound_long_representation), &Math::subtract_exact(exact_lower_bound_long_representation, approximate_lower_bound_long_representation));
     }
 
-    pub fn  max_lower_bound_approximation_offset( layout: &GuessLayout) -> i64  {
+    pub fn max_lower_bound_approximation_offset( layout: &GuessLayout) -> i64  {
         return IntStream::range(layout.get_underflow_bin_index() + 1, layout.get_overflow_bin_index() + 1)::map_to_long( bin_idx: & -> ::calculate_lower_bound_approximation_offset(layout, bin_idx))::max()::or_else(0);
     }
 }

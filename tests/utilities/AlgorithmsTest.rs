@@ -11,7 +11,7 @@ impl Preconditions for AlgorithmsTest { }
 impl Algorithms for AlgorithmsTest {
 
     #[test]
-    fn  test_interpolate(&self)   {
+    fn test_interpolate(&self)   {
         assert_eq!(4.5, interpolate(3.5, 3, 4, 4, 5), 0.0);
         assert_eq!(4.5, interpolate(3, 3, 4, 3, 5), 0.0);
         assert_eq!(4.5, interpolate(2, 3, 4, 3, 5), 0.0);
@@ -72,7 +72,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn  test_interpolate_symmetry(&self)   {
+    fn test_interpolate_symmetry(&self)   {
          let random: Random = Random::new(0);
          let num_test_cycles: i32 = 1000;
          {
@@ -131,7 +131,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn  test_interpolate_na_n(&self)   {
+    fn test_interpolate_na_n(&self)   {
         assert_eq!(f64::NAN, interpolate(f64::NAN, 3, 4, 4, 5), 0.0);
         assert_eq!(f64::NAN, interpolate(3.5, f64::NAN, 4, 4, 5), 0.0);
         assert_eq!(f64::NAN, interpolate(3.5, 3, 4, f64::NAN, 5), 0.0);
@@ -261,7 +261,7 @@ impl Algorithms for AlgorithmsTest {
     // assertThrows(IllegalArgumentException.class, () -> Algorithms.findFirst(l -> false, -1, 1, -2));
     }
 
-    fn  test_find_first_with_initial_guess( first_true_index: i64,  min: i64,  max: i64,  initial_guess: i64,  max_num_evaluations: i32)   {
+    fn test_find_first_with_initial_guess( first_true_index: i64,  min: i64,  max: i64,  initial_guess: i64,  max_num_evaluations: i32)   {
          let evaluated_values: Set<Long> = HashSet<>::new();
          let predicate: LongPredicate =  value: & -> {
             assert_true(&evaluated_values.add(value));
@@ -271,7 +271,7 @@ impl Algorithms for AlgorithmsTest {
         assert_that(&evaluated_values.size()).is_less_than_or_equal_to(max_num_evaluations);
     }
 
-    fn  test_find_first( first_true_index: i64,  min: i64,  max: i64,  max_num_evaluations: i32)   {
+    fn test_find_first( first_true_index: i64,  min: i64,  max: i64,  max_num_evaluations: i32)   {
          let evaluated_values: Set<Long> = HashSet<>::new();
          let predicate: LongPredicate =  value: & -> {
             assert_true(&evaluated_values.add(value));

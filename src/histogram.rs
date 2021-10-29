@@ -3,33 +3,41 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::bins::bin_iterator::BinIterator;
+use crate::bins::bin::Bin;
 use crate::layouts::layout::Layout;
+use crate::utilities::Algorithms;
+//use crate::utilities::data::{ DataInput, DataOutput };
+use crate::utilities::Preconditions;
+
+// Use associated types to preserve static dispatch
 pub trait Histogram {
+    type L: Layout + Preconditions + Algorithms;
+    type B: BinIterator + Bin;
 
 
    /// Return the underlying [`Layout`] of the histogram.
    ///
-    fn  get_layout(&self) -> Layout ;
+    fn get_layout(&self) -> &Self::L {}
 
-
-   /// Return a {@link BinIterator} representing the first non-empty bin.
+   /// Return a type that implements [`BinIterator`], representing the first
+   /// non-empty bin.
    ///
    /// Must not be called if the histogram is empty.
    ///
-   /// @return a {@link BinIterator} representing the first non-empty bin.
+   /// @return a [`BinIterator`] representing the first non-empty bin.
    /// @throws NoSuchElementException if the histogram is empty
    ///
-    fn  get_first_non_empty_bin(&self) -> BinIterator ;
+    fn get_first_non_empty_bin(&self) -> &Self::B ;
 
-
-   /// Return a {@link BinIterator} representing the last non-empty bin.
+   /// Return a [`BinIterator`] representing the last non-empty bin.
    ///
    /// Must not be called if the histogram is empty.
    ///
-   /// @return a {@link BinIterator} representing last non-empty bin.
+   /// @return a [`BinIterator`] representing last non-empty bin.
    /// @throws NoSuchElementException if the histogram is empty
    ///
-    fn  get_last_non_empty_bin(&self) -> BinIterator ;
+    fn get_last_non_empty_bin(&self) -> &Self::B ;
 
 
    /// Return a bin iterator, representing the bin containing the value with given rank (0-based)
@@ -42,7 +50,7 @@ pub trait Histogram {
    /// @param rank, must be greater than or equal to 0 and smaller than {@link #getTotalCount()}
    /// @return bin iterator, representing the bin containing the value with given order (0-based)
    ///
-    fn  get_bin_by_rank(&self,  rank: i64) -> BinIterator ;
+    fn get_bin_by_rank(&self,  rank: i64) -> &Self::B ;
 
 
    /// Return the number of added values greater than {@link Layout#getNormalRangeUpperBound()}.
@@ -51,7 +59,7 @@ pub trait Histogram {
    ///
     fn get_overflow_count(&self) -> i64  {
         if !self.is_empty() {
-             let it: BinIterator = self.get_last_non_empty_bin();
+             let it: &Self::B = self.get_last_non_empty_bin();
             if it.is_overflow_bin() {
                 return it.get_bin_count();
             }
@@ -66,7 +74,7 @@ pub trait Histogram {
    ///
     fn get_underflow_count(&self) -> i64  {
         if !self.is_empty() {
-             let it: BinIterator = self.get_first_non_empty_bin();
+             let it: &Self::B = self.get_first_non_empty_bin();
             if it.is_underflow_bin() {
                 return it.get_bin_count();
             }
@@ -79,40 +87,32 @@ pub trait Histogram {
    ///
    /// @return the total number of added values
    ///
-    fn  get_total_count(&self) -> i64 ;
+    fn get_total_count(&self) -> i64 ;
 
 
    /// Return the minimum of all added values.
    ///
-   /// Return {@link Double#POSITIVE_INFINITY} if the histogram is empty.
+   /// Return [`f64::NEG_INFINITY`] if the histogram is empty.
    ///
-   /// @return the minimum of all added values
-   ///
-    fn  get_min(&self) -> f64 ;
+    fn get_min(&self) -> f64 ;
 
 
    /// Return the maximum of all added values.
    ///
-   /// Return {@link f64::NEG_INFINITY} if the histogram is empty.
+   /// Return [`f64::NEG_INFINITY`] if the histogram is empty.
    ///
-   /// @return the maximum of all added values
-   ///
-    fn  get_max(&self) -> f64 ;
+    fn get_max(&self) -> f64 ;
 
 
    /// Return the number of values added to histogram bin with given index.
    ///
    /// @param bin_index the histogram bin index
-   /// @return the number of values added to histogram bin with given index
-   ///
-    fn  get_count(&self,  bin_index: i32) -> i64 ;
+    fn get_count(&self,  bin_index: i32) -> i64 ;
 
 
    /// Return {@code true} if this histogram is empty.
    ///
-   /// @return {@code true} if this histogram is empty
-   ///
-    fn  is_empty(&self) -> bool ;
+    fn is_empty(&self) -> bool ;
 
 
    /// Return an estimation for the value with given (zero-based) rank using the default value
@@ -135,11 +135,11 @@ pub trait Histogram {
    /// @param rank the zero-based rank, must be nonnegative and less than {@link #getTotalCount()}
    /// @return an approximation for the value with given rank
    ///
-    fn  get_value(&self,  rank: i64) -> f64 ;
+    fn get_value(&self,  rank: i64) -> f64 ;
 
 
-   /// Return an estimation for the value with given (zero-based) rank using the given value
-   /// estimator.
+   /// Return an estimate of the value with given (zero-based) rank, using
+   /// the given value estimator.
    ///
    /// It is guaranteed that the estimated values returned by this function are never less than
    /// {@link #getMin()} or greater than {@link #getMax()}. Furthermore, the estimated values will map
@@ -159,7 +159,7 @@ pub trait Histogram {
    /// @param valueEstimator the value estimator
    /// @return an approximation for the value with given rank
    ///
-    fn  get_value(&self,  rank: i64,  value_estimator: &ValueEstimator) -> f64 ;
+    fn get_value_from_estimator(&self,   rank: i64,   value_estimator: &ValueEstimator) -> f64 ;
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
@@ -175,7 +175,7 @@ pub trait Histogram {
    /// @param p the p-value in range [0,1]
    /// @return an estimate for the p-quantile
    ///
-    fn  get_quantile(&self,  p: f64) -> f64 ;
+    fn get_quantile(&self,  p: f64) -> f64 ;
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
@@ -190,7 +190,7 @@ pub trait Histogram {
    /// @param quantileEstimator the quantile estimator
    /// @return an estimate for the p-quantile
    ///
-    fn  get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator) -> f64 ;
+    fn get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator) -> f64 ;
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
@@ -205,7 +205,7 @@ pub trait Histogram {
    /// @param valueEstimator the value estimator
    /// @return an estimate for the p-quantile
    ///
-    fn  get_quantile(&self,  p: f64,  value_estimator: &ValueEstimator) -> f64 ;
+    fn get_quantile(&self,  p: f64,  value_estimator: &ValueEstimator) -> f64 ;
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
@@ -221,7 +221,7 @@ pub trait Histogram {
    /// @param valueEstimator the value estimator
    /// @return an estimate for the p-quantile
    ///
-    fn  get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator,  value_estimator: &ValueEstimator) -> f64 ;
+    fn get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator,  value_estimator: &ValueEstimator) -> f64 ;
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
@@ -232,7 +232,7 @@ pub trait Histogram {
    ///
    /// @return an immutable pre-processed copy of this histogram
    ///
-    fn  get_preprocessed_copy(&self) -> Histogram ;
+    fn get_preprocessed_copy(&self) -> Histogram ;
 
 
    /// Adds a given value to the histogram.
@@ -263,7 +263,7 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn  add_value(&self,  value: f64,  count: i64) -> Histogram ;
+    fn add_value(&self,  value: f64,  count: i64) -> Histogram ;
 
 
    /// Adds a given histogram to the histogram.
@@ -280,7 +280,7 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn  add_histogram(&self,  histogram: &Histogram) -> Histogram ;
+    fn add_histogram(&self,  histogram: &Histogram) -> Histogram ;
 
 
    /// Adds a given histogram to the histogram.
@@ -298,7 +298,7 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn  add_histogram(&self,  histogram: &Histogram,  value_estimator: &ValueEstimator) -> Histogram ;
+    fn add_histogram(&self,  histogram: &Histogram,  value_estimator: &ValueEstimator) -> Histogram ;
 
 
    /// Adds an ascending sequence to the histogram.
@@ -321,7 +321,7 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn  add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Histogram ;
+    fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Histogram ;
 
 
    /// Writes this histogram to a given {@link DataOutput}.
@@ -333,21 +333,21 @@ pub trait Histogram {
    /// @param dataOutput the {@link DataOutput}
    /// @throws IOException if an I/O error occurs
    ///
-    fn  write(&self,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>  ;
+    fn write(&self,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>  ;
 
 
    /// Provide an estimate of the histogram's total footprint in bytes
    ///
    /// @return estimate of the histogram's total footprint in bytes
    ///
-    fn  get_estimated_footprint_in_bytes(&self) -> i64 ;
+    fn get_estimated_footprint_in_bytes(&self) -> i64 ;
 
 
    /// Return {@code true} if the implementation supports add operations.
    ///
    /// @return {@code true} if add operations are supported
    ///
-    fn  is_mutable(&self) -> bool ;
+    fn is_mutable(&self) -> bool ;
 
 
    /// Create an empty {@link Histogram} that allocates internal arrays for bin counts dynamically.
@@ -357,7 +357,7 @@ pub trait Histogram {
    /// @param layout the [`Layout`] of the histogram
    /// @return an empty {@link Histogram}
    ///
-    fn  create_dynamic( layout: &Layout) -> Histogram  {
+    fn create_dynamic( layout: &Layout) -> Histogram  {
         return DynamicHistogram::new(layout);
     }
 
@@ -369,7 +369,7 @@ pub trait Histogram {
    /// @param layout the [`Layout`] of the histogram
    /// @return an empty {@link Histogram}
    ///
-    fn  create_static( layout: &Layout) -> Histogram  {
+    fn create_static( layout: &Layout) -> Histogram  {
         return StaticHistogram::new(layout);
     }
 
@@ -384,7 +384,7 @@ pub trait Histogram {
    /// @return the deserialized histogram
    /// @throws IOException if an I/O error occurs
    ///
-    fn  read_as_dynamic( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    fn read_as_dynamic( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
         return Ok(DynamicHistogram::read(layout, &data_input));
     }
 
@@ -399,7 +399,7 @@ pub trait Histogram {
    /// @return the deserialized histogram
    /// @throws IOException if an I/O error occurs
    ///
-    fn  read_as_static( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    fn read_as_static( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
         return Ok(StaticHistogram::read(layout, &data_input));
     }
 
@@ -414,7 +414,7 @@ pub trait Histogram {
    /// @return the deserialized histogram
    /// @throws IOException if an I/O error occurs
    ///
-    fn  read_as_preprocessed( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    fn read_as_preprocessed( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
         return Ok(DynamicHistogram::read(layout, &data_input)::get_preprocessed_copy());
     }
 
@@ -423,12 +423,12 @@ pub trait Histogram {
    ///
    /// @return the iterable
    ///
-    fn  non_empty_bins_ascending(&self) -> Iterable<Bin> ;
+    fn non_empty_bins_ascending(&self) -> Iterable<Bin> ;
 
 
    /// Return an {@link Iterable} over all non-empty bins in descending order.
    ///
    /// @return the iterable
    ///
-    fn  non_empty_bins_descending(&self) -> Iterable<Bin> ;
+    fn non_empty_bins_descending(&self) -> Iterable<Bin> ;
 }

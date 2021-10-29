@@ -23,7 +23,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// than or equal to [`get_underflow_bin_index`] or an index that is
     /// larger than or equal to [`get_overflow_bin_index`].
     ///
-    fn  map_to_bin_index(&self,  value: f64) -> i32 ;
+    fn map_to_bin_index(&self,  value: f64) -> i32 ;
 
 
     /// Return the maximum index that is associated with the underflow bin of the histogram.
@@ -32,7 +32,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     ///  `get_underflow_bin_index < get_overflow_bin_index()` always holds.
     ///
-    fn  get_underflow_bin_index(&self) -> usize ;
+    fn get_underflow_bin_index(&self) -> usize ;
 
    /// Return the minimum index that is associated with the overflow bin of the histogram.
    ///
@@ -40,7 +40,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
    ///
    /// `get_underflow_bin_index < get_overflow_bin_index()` always holds.
    ///
-    fn  get_overflow_bin_index(&self) -> usize ;
+    fn get_overflow_bin_index(&self) -> usize ;
 
     /// Return the lower bound of the bin; the smallest value that is mapped
     /// to the bin with the given bin index.
@@ -127,7 +127,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// In particular, an [`DynaHistError::IOError`] may result if the input
     /// stream has been closed, e.g. a network outage.
     ///
-    fn  read_with_type_info( data_input: &DataInput) -> /*  throws IOException */Result<Layout, std::rc::Rc<DynaHistError>>   {
+    fn read_with_type_info( data_input: &DataInput) -> /*  throws IOException */Result<Layout, std::rc::Rc<DynaHistError>>   {
         return Ok(LayoutSerialization::read(data_input));
     }
 
@@ -174,7 +174,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
    ///
    /// - `definitions` are the layout serializations to register.
    ///
-    fn  register( definitions: &LayoutSerializationDefinition)   {
+    fn register( definitions: &LayoutSerializationDefinition)   {
         LayoutSerialization::register(definitions);
     }
 }

@@ -23,7 +23,7 @@ struct PreprocessedHistogram {
 
 impl PreprocessedHistogram {
 
-    fn  of( histogram: &Histogram) -> Histogram  {
+    fn of( histogram: &Histogram) -> Histogram  {
         if histogram instanceof PreprocessedHistogram {
             return histogram;
         } else {
@@ -61,7 +61,7 @@ impl PreprocessedHistogram {
         }
     }
 
-    pub fn  get_bin_by_rank(&self,  rank: i64) -> BinIterator  {
+    pub fn get_bin_by_rank(&self,  rank: i64) -> BinIterator  {
          let total_count: i64 = self.get_total_count();
         check_argument(rank >= 0);
         check_argument(rank < total_count);
@@ -69,7 +69,7 @@ impl PreprocessedHistogram {
         return BinIteratorImpl::new( if (i >= 0) { i } else { -(i + 1) });
     }
 
-    fn  get_count_of_non_empty_bin(&self,  non_empty_bin_index: i32) -> i64  {
+    fn get_count_of_non_empty_bin(&self,  non_empty_bin_index: i32) -> i64  {
         if non_empty_bin_index > 0 {
             return self.accumulated_counts[non_empty_bin_index] - self.accumulated_counts[non_empty_bin_index - 1];
         } else {
@@ -77,35 +77,35 @@ impl PreprocessedHistogram {
         }
     }
 
-    fn  check_if_element_exists(&self)   {
+    fn check_if_element_exists(&self)   {
         if is_empty() {
             throw NoSuchElementException::new();
         }
     }
 
-    pub fn  get_first_non_empty_bin(&self) -> BinIterator  {
+    pub fn get_first_non_empty_bin(&self) -> BinIterator  {
         self.check_if_element_exists();
         return BinIteratorImpl::new(0);
     }
 
-    pub fn  get_last_non_empty_bin(&self) -> BinIterator  {
+    pub fn get_last_non_empty_bin(&self) -> BinIterator  {
         self.check_if_element_exists();
         return BinIteratorImpl::new(self.non_empty_bin_indices.len() - 1);
     }
 
-    pub fn  get_total_count(&self) -> i64  {
+    pub fn get_total_count(&self) -> i64  {
         return  if (self.accumulated_counts.len() > 0) { self.accumulated_counts[self.accumulated_counts.len() - 1] } else { 0 };
     }
 
-    pub fn  get_min(&self) -> f64  {
+    pub fn get_min(&self) -> f64  {
         return self.min;
     }
 
-    pub fn  get_max(&self) -> f64  {
+    pub fn get_max(&self) -> f64  {
         return self.max;
     }
 
-    pub fn  get_count(&self,  bin_index: i32) -> i64  {
+    pub fn get_count(&self,  bin_index: i32) -> i64  {
          let non_empty_bin_index: i32 = Arrays::binary_search(&self.non_empty_bin_indices, bin_index);
         if non_empty_bin_index >= 0 {
             return self.get_count_of_non_empty_bin(non_empty_bin_index);
@@ -120,25 +120,25 @@ impl PreprocessedHistogram {
 
     impl AbstractBinExtended {
 
-        pub fn  get_non_empty_index(&self) -> i32 ;
+        pub fn get_non_empty_index(&self) -> i32 ;
 
-        pub fn  get_bin_count(&self) -> i64  {
+        pub fn get_bin_count(&self) -> i64  {
             return self.get_count_of_non_empty_bin(&self.get_non_empty_index());
         }
 
-        pub fn  get_less_count(&self) -> i64  {
+        pub fn get_less_count(&self) -> i64  {
             return  if (self.get_non_empty_index() > 0) { self.accumulated_counts[self.get_non_empty_index() - 1] } else { 0 };
         }
 
-        pub fn  get_greater_count(&self) -> i64  {
+        pub fn get_greater_count(&self) -> i64  {
             return self.get_total_count() - self.accumulated_counts[self.get_non_empty_index()];
         }
 
-        pub fn  get_bin_index(&self) -> i32  {
+        pub fn get_bin_index(&self) -> i32  {
             return self.non_empty_bin_indices[self.get_non_empty_index()];
         }
 
-        pub fn  get_histogram(&self) -> Histogram  {
+        pub fn get_histogram(&self) -> Histogram  {
             return PreprocessedHistogram;
         }
     }
@@ -156,7 +156,7 @@ impl PreprocessedHistogram {
             let .nonEmptyBinIndex = non_empty_bin_index;
         }
 
-        pub fn  get_non_empty_index(&self) -> i32  {
+        pub fn get_non_empty_index(&self) -> i32  {
             return self.non_empty_bin_index;
         }
     }
@@ -175,58 +175,58 @@ impl PreprocessedHistogram {
             let .nonEmptyBinIndex = non_empty_bin_index;
         }
 
-        pub fn  get_non_empty_index(&self) -> i32  {
+        pub fn get_non_empty_index(&self) -> i32  {
             return self.non_empty_bin_index;
         }
 
-        pub fn  next(&self)   {
+        pub fn next(&self)   {
             if self.non_empty_bin_index + 1 >= self.accumulated_counts.len() {
                 throw NoSuchElementException::new();
             }
             self.non_empty_bin_index += 1;
         }
 
-        pub fn  previous(&self)   {
+        pub fn previous(&self)   {
             if self.non_empty_bin_index <= 0 {
                 throw NoSuchElementException::new();
             }
             self.non_empty_bin_index -= 1;
         }
 
-        pub fn  get_bin_copy(&self) -> Bin  {
+        pub fn get_bin_copy(&self) -> Bin  {
             return BinCopyImpl::new(self.non_empty_bin_index);
         }
     }
 
 
-    pub fn  add_value(&self,  value: f64,  count: i64) -> Histogram  {
+    pub fn add_value(&self,  value: f64,  count: i64) -> Histogram  {
         throw UnsupportedOperationException::new();
     }
 
-    pub fn  add_value(&self,  value: f64) -> Histogram  {
+    pub fn add_value(&self,  value: f64) -> Histogram  {
         throw UnsupportedOperationException::new();
     }
 
-    pub fn  add_histogram(&self,  histogram: &Histogram,  value_estimator: &ValueEstimator) -> Histogram  {
+    pub fn add_histogram(&self,  histogram: &Histogram,  value_estimator: &ValueEstimator) -> Histogram  {
         throw UnsupportedOperationException::new();
     }
 
-    pub fn  add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Histogram  {
+    pub fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Histogram  {
         throw UnsupportedOperationException::new();
     }
 
-    pub fn  write(&self,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn write(&self,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
         Histogram::create_dynamic(&get_layout())::add_histogram(self)::write(&data_output);
     }
 
-    pub fn  get_estimated_footprint_in_bytes(&self) -> i64  {
+    pub fn get_estimated_footprint_in_bytes(&self) -> i64  {
         return // min, max
         2 * Double::BYTES + (ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES + ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES + Integer::BYTES + // accumulatedCounts
         (self.accumulated_counts.len() as i64) * Long::BYTES) + (ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES + ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES + Integer::BYTES + // nonEmptyBinIndices
         (self.non_empty_bin_indices.len() as i64) * Integer::BYTES) + super.get_estimated_footprint_in_bytes();
     }
 
-    pub fn  is_mutable(&self) -> bool  {
+    pub fn is_mutable(&self) -> bool  {
         return false;
     }
 }

@@ -34,7 +34,7 @@ impl SciPyQuantileEstimator {
    /// @param betap plotting positions parameter
    /// @return a {@link QuantileEstimator} instance
    ///
-    pub fn  create( alphap: f64,  betap: f64) -> QuantileEstimator  {
+    pub fn create( alphap: f64,  betap: f64) -> QuantileEstimator  {
         return SciPyQuantileEstimator::new(alphap, betap);
     }
 
@@ -44,7 +44,7 @@ impl SciPyQuantileEstimator {
    ///
    /// @return a {@link QuantileEstimator} instance
    ///
-    pub fn  create() -> QuantileEstimator  {
+    pub fn create() -> QuantileEstimator  {
         return DEFAULT;
     }
 
@@ -57,7 +57,7 @@ impl SciPyQuantileEstimator {
         let .betap = betap;
     }
 
-    pub fn  estimate_quantile(&self,  p: f64,  sorted_value_function: &LongToDoubleFunction,  num_values: i64) -> f64  {
+    pub fn estimate_quantile(&self,  p: f64,  sorted_value_function: &LongToDoubleFunction,  num_values: i64) -> f64  {
         if num_values == 0 {
             return f64::NAN;
         }
@@ -81,7 +81,7 @@ impl SciPyQuantileEstimator {
         return Algorithms::interpolate(z_fraction_part, 0, y1, 1, y2);
     }
 
-    pub fn  to_string(&self) -> String  {
+    pub fn to_string(&self) -> String  {
         return format!("{} [alphap={}, betap={}]", get_class().get_simple_name(), self.alphap, self.betap);
     }
 }

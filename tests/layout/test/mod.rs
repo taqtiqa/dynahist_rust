@@ -18,7 +18,7 @@ impl Layout for TestLayout {
         let .overflowIndex = overflow_index;
     }
 
-    pub fn  map_to_bin_index(&self,  value: f64) -> usize  {
+    pub fn map_to_bin_index(&self,  value: f64) -> usize  {
         if value.is_nan() {
             return Integer::MAX_VALUE;
         }
@@ -29,19 +29,19 @@ impl Layout for TestLayout {
         }
     }
 
-    pub fn  get_underflow_bin_index(&self) -> usize  {
+    pub fn get_underflow_bin_index(&self) -> usize  {
         return self.underflow_index;
     }
 
-    pub fn  get_overflow_bin_index(&self) -> usize  {
+    pub fn get_overflow_bin_index(&self) -> usize  {
         return self.overflow_index;
     }
 
-    pub fn  to_string(&self) -> String  {
+    pub fn to_string(&self) -> String  {
         return format!("{} [underflowIndex={}, overflowIndex={}]", get_class().get_simple_name(), self.underflow_index, self.overflow_index);
     }
 
-    pub fn  hash_code(&self) -> i32  {
+    pub fn hash_code(&self) -> i32  {
          let prime: i32 = 31;
          let mut result: i32 = 1;
         result = prime * result + self.overflow_index;
@@ -49,7 +49,7 @@ impl Layout for TestLayout {
         return result;
     }
 
-    pub fn  equals(&self,  obj: &Object) -> bool  {
+    pub fn equals(&self,  obj: &Object) -> bool  {
         if self == obj {
             return true;
         }

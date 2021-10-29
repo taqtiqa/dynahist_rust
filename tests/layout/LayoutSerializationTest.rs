@@ -9,7 +9,7 @@ pub struct LayoutSerializationTest {
 impl LayoutSerializationTest {
 
     #[test]
-    pub fn  test(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
          let absolute_bin_width_limit: f64 = 0.01;
          let relative_bin_width_limit: f64 = 0.05;
          let value_range_lower_bound: f64 = 10;
@@ -49,22 +49,22 @@ impl LayoutSerializationTest {
 
     impl BaseTestLayout {
 
-        pub fn  map_to_bin_index(&self,  value: f64) -> usize  {
+        pub fn map_to_bin_index(&self,  value: f64) -> usize  {
             throw UnsupportedOperationException::new();
         }
 
-        pub fn  get_underflow_bin_index(&self) -> usize  {
+        pub fn get_underflow_bin_index(&self) -> usize  {
             throw UnsupportedOperationException::new();
         }
 
-        pub fn  get_overflow_bin_index(&self) -> usize  {
+        pub fn get_overflow_bin_index(&self) -> usize  {
             throw UnsupportedOperationException::new();
         }
     }
 
 
     #[test]
-    pub fn  test_layout_registration(&self)   {
+    pub fn test_layout_registration(&self)   {
         struct TestLayout1 {
             super: BaseTestLayout;
         }
@@ -95,7 +95,7 @@ impl LayoutSerializationTest {
     }
 
     #[test]
-    pub fn  test_layout_registration_with_reserved_serial_version(&self)   {
+    pub fn test_layout_registration_with_reserved_serial_version(&self)   {
         struct TestLayout {
             super: BaseTestLayout;
         }
@@ -111,12 +111,12 @@ impl LayoutSerializationTest {
     }
 
     #[test]
-    pub fn  test_layout_registration_with_null_argument(&self)   {
+    pub fn test_layout_registration_with_null_argument(&self)   {
         LayoutSerialization::register(null);
     }
 
     #[test]
-    pub fn  test_layout_registration_with_same_serials_and_different_types(&self)   {
+    pub fn test_layout_registration_with_same_serials_and_different_types(&self)   {
         struct TestLayout1 {
             super: BaseTestLayout;
         }
@@ -144,7 +144,7 @@ impl LayoutSerializationTest {
     }
 
     #[test]
-    pub fn  test_layout_registration_with_same_serials_and_same_types(&self)   {
+    pub fn test_layout_registration_with_same_serials_and_same_types(&self)   {
         struct TestLayout {
             super: BaseTestLayout;
         }
@@ -165,7 +165,7 @@ impl LayoutSerializationTest {
     }
 
     #[test]
-    pub fn  test_layout_registration_with_different_serials_and_same_types(&self)   {
+    pub fn test_layout_registration_with_different_serials_and_same_types(&self)   {
         struct TestLayout {
             super: BaseTestLayout;
         }
@@ -187,7 +187,7 @@ impl LayoutSerializationTest {
     }
 
     #[test]
-    pub fn  test_layout_registration_with_different_serials_and_differen_types(&self)   {
+    pub fn test_layout_registration_with_different_serials_and_differen_types(&self)   {
         struct TestLayout1 {
             super: BaseTestLayout;
         }
@@ -216,7 +216,7 @@ impl LayoutSerializationTest {
     }
 
     #[test]
-    pub fn  test_write_with_type_info_for_unregistered_layout(&self)   {
+    pub fn test_write_with_type_info_for_unregistered_layout(&self)   {
         struct TestLayout {
             super: BaseTestLayout;
         }
@@ -229,7 +229,7 @@ impl LayoutSerializationTest {
     }
 
     #[test]
-    pub fn  test_read_with_type_info_for_unregistered_layout(&self)   {
+    pub fn test_read_with_type_info_for_unregistered_layout(&self)   {
          let data: Vec<i8> = SerializationTestUtil::hex_string_to_byte_array("3ECCC0D9B0D7A08B");
         assert_throws(IOException.class, () -> SerializationTestUtil::from_byte_array(Layout::readWithTypeInfo, &data));
     }

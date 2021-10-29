@@ -21,7 +21,7 @@ pub trait QuantileEstimator {
    /// @param numValues the number of values
    /// @return the quantile estimate
    ///
-    fn  estimate_quantile(&self,  p: f64,  sorted_value_function: &LongToDoubleFunction,  num_values: i64) -> f64 ;
+    fn estimate_quantile(&self,  p: f64,  sorted_value_function: &LongToDoubleFunction,  num_values: i64) -> f64 ;
 
 
    /// Estimates the quantile from a sorted double array.

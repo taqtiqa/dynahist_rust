@@ -9,15 +9,15 @@ pub struct PreprocessedHistogramTest {
 
 impl PreprocessedHistogramTest {
 
-    pub fn  create(&self,  layout: &Layout) -> Histogram  {
+    pub fn create(&self,  layout: &Layout) -> Histogram  {
         return Histogram::create_dynamic(layout)::get_preprocessed_copy();
     }
 
-    pub fn  read(&self,  layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    pub fn read(&self,  layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
         return Ok(Histogram::read_as_preprocessed(layout, &data_input));
     }
 
-    pub fn  add_values(&self,  histogram: &Histogram,  values: f64) -> Histogram  {
+    pub fn add_values(&self,  histogram: &Histogram,  values: f64) -> Histogram  {
         if values == null {
             return histogram;
         }
@@ -31,14 +31,14 @@ impl PreprocessedHistogramTest {
     }
 
     #[test]
-    pub fn  test_get_estimated_footprint_in_byte(&self)   {
+    pub fn test_get_estimated_footprint_in_byte(&self)   {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let preprocessed_histogram: Histogram = Histogram::create_dynamic(layout)::get_preprocessed_copy();
         assert_eq!(72, &preprocessed_histogram.get_estimated_footprint_in_bytes());
     }
 
     #[test]
-    pub fn  test_exceptions(&self)   {
+    pub fn test_exceptions(&self)   {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5);
@@ -54,7 +54,7 @@ impl PreprocessedHistogramTest {
     }
 
     #[test]
-    pub fn  test_read_as_preprocessed(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test_read_as_preprocessed(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5);
@@ -69,7 +69,7 @@ impl PreprocessedHistogramTest {
     }
 
     #[test]
-    pub fn  test_is_mutable(&self)   {
+    pub fn test_is_mutable(&self)   {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout)::get_preprocessed_copy();
         assert_false(&histogram.is_mutable());
