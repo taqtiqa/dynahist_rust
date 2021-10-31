@@ -65,11 +65,11 @@ impl LogOptimalLayout {
          let offset: f64 = ::calculate_offset(unsigned_value_bits_normal_limit, factor_normal, first_normal_idx);
          let value_range_lower_bound_bin_index: i32 = ::map_to_bin_index(value_range_lower_bound, factor_normal, factor_subnormal, unsigned_value_bits_normal_limit, offset);
          let value_range_upper_bound_bin_index: i32 = ::map_to_bin_index(value_range_upper_bound, factor_normal, factor_subnormal, unsigned_value_bits_normal_limit, offset);
-        check_argument(value_range_lower_bound_bin_index > Integer::MIN_VALUE);
-        check_argument(value_range_upper_bound_bin_index < Integer::MAX_VALUE);
+        check_argument(value_range_lower_bound_bin_index > i32::MIN);
+        check_argument(value_range_upper_bound_bin_index < i32::MAX);
          let underflow_bin_index: i32 = value_range_lower_bound_bin_index - 1;
          let overflow_bin_index: i32 = value_range_upper_bound_bin_index + 1;
-        check_argument(overflow_bin_index as i64 - underflow_bin_index as i64 - 1 <= Integer::MAX_VALUE as i64);
+        check_argument(overflow_bin_index as i64 - underflow_bin_index as i64 - 1 <= i32::MAX as i64);
         return LogOptimalLayout::new(absolute_bin_width_limit, relative_bin_width_limit, underflow_bin_index, overflow_bin_index, factor_normal, factor_subnormal, offset, unsigned_value_bits_normal_limit);
     }
 

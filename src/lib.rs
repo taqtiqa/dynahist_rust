@@ -1,4 +1,5 @@
 #[macro_use]
+extern crate approx;
 extern crate static_assertions;
 extern crate tracing;
 

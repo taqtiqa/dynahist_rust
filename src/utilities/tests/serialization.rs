@@ -81,7 +81,7 @@ impl SerializationTestUtil {
     }
 
     pub fn byte_array_to_hex_string( bytes: &Vec<i8>) -> String  {
-        check_argument(bytes.len() <= Integer::MAX_VALUE >> /* >>> */ 1);
+        check_argument(bytes.len() <= i32::MAX >> /* >>> */ 1);
          let hex_chars: [Option<char>; bytes.len() << 1] = [None; bytes.len() << 1];
          {
              let mut j: i32 = 0;

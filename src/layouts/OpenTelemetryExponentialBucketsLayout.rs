@@ -107,7 +107,7 @@ impl OpenTelemetryExponentialBucketsLayout {
         let .boundaries = ::calculate_boundaries(precision);
         let .indices = ::calculate_indices(&boundaries, precision);
          let value_bits: i32 = 0;
-         let mut index: i32 = Integer::MIN_VALUE;
+         let mut index: i32 = i32::MIN;
         while true {
              let next_value_bits: i32 = value_bits + 1;
              let next_index: i32 = ::map_to_bin_index_helper(next_value_bits, &indices, &boundaries, precision, 0, 0);
