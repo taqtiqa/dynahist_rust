@@ -3,17 +3,25 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::bins::bin::Bin;
+use crate::Histogram;
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
+use crate::values::value_estimators::*;
+
 // Sealed trait stops crates other than DynaHist from implementing any traits
 // that use it.
 mod private {
     pub trait Sealed {}
-    impl Sealed for super::ValueEstimator {}
+    impl Sealed for super::ValueEstimation {}
 }
 
 /// This trait is sealed and cannot be implemented for callers to avoid
 /// breaking backwards compatibility when adding new derived traits.
 ///
-pub trait ValueEstimation: private::Sealed {
+pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
+    fn new() -> Self;
+
     // Trait private methods, not allowed for user to call.
     #[doc(hidden)]
     /// Distributes the values of a bin uniformly over the bin's interval. The distance between two
@@ -30,7 +38,7 @@ pub trait ValueEstimation: private::Sealed {
     // const DEFAULT_VALUE_ESTIMATOR: ValueEstimator = ValueEstimator::UNIFORM;
     fn get_uniform_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64 {
         let relative_rank: i64 = rank - bin.get_less_count();
-        return interpolate(
+        return Self::interpolate(
             (relative_rank - (bin.get_bin_count() - relative_rank - 1)),
             -bin.get_bin_count() + (if (bin.is_first_non_empty_bin()) { 1 } else { 0 }),
             &bin.get_lower_bound(),
@@ -86,7 +94,7 @@ pub trait ValueEstimation: private::Sealed {
         );
     }
 
-    /// Estimates a recorded value with given zero-based rank from the given histogram.
+    /// Estimate a recorded value with given zero-based rank from the given histogram.
     ///
     /// The estimated value must always be in the value range of the bin it belongs to.
     ///
@@ -96,21 +104,21 @@ pub trait ValueEstimation: private::Sealed {
     /// @param histogram the histogram
     /// @param rank the zero-based rank
     /// @return the estimated value
-    /// @throws IllegalArgumentException if 0 &le; rank &lt; {@link Histogram#getTotalCount()} does not
+    /// @throws DynaHist::IllegalArgumentError if 0 &le; rank &lt; {@link Histogram#getTotalCount()} does not
     ///     hold
     ///
-    fn get_value_estimate(&self, histogram: &Histogram, rank: i64) -> f64 {
-        require_non_null(histogram);
+    fn get_value_estimate(&self, histogram: impl Histogram, rank: i64) -> f64 {
+        //require_non_null(histogram);
         let total_count: i64 = histogram.get_total_count();
-        check_argument(rank >= 0);
-        check_argument(rank < total_count);
+        Self::check_argument(rank >= 0);
+        Self::check_argument(rank < total_count);
         if rank <= 0 {
             return histogram.get_min();
         }
         if rank + 1 == total_count {
             return histogram.get_max();
         }
-        let bin: Bin = histogram.get_bin_by_rank(rank);
+        let bin: dyn Bin = histogram.get_bin_by_rank(rank);
         return self.get_estimate_from_bin(bin, rank);
     }
 
@@ -166,7 +174,7 @@ pub trait ValueEstimation: private::Sealed {
     // 2. the method being called is inline.
     //
 
-    /// Estimates the value with given zero-based rank and the given bin.
+    /// Return the estimated the value with given zero-based rank and bin.
     ///
     /// It can be assumed that the value of given rank was mapped into the
     /// given bin.
@@ -174,30 +182,26 @@ pub trait ValueEstimation: private::Sealed {
     /// to the minimum and maximum recorded value, because they are both stored
     /// explicitly by the histogram.
     ///
-    /// @param bin the bin
-    /// @param rank the zero-based rank
-    /// @return the estimated value
-    ///
     fn as_type<'a, V: 'static, U: 'static>(x: &'a V) -> Option<&'a U> {
-        <dyn Any>::downcast_ref(x)
+        <dyn std::any::Any>::downcast_ref(x)
     }
 
     //fn get_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64;
     fn get_estimate_from_bin<'static, Bin, i64>(&self, bin: &Bin, rank: i64) -> f64 {
-        if let Some(_u) = as_type::<_, ValueEstimatorUniform>(self) {
-            info!("it's a ValueEstimatorUniform");
+        if let Some(_u) = Self::as_type::<_, ValueEstimatorUniform>(self) {
+            tracing::info!("it's a ValueEstimatorUniform");
             get_uniform_estimate_from_bin(&self, bin, rank)
-        } else if let Some(_l) = as_type::<_, ValueEstimatorLowerBound>(self) {
-            info!("it's a ValueEstimatorLowerBound");
+        } else if let Some(_l) = Self::as_type::<_, ValueEstimatorLowerBound>(self) {
+            tracing::info!("it's a ValueEstimatorLowerBound");
             get_lower_bound_estimate_from_bin(&self, bin, rank)
-        } else if let Some(_p) = as_type::<_, ValueEstimatorUpperBound>(self) {
-            info!("it's a ValueEstimatorUpperBound");
+        } else if let Some(_p) = Self::as_type::<_, ValueEstimatorUpperBound>(self) {
+            tracing::info!("it's a ValueEstimatorUpperBound");
             get_upper_bound_estimate_from_bin(&self, bin, rank)
-        } else if let Some(_m) = as_type::<_, ValueEstimatorMidPoint>(self) {
-            info!("it's a ValueEstimatorMidPoint");
+        } else if let Some(_m) = Self::as_type::<_, ValueEstimatorMidPoint>(self) {
+            tracing::info!("it's a ValueEstimatorMidPoint");
             get_mid_point_estimate_from_bin(&self, bin, rank)
         } else {
-            info!("it's something we don't know")
+            tracing::info!("it's something we don't know")
         }
     }
 }

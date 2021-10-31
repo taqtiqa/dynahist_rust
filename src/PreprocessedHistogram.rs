@@ -23,7 +23,7 @@ struct PreprocessedHistogram {
 
 impl PreprocessedHistogram {
 
-    fn of( histogram: &Histogram) -> Histogram  {
+    fn of( histogram: impl Histogram) -> impl Histogram  {
         if histogram instanceof PreprocessedHistogram {
             return histogram;
         } else {
@@ -31,7 +31,7 @@ impl PreprocessedHistogram {
         }
     }
 
-    fn new( histogram: &Histogram) -> PreprocessedHistogram {
+    fn new( histogram: impl Histogram) -> PreprocessedHistogram {
         super(&histogram.get_layout());
         min = histogram.get_min();
         max = histogram.get_max();
@@ -138,7 +138,7 @@ impl PreprocessedHistogram {
             return self.non_empty_bin_indices[self.get_non_empty_index()];
         }
 
-        pub fn get_histogram(&self) -> Histogram  {
+        pub fn get_histogram(&self) -> impl Histogram  {
             return PreprocessedHistogram;
         }
     }
@@ -199,23 +199,23 @@ impl PreprocessedHistogram {
     }
 
 
-    pub fn add_value(&self,  value: f64,  count: i64) -> Histogram  {
+    pub fn add_value(&self,  value: f64,  count: i64) -> impl Histogram  {
         throw UnsupportedOperationException::new();
     }
 
-    pub fn add_value(&self,  value: f64) -> Histogram  {
+    pub fn add_value(&self,  value: f64) -> impl Histogram  {
         throw UnsupportedOperationException::new();
     }
 
-    pub fn add_histogram(&self,  histogram: &Histogram,  value_estimator: &ValueEstimator) -> Histogram  {
+    pub fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram  {
         throw UnsupportedOperationException::new();
     }
 
-    pub fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Histogram  {
+    pub fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> impl Histogram  {
         throw UnsupportedOperationException::new();
     }
 
-    pub fn write(&self,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>>   {
         Histogram::create_dynamic(&get_layout())::add_histogram(self)::write(&data_output);
     }
 

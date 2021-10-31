@@ -11,14 +11,14 @@ struct StaticHistogram {
 
 impl StaticHistogram {
 
-    fn new( layout: &Layout) -> StaticHistogram {
+    fn new( layout: impl Layout) -> StaticHistogram {
         super(layout);
          let counts_array_size: i32 = layout.get_overflow_bin_index() - layout.get_underflow_bin_index() - 1;
         check_argument(counts_array_size >= 0);
         let .counts = : [i64; counts_array_size] = [0; counts_array_size];
     }
 
-    pub fn add_value(&self,  value: f64,  count: i64) -> Histogram  {
+    pub fn add_value(&self,  value: f64,  count: i64) -> impl Histogram  {
         if count > 0 {
             if total_count + count >= 0 {
                 total_count += count;
@@ -35,14 +35,14 @@ impl StaticHistogram {
                         }
                     } else {
                         total_count -= count;
-                        throw IllegalArgumentException::new(NAN_VALUE_MSG);
+                        return Err(DynaHist::IllegalArgumentError::new(NAN_VALUE_MSG));
                     }
                 }
             } else {
                 throw ArithmeticException::new(OVERFLOW_MSG);
             }
         } else if count < 0 {
-            throw IllegalArgumentException::new(&String::format(null as Locale, NEGATIVE_COUNT_MSG, count));
+            return Err(DynaHist::IllegalArgumentError::new(&String::format(null as Locale, NEGATIVE_COUNT_MSG, count)));
         }
         return self;
     }
@@ -93,7 +93,7 @@ impl StaticHistogram {
         }
     }
 
-    pub fn read( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<StaticHistogram, Rc<Exception>>   {
+    pub fn read( layout: impl Layout,  data_input: impl DataInput) -> Result<StaticHistogram, Rc<DynaHistError>>   {
         require_non_null(layout);
         require_non_null(&data_input);
          let histogram: StaticHistogram = StaticHistogram::new(layout);

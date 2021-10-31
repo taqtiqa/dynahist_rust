@@ -16,13 +16,13 @@
 ///     - [`OpenTelemetryLayout`]
 ///
 pub trait SerializationReader<T> {
-    /// Deserializes an object by reading from a given {@link DataInput}.
+    /// Deserializes an object by reading from a given [`DataInput`].
     ///
     /// Implementations should never return {@code null} except for the case {@code null} was really
     /// the serialized value. Returning {@code null} in all other cases like for deprecated
     /// serialization formats is very dangerous, especially if not all serialized bytes are consumed
     /// within the {@link #read} method. If the caller chooses to continue with deserialization from
-    /// the same {@link DataInput}, wrong data may be deserialized due to the resulting misalignment.
+    /// the same [`DataInput`], wrong data may be deserialized due to the resulting misalignment.
     /// This may lead to severe problems like huge unwanted allocations, if for example the wrong array
     /// length was read first. Consider throwing an {@link IOException} instead, which must be handled
     /// by the caller anyway, and which effectively prevents callers from continuing with
@@ -30,7 +30,7 @@ pub trait SerializationReader<T> {
     ///
     /// @param dataInput the data input
     /// @return the deserialized object
-    /// @throws IOException if an I/O error occurs.
+    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs.
     ///
-    fn read(&self, data_input: &DataInput) -> Result<T, Rc<Exception>>;
+    fn read(&self, data_input: impl DataInput) -> Result<T, Rc<DynaHistError>>;
 }

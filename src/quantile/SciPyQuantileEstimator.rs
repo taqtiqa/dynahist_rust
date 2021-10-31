@@ -27,22 +27,22 @@ pub struct SciPyQuantileEstimator {
 impl SciPyQuantileEstimator {
 
 
-   /// Return a {@link QuantileEstimator} instance that uses the SciPy quantile definition with given
+   /// Return a [`QuantileEstimation`] instance that uses the SciPy quantile definition with given
    /// plotting positions parameters.
    ///
    /// @param alphap plotting positions parameter
    /// @param betap plotting positions parameter
-   /// @return a {@link QuantileEstimator} instance
+   /// @return a [`QuantileEstimation`] instance
    ///
     pub fn create( alphap: f64,  betap: f64) -> QuantileEstimator  {
         return SciPyQuantileEstimator::new(alphap, betap);
     }
 
 
-   /// Return a {@link QuantileEstimator} instance that uses the SciPy quantile definition with
+   /// Return a [`QuantileEstimation`] instance that uses the SciPy quantile definition with
    /// default parameters.
    ///
-   /// @return a {@link QuantileEstimator} instance
+   /// @return a [`QuantileEstimation`] instance
    ///
     pub fn create() -> QuantileEstimator  {
         return DEFAULT;

@@ -205,12 +205,12 @@ impl OpenTelemetryExponentialBucketsLayout {
         return 31 * self.precision;
     }
 
-    pub fn write(&self,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>>   {
         data_output.write_byte(SERIAL_VERSION_V0);
         data_output.write_byte(self.precision);
     }
 
-    pub fn read( data_input: &DataInput) -> /*  throws IOException */Result<OpenTelemetryExponentialBucketsLayout, Rc<Exception>>   {
+    pub fn read( data_input: impl DataInput) -> Result<OpenTelemetryExponentialBucketsLayout, Rc<DynaHistError>>   {
         check_serial_version(SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
          let tmp_precision: i32 = data_input.read_unsigned_byte();
         return Ok(OpenTelemetryExponentialBucketsLayout::create(tmp_precision));

@@ -100,7 +100,7 @@ pub trait Algorithms: Preconditions {
         f64::from_bits(0x00800000)
     }
 
-    /// Calculates the midpoint of two given {@code long} values rounded down to the nearest {@code
+    /// Calculates the midpoint of two given [`u64`] values rounded down to the nearest {@code
     /// long} value.
     ///
     /// This implementation works for any values which would lead to over- or underflows when
@@ -117,7 +117,7 @@ pub trait Algorithms: Preconditions {
         return ((a2 + b2) + (a & b & 1)) ^ 0x8000000000000000;
     }
 
-    /// Bidirectional mapping of a {@code double} value to a {@code long} value.
+    /// Bidirectional mapping of a {@code double} value to a [`u64`] value.
     ///
     /// Except for {@link Double#NaN} values, the natural ordering of double values as defined by
     /// {@link Double#compare(double, double)} will be maintained.
@@ -132,7 +132,7 @@ pub trait Algorithms: Preconditions {
         return ((l >> 62) >> /* >>> */ 1) ^ l;
     }
 
-    /// Bidirectional mapping of a {@code long} value to a {@code double} value.
+    /// Bidirectional mapping of a [`u64`] value to a {@code double} value.
     ///
     /// Inverse mapping can be performed using {@link #mapDoubleToLong(double)}.
     ///

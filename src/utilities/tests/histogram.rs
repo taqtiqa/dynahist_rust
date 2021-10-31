@@ -11,7 +11,7 @@ impl utilities::tests::Histogram for HistogramTest {}
 
 trait Histogram {
 
-    fn new() -> Histogram {
+    fn new() -> impl Histogram {
     }
 
     pub fn check_histogram_data_consistency( histogram_data: &Histogram) -> Map<Integer, Long>  {
@@ -124,7 +124,7 @@ trait Histogram {
         return non_empty_bins;
     }
 
-    pub fn number_of_non_empty_bins( histogram: &Histogram) -> i32  {
+    pub fn number_of_non_empty_bins( histogram: impl Histogram) -> i32  {
         if histogram.get_total_count() == 0 {
             return 0;
         }

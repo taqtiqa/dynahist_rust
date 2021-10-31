@@ -7,7 +7,7 @@
 pub trait QuantileEstimator {
 
 
-   /// Estimates the quantile from sorted data which can be randomly accessed through the given
+   /// Estimate the quantile from sorted data which can be randomly accessed through the given
    /// function.
    ///
    /// If numValues is equal to 0 the return value will always be {@link Double#isNaN()}.

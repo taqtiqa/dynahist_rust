@@ -34,7 +34,7 @@ struct AbstractMutableHistogram {
 
 impl AbstractMutableHistogram {
 
-    pub fn new( layout: &Layout) -> AbstractMutableHistogram {
+    pub fn new( layout: impl Layout) -> AbstractMutableHistogram {
         super(layout);
     }
 
@@ -63,7 +63,7 @@ impl AbstractMutableHistogram {
         }
     }
 
-    pub fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: impl ValueEstimation) -> Histogram  {
+    pub fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: impl ValueEstimation) -> impl Histogram  {
         require_non_null(histogram);
         require_non_null(value_estimator);
         if histogram.is_empty() {
@@ -156,7 +156,7 @@ impl AbstractMutableHistogram {
             let .bin_index = bin_index;
         }
 
-        pub fn get_histogram(&self) -> Histogram  {
+        pub fn get_histogram(&self) -> impl Histogram  {
             return AbstractMutableHistogram;
         }
 
@@ -262,7 +262,7 @@ impl AbstractMutableHistogram {
             return self.bin_index;
         }
 
-        pub fn get_histogram(&self) -> Histogram  {
+        pub fn get_histogram(&self) -> impl Histogram  {
             return AbstractMutableHistogram;
         }
     }
@@ -286,7 +286,7 @@ impl AbstractMutableHistogram {
         }
     }
 
-    pub fn write(&self,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>>   {
         require_non_null(&data_output);
         // 0. write serial version and mode
         data_output.write_byte(SERIAL_VERSION_V0);
@@ -412,7 +412,7 @@ impl AbstractMutableHistogram {
 
     pub fn ensure_count_array(&self,  min_non_empty_bin_index: i32,  max_non_empty_bin_index: i32,  mode: i8)  ;
 
-    pub fn <T extends AbstractMutableHistogram>  deserialize( histogram: &T,  data_input: &DataInput)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn <T extends AbstractMutableHistogram>  deserialize( histogram: &T,  data_input: impl DataInput)  -> Result<Void, Rc<DynaHistError>>   {
         require_non_null(histogram);
         require_non_null(&data_input);
         check_argument(&histogram.is_empty());
@@ -642,7 +642,7 @@ impl AbstractMutableHistogram {
         return idx;
     }
 
-    pub fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Histogram  {
+    pub fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> impl Histogram  {
         require_non_null(&ascending_sequence);
         if length == 0 {
             return self;

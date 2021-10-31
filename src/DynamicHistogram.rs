@@ -58,7 +58,7 @@ impl DynamicHistogram {
         return self.mode;
     }
 
-    fn new( layout: &Layout) -> DynamicHistogram {
+    fn new( layout: impl Layout) -> DynamicHistogram {
         super(&require_non_null(layout));
         let .mode = 0;
         let .indexOffset = layout.get_underflow_bin_index() + 1;
@@ -66,7 +66,7 @@ impl DynamicHistogram {
         let .counts = EMPTY_COUNTS;
     }
 
-    pub fn read( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<DynamicHistogram, Rc<Exception>>   {
+    pub fn read( layout: impl Layout,  data_input: impl DataInput) -> Result<DynamicHistogram, Rc<DynaHistError>>   {
         require_non_null(layout);
         require_non_null(&data_input);
          let histogram: DynamicHistogram = DynamicHistogram::new(layout);
@@ -99,7 +99,7 @@ impl DynamicHistogram {
                 throw ArithmeticException::new(OVERFLOW_MSG);
             }
         } else if count < 0 {
-            throw IllegalArgumentException::new(&String::format(null as Locale, NEGATIVE_COUNT_MSG, count));
+            return Err(DynaHist::IllegalArgumentError::new(&String::format(null as Locale, NEGATIVE_COUNT_MSG, count)));
         }
         return self;
     }
@@ -109,7 +109,7 @@ impl DynamicHistogram {
             self.increase_count(absolute_index, count);
         } else {
             total_count -= count;
-            throw IllegalArgumentException::new(NAN_VALUE_MSG);
+            return Err(DynaHist::IllegalArgumentError::new(NAN_VALUE_MSG));
         }
     }
 
@@ -189,7 +189,7 @@ impl DynamicHistogram {
         }
     }
 
-    pub fn add_histogram(&self,  histogram: &Histogram,  value_estimator: &ValueEstimator) -> Histogram  {
+    pub fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram  {
         require_non_null(histogram);
         require_non_null(value_estimator);
         if histogram.is_empty() {

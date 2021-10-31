@@ -18,7 +18,7 @@ struct AbstractHistogram {
 
 impl AbstractHistogram {
 
-    pub fn new( layout: &Layout) -> AbstractHistogram {
+    pub fn new( layout: impl Layout) -> AbstractHistogram {
         let layout = require_non_null(layout);
     }
 
@@ -129,7 +129,7 @@ impl AbstractHistogram {
         return self.get_value_from_estimator(rank, DEFAULT_VALUE_ESTIMATOR);
     }
 
-    pub fn get_preprocessed_copy(&self) -> Histogram  {
+    pub fn get_preprocessed_copy(&self) -> impl Histogram  {
         return PreprocessedHistogram::of(self);
     }
 
@@ -155,7 +155,7 @@ impl AbstractHistogram {
         ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES;
     }
 
-    pub fn add_histogram(&self,  histogram: &Histogram) -> Histogram  {
+    pub fn add_histogram(&self,  histogram: impl Histogram) -> impl Histogram  {
         return self.add_histogram(histogram, DEFAULT_VALUE_ESTIMATOR);
     }
 

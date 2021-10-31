@@ -9,12 +9,14 @@ use crate::layouts::layout::Layout;
 use crate::utilities::Algorithms;
 //use crate::utilities::data::{ DataInput, DataOutput };
 use crate::utilities::Preconditions;
+use crate::values::value_estimation::ValueEstimation;
 
 // Use associated types to preserve static dispatch
 pub trait Histogram {
     type L: Layout + Preconditions + Algorithms;
     type B: BinIterator + Bin;
-
+    type Q: QuantileEstimation;
+    type V: ValueEstimation;
 
    /// Return the underlying [`Layout`] of the histogram.
    ///
@@ -159,7 +161,7 @@ pub trait Histogram {
    /// @param valueEstimator the value estimator
    /// @return an approximation for the value with given rank
    ///
-    fn get_value_from_estimator(&self,   rank: i64,   value_estimator: &ValueEstimator) -> f64 ;
+    fn get_value_from_estimator(&self,   rank: i64,   value_estimator: &Self::V) -> f64 ;
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
@@ -179,7 +181,7 @@ pub trait Histogram {
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
-   /// #getValue(long)} and the given {@link QuantileEstimator}.
+   /// #getValue(long)} and the given [`QuantileEstimation`].
    ///
    /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
    /// function is called many times, it is recommended to transform the histogram using {@link
@@ -190,11 +192,11 @@ pub trait Histogram {
    /// @param quantileEstimator the quantile estimator
    /// @return an estimate for the p-quantile
    ///
-    fn get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator) -> f64 ;
+    fn get_quantile(&self,  p: f64,  quantile_estimator: &Self::Q) -> f64 ;
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
-   /// #getValue(long)} and the given {@link QuantileEstimator}.
+   /// #getValue(long)} and the given [`QuantileEstimation`].
    ///
    /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
    /// function is called many times, it is recommended to transform the histogram using {@link
@@ -205,11 +207,11 @@ pub trait Histogram {
    /// @param valueEstimator the value estimator
    /// @return an estimate for the p-quantile
    ///
-    fn get_quantile(&self,  p: f64,  value_estimator: &ValueEstimator) -> f64 ;
+    fn get_quantile(&self,  p: f64,  value_estimator: &Self::V) -> f64 ;
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
-   /// #getValue(long)} and the given {@link QuantileEstimator}.
+   /// #getValue(long)} and the given [`QuantileEstimation`] implementation.
    ///
    /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
    /// function is called many times, it is recommended to transform the histogram using {@link
@@ -221,7 +223,7 @@ pub trait Histogram {
    /// @param valueEstimator the value estimator
    /// @return an estimate for the p-quantile
    ///
-    fn get_quantile(&self,  p: f64,  quantile_estimator: &QuantileEstimator,  value_estimator: &ValueEstimator) -> f64 ;
+    fn get_quantile(&self,  p: f64,  quantile_estimator: &Self::Q,  value_estimator: &Self::V) -> f64 ;
 
 
    /// Return an estimate for the quantile value using the estimated values as given by {@link
@@ -232,7 +234,7 @@ pub trait Histogram {
    ///
    /// @return an immutable pre-processed copy of this histogram
    ///
-    fn get_preprocessed_copy(&self) -> Histogram ;
+    fn get_preprocessed_copy(&self) -> Self ;
 
 
    /// Adds a given value to the histogram.
@@ -242,11 +244,11 @@ pub trait Histogram {
    ///
    /// @param value the value to be added to the histogram
    /// @return a reference to this
-   /// @throws IllegalArgumentException if value is equal to {@link Double#NaN}
+   /// @throws DynaHist::IllegalArgumentError if value is equal to {@link Double#NaN}
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn add_value(&self,  value: f64) -> Histogram  {
+    fn add_value(&self,  value: f64) -> Self  {
         return self.add_value(value, 1);
     }
 
@@ -259,11 +261,11 @@ pub trait Histogram {
    /// @param value the value to be added to the histogram
    /// @param count defines the multiplicity
    /// @return a reference to this
-   /// @throws IllegalArgumentException if value is equal to {@link Double#NaN} or count is negative
+   /// @throws DynaHist::IllegalArgumentError if value is equal to {@link Double#NaN} or count is negative
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn add_value(&self,  value: f64,  count: i64) -> Histogram ;
+    fn add_value(&self,  value: f64,  count: i64) -> Self ;
 
 
    /// Adds a given histogram to the histogram.
@@ -280,7 +282,7 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn add_histogram(&self,  histogram: &Histogram) -> Histogram ;
+    fn add_histogram(&self,  histogram: impl Histogram) -> Self ;
 
 
    /// Adds a given histogram to the histogram.
@@ -298,7 +300,7 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn add_histogram(&self,  histogram: &Histogram,  value_estimator: &ValueEstimator) -> Histogram ;
+    fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &Self::V) -> Self ;
 
 
    /// Adds an ascending sequence to the histogram.
@@ -321,19 +323,19 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Histogram ;
+    fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Self ;
 
 
-   /// Writes this histogram to a given {@link DataOutput}.
+   /// Writes this histogram to a given [`DataOutput`].
    ///
    /// The [`Layout`] information will not be written. Therefore, it is necessary to provide
    /// the layout when reading using {@link #readAsDynamic(Layout, DataInput)}, {@link
    /// #readAsStatic(Layout, DataInput)} or {@link #readAsPreprocessed(Layout, DataInput)}.
    ///
-   /// @param dataOutput the {@link DataOutput}
-   /// @throws IOException if an I/O error occurs
+   /// @param dataOutput the [`DataOutput`]
+   /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn write(&self,  data_output: &DataOutput)  -> /*  throws IOException */Result<Void, Rc<Exception>>  ;
+    fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>>  ;
 
 
    /// Provide an estimate of the histogram's total footprint in bytes
@@ -357,7 +359,7 @@ pub trait Histogram {
    /// @param layout the [`Layout`] of the histogram
    /// @return an empty {@link Histogram}
    ///
-    fn create_dynamic( layout: &Layout) -> Histogram  {
+    fn create_dynamic( layout: impl Layout) -> Self  {
         return DynamicHistogram::new(layout);
     }
 
@@ -369,66 +371,61 @@ pub trait Histogram {
    /// @param layout the [`Layout`] of the histogram
    /// @return an empty {@link Histogram}
    ///
-    fn create_static( layout: &Layout) -> Histogram  {
+    fn create_static( layout: impl Layout) -> Self  {
         return StaticHistogram::new(layout);
     }
 
 
-   /// Reads a histogram from a given {@link DataInput}.
+   /// Reads a histogram from a given [`DataInput`].
    ///
    /// The returned histogram will allocate internal arrays for bin counts dynamically. The
    /// behavior is undefined if the given layout does not match the layout before serialization.
    ///
    /// @param layout the [`Layout`]
-   /// @param dataInput the {@link DataInput}
+   /// @param dataInput the [`DataInput`]
    /// @return the deserialized histogram
-   /// @throws IOException if an I/O error occurs
+   /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn read_as_dynamic( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    fn read_as_dynamic( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
         return Ok(DynamicHistogram::read(layout, &data_input));
     }
 
-
-   /// Reads a histogram from a given {@link DataInput}.
+   /// Reads a histogram from a given [`DataInput`].
    ///
    /// The returned histogram will allocate internal arrays for bin counts statically. The behavior
    /// is undefined if the given layout does not match the layout before serialization.
    ///
    /// @param layout the [`Layout`]
-   /// @param dataInput the {@link DataInput}
+   /// @param dataInput the [`DataInput`]
    /// @return the deserialized histogram
-   /// @throws IOException if an I/O error occurs
+   /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn read_as_static( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    fn read_as_static( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
         return Ok(StaticHistogram::read(layout, &data_input));
     }
 
 
-   /// Reads a histogram from a given {@link DataInput}.
+   /// Reads a histogram from a given [`DataInput`].
    ///
    /// The returned histogram will be immutable and preprocessed in order to support fast queries.
    /// The behavior is undefined if the given layout does not match the layout before serialization.
    ///
    /// @param layout the [`Layout`]
-   /// @param dataInput the {@link DataInput}
+   /// @param dataInput the [`DataInput`]
    /// @return the deserialized histogram
-   /// @throws IOException if an I/O error occurs
+   /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn read_as_preprocessed( layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    fn read_as_preprocessed( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
         return Ok(DynamicHistogram::read(layout, &data_input)::get_preprocessed_copy());
     }
 
 
-   /// Return an {@link Iterable} over all non-empty bins in ascending order.
-   ///
-   /// @return the iterable
+   /// Return an [`Iterator`] over all non-empty bins in ascending order.
    ///
     fn non_empty_bins_ascending(&self) -> Iterable<Bin> ;
 
 
-   /// Return an {@link Iterable} over all non-empty bins in descending order.
-   ///
-   /// @return the iterable
+   /// Return an [`Iterator`] over all non-empty bins in descending order.
    ///
     fn non_empty_bins_descending(&self) -> Iterable<Bin> ;
 }

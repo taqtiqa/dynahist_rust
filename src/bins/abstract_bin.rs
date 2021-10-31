@@ -8,11 +8,10 @@ use crate::Histogram;
 
 use num::Float;
 
-//#[derive(Bin)]
-// pub struct AbstractBin {}
-
 trait AbstractBin: Bin {
-    fn get_histogram(&self) -> Histogram;
+    // Self returned is the immediate type the trait is implemented for.
+    // This renders the trait no longer object-safe.
+    fn get_histogram(&self) -> Self;
 
     fn to_string(&self) -> String {
         return format!("Bin [bin_index={}, lowerBound={}, upperBound={}, binCount={}, lessCount={}, greaterCount={}, isUnderflowBin={}, isOverflowBin={}]",
@@ -35,16 +34,20 @@ trait AbstractBin: Bin {
     }
 
     fn get_lower_bound(&self) -> f64 {
-        let histogram: Histogram = self.get_histogram();
+        let histogram = self.get_histogram();
         let h1 = histogram.get_min();
-        let h2 = histogram.get_layout().get_bin_lower_bound(&self.get_bin_index());
+        let h2 = histogram
+            .get_layout()
+            .get_bin_lower_bound(&self.get_bin_index());
         return h1.min(h2);
     }
 
     fn get_upper_bound(&self) -> f64 {
-        let histogram: Histogram = self.get_histogram();
+        let histogram = self.get_histogram();
         let h1 = histogram.get_max();
-        let h2 = histogram.get_layout().get_bin_upper_bound(&self.get_bin_index());
+        let h2 = histogram
+            .get_layout()
+            .get_bin_upper_bound(&self.get_bin_index());
         return h1.min(h2);
     }
 }

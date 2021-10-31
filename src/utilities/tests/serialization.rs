@@ -14,22 +14,22 @@ impl SerializationTestUtil {
     fn new() -> SerializationTestUtil {
     }
 
-    pub fn <T>  test_serialization( data: &T,  writer: &SerializationWriter<T>,  reader: &SerializationReader<T>) -> /*  throws IOException */Result<T, Rc<Exception>>   {
+    pub fn <T>  test_serialization( data: &T,  writer: &SerializationWriter<T>,  reader: &SerializationReader<T>) -> Result<T, Rc<DynaHistError>>   {
          let bytes: Vec<i8> = ::to_byte_array(writer, data);
         return Ok(::from_byte_array(reader, &bytes));
     }
 
-    pub fn <T>  test_serialization( data: &T,  writer: &SerializationWriter<T>,  reader: &SerializationReader<T>,  expected_hex_serialization: &String) -> /*  throws IOException */Result<T, Rc<Exception>>   {
+    pub fn <T>  test_serialization( data: &T,  writer: &SerializationWriter<T>,  reader: &SerializationReader<T>,  expected_hex_serialization: &String) -> Result<T, Rc<DynaHistError>>   {
          let hex_serialization: String = ::byte_array_to_hex_string(&::to_byte_array(writer, data));
         assert_that(&hex_serialization).is_equal_to(&expected_hex_serialization);
         return Ok(::from_byte_array(reader, &::hex_string_to_byte_array(&hex_serialization)));
     }
 
-    pub fn <T>  test_reading( reader: &SerializationReader<T>,  hex_serialization: &String) -> /*  throws IOException */Result<T, Rc<Exception>>   {
+    pub fn <T>  test_reading( reader: &SerializationReader<T>,  hex_serialization: &String) -> Result<T, Rc<DynaHistError>>   {
         return Ok(::from_byte_array(reader, &::hex_string_to_byte_array(&hex_serialization)));
     }
 
-    pub fn <T>  to_byte_array( writer: &SerializationWriter<T>,  data: &T) -> /*  throws IOException */Result<Vec<i8>, Rc<Exception>>   {
+    pub fn <T>  to_byte_array( writer: &SerializationWriter<T>,  data: &T) -> Result<Vec<i8>, Rc<DynaHistError>>   {
          let bytes: Vec<i8> = ::to_byte_array_helper(writer, data);
         // repeat serialization multiple times to see if output is the same
          let repetitions: i32 = 5;
@@ -46,14 +46,14 @@ impl SerializationTestUtil {
         return Ok(bytes);
     }
 
-    fn <T>  to_byte_array_helper( writer: &SerializationWriter<T>,  data: &T) -> /*  throws IOException */Result<Vec<i8>, Rc<Exception>>   {
+    fn <T>  to_byte_array_helper( writer: &SerializationWriter<T>,  data: &T) -> Result<Vec<i8>, Rc<DynaHistError>>   {
          let bos: ByteArrayOutputStream = ByteArrayOutputStream::new();
          let dos: DataOutputStream = DataOutputStream::new(&bos);
         writer.write(data, &dos);
         return Ok(bos.to_byte_array());
     }
 
-    pub fn <T>  from_byte_array( reader: &SerializationReader<T>,  bytes: &Vec<i8>) -> /*  throws IOException */Result<T, Rc<Exception>>   {
+    pub fn <T>  from_byte_array( reader: &SerializationReader<T>,  bytes: &Vec<i8>) -> Result<T, Rc<DynaHistError>>   {
          let bis: ByteArrayInputStream = ByteArrayInputStream::new(&bytes);
          let dis: DataInputStream = DataInputStream::new(&bis);
          let deserialized_data: T = reader.read(&dis);

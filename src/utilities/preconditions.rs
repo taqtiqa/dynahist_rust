@@ -13,7 +13,7 @@ pub trait Preconditions {
     // fn new() -> Preconditions {
     // }
 
-    /// Throws an {@link IllegalArgumentException} if the given expression evaluates to {@code false}.
+    /// Throws an {@link DynaHist::IllegalArgumentError} if the given expression evaluates to {@code false}.
     ///
     /// @param expression an expression
     /// @throws IllegalArgumentEerror if the given expression evaluates to {@code false}
@@ -25,11 +25,11 @@ pub trait Preconditions {
         }
     }
 
-    /// Throws an {@link IllegalArgumentException} if the given expression evaluates to {@code false}.
+    /// Throws an {@link DynaHist::IllegalArgumentError} if the given expression evaluates to {@code false}.
     ///
     /// @param expression an expression
     /// @param errorMessage an error message
-    /// @throws IllegalArgumentException if the given expression evaluates to {@code false}
+    /// @throws DynaHist::IllegalArgumentError if the given expression evaluates to {@code false}
     ///
     fn check_argument_msg(expression: bool, error_message: &String) -> Result<bool, DynaHistError> {
         if !expression {
@@ -37,12 +37,12 @@ pub trait Preconditions {
         }
     }
 
-    /// Throws an {@link IllegalArgumentException} if the given expression evaluates to {@code false}.
+    /// Throws an {@link DynaHist::IllegalArgumentError} if the given expression evaluates to {@code false}.
     ///
     /// @param expression an expression
     /// @param errorMessageFormatString an error message format string with a single %s place holder
     /// @param value a long value
-    /// @throws IllegalArgumentException if the given expression evaluates to {@code false}
+    /// @throws DynaHist::IllegalArgumentError if the given expression evaluates to {@code false}
     ///
     fn check_argument_value(
         expression: bool,

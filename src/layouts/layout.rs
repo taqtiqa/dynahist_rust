@@ -109,7 +109,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// In particular, an [`DynaHistError::IOError`] may result if the input
     /// stream has been closed, e.g. a network outage.
     ///
-    fn write_with_type_info(&self,  data_output: &DataOutput)  -> /*  throws IOException */Result<(), std::rc::Rc<DynaHistError>>   {
+    fn write_with_type_info(&self,  data_output: &DataOutput)  -> Result<(), std::rc::Rc<DynaHistError>>   {
         return Ok(LayoutSerialization::write(self, data_output));
     }
 
@@ -127,7 +127,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// In particular, an [`DynaHistError::IOError`] may result if the input
     /// stream has been closed, e.g. a network outage.
     ///
-    fn read_with_type_info( data_input: &DataInput) -> /*  throws IOException */Result<Layout, std::rc::Rc<DynaHistError>>   {
+    fn read_with_type_info( data_input: impl DataInput) -> Result<Layout, std::rc::Rc<DynaHistError>>   {
         return Ok(LayoutSerialization::read(data_input));
     }
 

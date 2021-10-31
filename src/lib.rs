@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate static_assertions;
+extern crate tracing;
 
 // Enumerated errors
 mod errors;

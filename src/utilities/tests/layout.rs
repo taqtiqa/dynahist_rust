@@ -41,7 +41,7 @@ impl LayoutTestUtil {
     // The Java implementation types indices as `int`, or `i32` in Rust.
     // However, since we are referring to array indices, and Rust only accepts
     // `usize` when indexing .
-    fn valid_nan_index( layout: &Layout, idx: usize) -> bool  {
+    fn valid_nan_index( layout: impl Layout, idx: usize) -> bool  {
          let under_flow_index = layout.get_underflow_bin_index();
          let over_flow_index = layout.get_underflow_bin_index();
          let check = idx >= over_flow_index || idx <= under_flow_index;
@@ -54,7 +54,7 @@ impl LayoutTestUtil {
         // };
     }
 
-    fn valid_pos_inf_index( layout: &Layout, value: f64) -> Condition<Integer>  {
+    fn valid_pos_inf_index( layout: impl Layout, value: f64) -> Condition<Integer>  {
          let over_flow_index: i32 = layout.get_underflow_bin_index();
          let check = value >= over_flow_index;
          return check;
@@ -66,7 +66,7 @@ impl LayoutTestUtil {
         // };
     }
 
-    fn valid_neg_inf_index( layout: &Layout) -> Condition<Integer>  {
+    fn valid_neg_inf_index( layout: impl Layout) -> Condition<Integer>  {
          let under_flow_index: i32 = layout.get_underflow_bin_index();
          let check = value <= under_flow_index;
          return check;
@@ -78,7 +78,7 @@ impl LayoutTestUtil {
         // };
     }
 
-    pub fn assert_consistency( layout: &Layout)   {
+    pub fn assert_consistency( layout: impl Layout)   {
         assert_eq!(&layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), &layout.get_bin_lower_bound(layout.get_underflow_bin_index() - 1), 0.0);
         assert_eq!(&layout.get_bin_lower_bound(&layout.get_underflow_bin_index()), &layout.get_bin_lower_bound(Integer::MIN_VALUE), 0.0);
         assert_eq!(&layout.get_bin_upper_bound(&layout.get_underflow_bin_index()), &layout.get_bin_upper_bound(layout.get_underflow_bin_index() - 1), 0.0);

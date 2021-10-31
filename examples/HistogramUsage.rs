@@ -104,7 +104,7 @@ impl HistogramUsage {
     }
 
 
-   /// Write the histograms to to a given {@link DataOutput} using {@link
+   /// Write the histograms to to a given [`DataOutput`] using {@link
    /// Histogram#write(DataOutput)}. The [`Layout`] information will not be written. Therefore, it
    /// is necessary to provide the layout when reading using {@link Histogram#readAsDynamic(Layout,
    /// DataInput)} or {@link Histogram#readAsStatic(Layout, DataInput)}.
