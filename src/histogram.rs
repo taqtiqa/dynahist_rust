@@ -386,7 +386,7 @@ pub trait Histogram {
    /// @return the deserialized histogram
    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn read_as_dynamic( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
+    fn read_as_dynamic( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>> {
         return Ok(DynamicHistogram::read(layout, &data_input));
     }
 
@@ -400,7 +400,7 @@ pub trait Histogram {
    /// @return the deserialized histogram
    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn read_as_static( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
+    fn read_as_static( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>> {
         return Ok(StaticHistogram::read(layout, &data_input));
     }
 
@@ -415,7 +415,7 @@ pub trait Histogram {
    /// @return the deserialized histogram
    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn read_as_preprocessed( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
+    fn read_as_preprocessed( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>> {
         return Ok(DynamicHistogram::read(layout, &data_input)::get_preprocessed_copy());
     }
 

@@ -161,7 +161,7 @@ impl LogLinearLayout {
         return self.overflow_bin_index;
     }
 
-    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>>   {
+    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>> {
         data_output.write_byte(SERIAL_VERSION_V0);
         data_output.write_double(self.absolute_bin_width_limit);
         data_output.write_double(self.relative_bin_width_limit);
@@ -169,7 +169,7 @@ impl LogLinearLayout {
         write_signed_var_int(self.overflow_bin_index, &data_output);
     }
 
-    pub fn read( data_input: impl DataInput) -> Result<LogLinearLayout, Rc<DynaHistError>>   {
+    pub fn read( data_input: impl DataInput) -> Result<LogLinearLayout, Rc<DynaHistError>> {
         check_serial_version(SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
          let absolute_bin_width_limit_tmp: f64 = data_input.read_double();
          let relative_bin_width_limit_tmp: f64 = data_input.read_double();

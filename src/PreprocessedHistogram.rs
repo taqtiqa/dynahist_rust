@@ -215,7 +215,7 @@ impl PreprocessedHistogram {
         throw UnsupportedOperationException::new();
     }
 
-    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>>   {
+    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>> {
         Histogram::create_dynamic(&get_layout())::add_histogram(self)::write(&data_output);
     }
 

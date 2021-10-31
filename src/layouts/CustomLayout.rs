@@ -65,7 +65,7 @@ impl CustomLayout {
         return self.sorted_bin_boundaries.len();
     }
 
-    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>>   {
+    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>> {
         data_output.write_byte(SERIAL_VERSION_V0);
         write_unsigned_var_int(self.sorted_bin_boundaries.len(), &data_output);
         for  let boundary: f64 in self.sorted_bin_boundaries {
@@ -73,7 +73,7 @@ impl CustomLayout {
         }
     }
 
-    pub fn read( data_input: impl DataInput) -> Result<CustomLayout, Rc<DynaHistError>>   {
+    pub fn read( data_input: impl DataInput) -> Result<CustomLayout, Rc<DynaHistError>> {
         check_serial_version(SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
          let len: i32 = read_unsigned_var_int(&data_input);
          let sorted_bin_boundaries: [f64; len] = [0.0; len];

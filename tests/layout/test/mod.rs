@@ -20,7 +20,7 @@ impl Layout for TestLayout {
 
     pub fn map_to_bin_index(&self,  value: f64) -> usize  {
         if value.is_nan() {
-            return Integer::MAX_VALUE;
+            return i32::MAX;
         }
         if value >= 0.0 {
             return (value + 0.5) as usize;

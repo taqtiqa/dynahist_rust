@@ -251,11 +251,11 @@ impl AbstractMutableHistogramTest {
              let mut i: i32 = 0;
             while i < num_cycles {
                 {
-                     let values: Vec<f64> = rnd.doubles(&rnd.next_int(100)).map( d: & -> d * 12 - 6).to_array();
+                     let values: Vec<f64> = rnd.doubles(&rnd.next_int(100)).map( |d| d * 12 - 6).to_array();
                     Arrays::sort(&values);
                      let histogram1: Histogram = create(layout);
                      let histogram2: Histogram = create(layout);
-                    for  let v: f64 in values {
+                    for v in values {
                         histogram1.add_value(v);
                     }
                     histogram2.add_ascending_sequence( j: & -> values[j as i32], values.len());
@@ -273,7 +273,7 @@ impl AbstractMutableHistogramTest {
          let layout: TestLayout = TestLayout::new(-5, 5);
          let values: vec![Vec<f64>; 5] = vec![f64::NEG_INFINITY, -5.5, -0.1, 5.3, f64::INFINITY, ]
         ;
-        for  let value: f64 in values {
+        for value in values {
              let histogram1: Histogram = create(layout);
              let histogram2: Histogram = create(layout);
             histogram1.add_value(value, i64::MAX);
@@ -459,7 +459,9 @@ impl AbstractMutableHistogramTest {
     pub fn test_add_negative_count(&self)   {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
-        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.add_value(2.4, -1));
+         let test_result = histogram.add_value(2.4, -1);
+         let test_error = test_result.unwrap_err().downcast_ref::<DynaHist::IllegalArgumentError>();
+        assert!(test_error.is_some() );
     }
 
     #[test]
@@ -612,7 +614,7 @@ impl AbstractMutableHistogramTest {
         ;
          let c1: i64 = 432;
          let c2: i64 = 331;
-        for  let min: f64 in x_values {
+        for min in x_values {
              let max: f64 = Math::next_up(min);
              let histogram: Histogram = create(layout);
             histogram.add_value(min, c1);
@@ -841,7 +843,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_deserialization_using_wrong_layout(&self)  -> Result<Void, Rc<DynaHistError>>   {
+    pub fn test_deserialization_using_wrong_layout(&self)  -> Result<Void, Rc<DynaHistError>> {
          let layouts: List<Layout> = Arrays::as_list(&LogLinearLayout::create(1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1.1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1.1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1e-1, 1.1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1.1e-1, -5, 5), &CustomLayout::create(-2, 4, 5), &CustomLayout::create(-2), &CustomLayout::create(1));
          let num_iterations: i64 = 10000;
          let random: SplittableRandom = SplittableRandom::new(0);
@@ -877,7 +879,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_deserialization_special(&self)  -> Result<Void, Rc<DynaHistError>>   {
+    pub fn test_deserialization_special(&self)  -> Result<Void, Rc<DynaHistError>> {
          let min: f64 = -100;
          let max: f64 = 120;
          let min_regular_idx: i32 = -30;

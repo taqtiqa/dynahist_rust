@@ -54,7 +54,7 @@ impl LayoutSerialization {
         class_to_definitions = HashMap<>::new(&new_class_to_definitions);
     }
 
-    fn write( layout: impl Layout,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>>   {
+    fn write( layout: impl Layout,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>> {
          let definition: LayoutSerializationDefinition = class_to_definitions.get(&layout.get_class());
         if definition == null {
             return Err(DynaHistError::IOError::new(format!("{} has not been registered for serialization!", layout.get_class())));
@@ -63,7 +63,7 @@ impl LayoutSerialization {
         definition.writer.write(layout, &data_output);
     }
 
-    fn read( data_input: impl DataInput) -> Result<Layout, Rc<DynaHistError>>   {
+    fn read( data_input: impl DataInput) -> Result<Layout, Rc<DynaHistError>> {
          let serialization_version: i64 = data_input.read_long();
          let definition: LayoutSerializationDefinition = serial_to_definitions.get(serialization_version);
         if definition == null {

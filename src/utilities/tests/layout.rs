@@ -225,11 +225,14 @@ impl LayoutTestUtil {
         let end = layout.get_overflow_bin_index() + 1;
         // This guarantees the NaN will not be present
         let int_stream: std::ops::Range<i32> = start..end;
-        let index_of_max: Option<u64> = int_stream
+        // Select the index of the max
+        let maxed: Option<u64> = int_stream
             .iter()
-            .enumerate()
-            .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
-            .map(|(index, _)| index);
-        return index_of_max.unwrap();
+            .map(|index| i64::into(index))
+            .max();
+        match maxed {
+            Some(i) => i,
+            None => 0u64,
+        }
     }
 }

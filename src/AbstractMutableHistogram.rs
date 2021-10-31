@@ -286,7 +286,7 @@ impl AbstractMutableHistogram {
         }
     }
 
-    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>>   {
+    pub fn write(&self,  data_output: &DataOutput)  -> Result<Void, Rc<DynaHistError>> {
         require_non_null(&data_output);
         // 0. write serial version and mode
         data_output.write_byte(SERIAL_VERSION_V0);
@@ -412,7 +412,7 @@ impl AbstractMutableHistogram {
 
     pub fn ensure_count_array(&self,  min_non_empty_bin_index: i32,  max_non_empty_bin_index: i32,  mode: i8)  ;
 
-    pub fn <T extends AbstractMutableHistogram>  deserialize( histogram: &T,  data_input: impl DataInput)  -> Result<Void, Rc<DynaHistError>>   {
+    pub fn <T extends AbstractMutableHistogram>  deserialize( histogram: &T,  data_input: impl DataInput)  -> Result<Void, Rc<DynaHistError>> {
         require_non_null(histogram);
         require_non_null(&data_input);
         check_argument(&histogram.is_empty());

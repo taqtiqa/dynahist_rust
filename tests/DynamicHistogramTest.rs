@@ -13,7 +13,7 @@ impl DynamicHistogramTest {
         return Histogram::create_dynamic(layout);
     }
 
-    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
+    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>> {
         return Ok(Histogram::read_as_dynamic(layout, &data_input));
     }
 

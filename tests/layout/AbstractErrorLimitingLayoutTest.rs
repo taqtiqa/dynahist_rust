@@ -121,11 +121,11 @@ impl AbstractErrorLimitingLayoutTest {
 
     #[test]
     pub fn test_create_equidistant_layout(&self)   {
-         let absolute_error_limits: vec![Vec<f64>; 4] = vec![self.min_normal_f64(), 1.0, 100.0, f64::MAX / Integer::MAX_VALUE, ]
+         let absolute_error_limits: vec![Vec<f64>; 4] = vec![self.min_normal_f64(), 1.0, 100.0, f64::MAX / i32::MAX, ]
         ;
         for  let absolute_error_limit: f64 in absolute_error_limits {
-            self.create_layout(absolute_error_limit, 0, 0, absolute_error_limit * (Integer::MAX_VALUE - 1.0));
-            assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(absolute_error_limit, 0, 0, absolute_error_limit * Integer::MAX_VALUE));
+            self.create_layout(absolute_error_limit, 0, 0, absolute_error_limit * (i32::MAX - 1.0));
+            assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(absolute_error_limit, 0, 0, absolute_error_limit * i32::MAX));
         }
     }
 
@@ -145,9 +145,9 @@ impl AbstractErrorLimitingLayoutTest {
         assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, -1, -1e6, 1e6));
         assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(f64::INFINITY, 1, -1e6, 1e6));
         assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1, f64::INFINITY, -1e6, 1e6));
-        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1, 0, -2, Integer::MAX_VALUE - 3));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1, 0, -2, i32::MAX - 3));
         // no exception should be thrown in this case
-        self.create_layout(1, 0, -2, Integer::MAX_VALUE - 4);
+        self.create_layout(1, 0, -2, i32::MAX - 4);
     }
 
     #[test]

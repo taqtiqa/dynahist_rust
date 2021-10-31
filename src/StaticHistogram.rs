@@ -93,7 +93,7 @@ impl StaticHistogram {
         }
     }
 
-    pub fn read( layout: impl Layout,  data_input: impl DataInput) -> Result<StaticHistogram, Rc<DynaHistError>>   {
+    pub fn read( layout: impl Layout,  data_input: impl DataInput) -> Result<StaticHistogram, Rc<DynaHistError>> {
         require_non_null(layout);
         require_non_null(&data_input);
          let histogram: StaticHistogram = StaticHistogram::new(layout);

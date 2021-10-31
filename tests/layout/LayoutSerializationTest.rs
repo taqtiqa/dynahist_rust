@@ -9,7 +9,7 @@ pub struct LayoutSerializationTest {
 impl LayoutSerializationTest {
 
     #[test]
-    pub fn test(&self)  -> Result<Void, Rc<DynaHistError>>   {
+    pub fn test(&self)  -> Result<Void, Rc<DynaHistError>> {
          let absolute_bin_width_limit: f64 = 0.01;
          let relative_bin_width_limit: f64 = 0.05;
          let value_range_lower_bound: f64 = 10;
