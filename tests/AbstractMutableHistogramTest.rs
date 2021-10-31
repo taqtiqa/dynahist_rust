@@ -9,7 +9,7 @@ pub struct AbstractMutableHistogramTest {
 
 impl AbstractMutableHistogramTest {
 
-    pub fn add_values(&self,  histogram: &Histogram,  values: f64) -> Histogram  {
+    pub fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram  {
         if values != null {
             for  let x: f64 in values {
                 histogram.add_value(x);
@@ -36,7 +36,7 @@ impl AbstractMutableHistogramTest {
          let histogram: Histogram = create(layout);
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
-        assert_throws(IllegalArgumentException.class, () -> histogram.add_value(f64::NAN));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.add_value(f64::NAN));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
@@ -288,7 +288,7 @@ impl AbstractMutableHistogramTest {
          let histogram: Histogram = create(layout);
          let values: vec![Vec<f64>; 5] = vec![f64::NEG_INFINITY, -5.5, -0.1, 5.3, f64::INFINITY, ]
         ;
-        assert_throws(IllegalArgumentException.class, () -> histogram.add_ascending_sequence( j: & -> values[j as i32], -1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.add_ascending_sequence( j: & -> values[j as i32], -1));
         histogram.add_value(1, i64::MAX);
     // assertThrows(
     //     ArithmeticException.class,
@@ -459,7 +459,7 @@ impl AbstractMutableHistogramTest {
     pub fn test_add_negative_count(&self)   {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
-        assert_throws(IllegalArgumentException.class, () -> histogram.add_value(2.4, -1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.add_value(2.4, -1));
     }
 
     #[test]
@@ -703,7 +703,7 @@ impl AbstractMutableHistogramTest {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let data_input_stream: DataInputStream = DataInputStream::new(ByteArrayInputStream::new( : vec![i8; 1] = vec![1, ]
         ));
-        assert_throws(IOException.class, () -> Histogram::read_as_dynamic(layout, data_input_stream));
+        assert_throws(IOException.class, () -> impl Histogram::read_as_dynamic(layout, data_input_stream));
     }
 
     #[test]
@@ -711,8 +711,8 @@ impl AbstractMutableHistogramTest {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = create(layout);
         histogram.add_value(5);
-        assert_throws(IllegalArgumentException.class, () -> histogram.get_value(-1));
-        assert_throws(IllegalArgumentException.class, () -> histogram.get_value(1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.get_value(-1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.get_value(1));
     }
 
     #[test]
@@ -720,8 +720,8 @@ impl AbstractMutableHistogramTest {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = create(layout);
         histogram.add_value(5);
-        assert_throws(IllegalArgumentException.class, () -> histogram.get_bin_by_rank(-1));
-        assert_throws(IllegalArgumentException.class, () -> histogram.get_bin_by_rank(1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.get_bin_by_rank(-1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.get_bin_by_rank(1));
     }
 
     #[test]
@@ -841,7 +841,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_deserialization_using_wrong_layout(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test_deserialization_using_wrong_layout(&self)  -> Result<Void, Rc<DynaHistError>>   {
          let layouts: List<Layout> = Arrays::as_list(&LogLinearLayout::create(1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1.1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1.1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1e-1, 1.1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1.1e-1, -5, 5), &CustomLayout::create(-2, 4, 5), &CustomLayout::create(-2), &CustomLayout::create(1));
          let num_iterations: i64 = 10000;
          let random: SplittableRandom = SplittableRandom::new(0);
@@ -877,7 +877,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_deserialization_special(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test_deserialization_special(&self)  -> Result<Void, Rc<DynaHistError>>   {
          let min: f64 = -100;
          let max: f64 = 120;
          let min_regular_idx: i32 = -30;

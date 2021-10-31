@@ -9,11 +9,11 @@ pub struct DynamicHistogramTest {
 
 impl DynamicHistogramTest {
 
-    pub fn create(&self,  layout: &Layout) -> Histogram  {
+    pub fn create(&self,  layout: impl Layout) -> impl Histogram  {
         return Histogram::create_dynamic(layout);
     }
 
-    pub fn read(&self,  layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
         return Ok(Histogram::read_as_dynamic(layout, &data_input));
     }
 
@@ -27,8 +27,8 @@ impl DynamicHistogramTest {
     pub fn test_ensure_count_array_argument_checks(&self)   {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: DynamicHistogram = DynamicHistogram::new(layout);
-        assert_throws(IllegalArgumentException.class, () -> histogram.ensure_count_array(2, -2, 3 as i8));
-        assert_throws(IllegalArgumentException.class, () -> histogram.ensure_count_array(&layout.get_underflow_bin_index(), 0, 3 as i8));
-        assert_throws(IllegalArgumentException.class, () -> histogram.ensure_count_array(0, &layout.get_overflow_bin_index(), 3 as i8));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.ensure_count_array(2, -2, 3 as i8));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.ensure_count_array(&layout.get_underflow_bin_index(), 0, 3 as i8));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.ensure_count_array(0, &layout.get_overflow_bin_index(), 3 as i8));
     }
 }

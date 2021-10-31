@@ -20,17 +20,41 @@ The crate contains all upstream bin layout implementations:
 - LogLinearLayout
 - LogQuadraticLayout
 - OpenTelemetryLayout
+  - [Specification](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/datamodel.md#histogram)
+  - [Discussion](https://github.com/open-telemetry/opentelemetry-specification/issues/1776)
+  - [PR](https://github.com/open-telemetry/opentelemetry-proto/pull/322)
+  - [Data Model](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/datamodel.md)
+  - [Transport Protocol](https://github.com/open-telemetry/opentelemetry-proto/blob/main/opentelemetry/proto/metrics/v1/metrics.proto)
+    - Idea convert OTLP ProtoBuf schema to Cap'nProto Schema
 - CustomLayout
+
+https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/http.md
+https://docs.rs/tracing-error/0.2.0/tracing_error/
 
 https://docs.rs/approx/0.5.0/approx/
 https://docs.rs/bytestream/0.4.1/bytestream/
 https://docs.rs/decorum/0.3.1/decorum
 https://docs.rs/static_assertions/1.1.0/static_assertions/
 https://docs.rs/quickcheck/1.0.3/quickcheck/index.html
+https://whileydave.com/2021/10/26/test-driving-the-rust-model-checker-rmc/
+https://alastairreid.github.io/automatic-rust-verification-tools-2021/
+  - https://github.com/tokio-rs/loom
+  - https://crates.io/crates/shuttle
+  - KLEE: https://project-oak.github.io/rust-verification-tools/
+  - Cargo-klee: https://gitlab.henriktjader.com/pln/cargo-klee
+  - SeaHorn: https://seahorn.github.io/
 
 https://docs.capnproto-rust.org/capnpc/
 https://rustrepo.com/repo/djkoloski-rust_serialization_benchmark-rust-testing
 https://rustrepo.com/repo/japaric-trust-rust-testing
+https://github.com/xd009642/tarpaulin
+
+## FYI
+
+### Python to Rust
+
+- https://github.com/konchunas/pyrs
+  + MoneyType: https://medium.com/@konchunas/monkeytype-type-inference-for-transpiling-python-to-rust-64fa5a9eb966
 
 ## What is DynaHist
 

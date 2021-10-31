@@ -22,7 +22,7 @@ impl CustomLayoutTest {
     }
 
     #[test]
-    pub fn test_serialization(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test_serialization(&self)  -> Result<Void, Rc<DynaHistError>>   {
          let layout: CustomLayout = CustomLayout::create(-3, -1.5, 234, 4324234);
          let deserialized_layout: CustomLayout = SerializationTestUtil::test_serialization(layout, CustomLayout::write, CustomLayout::read, "0004C008000000000000BFF8000000000000406D40000000000041507EE280000000");
         assert_eq!(deserialized_layout, layout);
@@ -51,8 +51,8 @@ impl CustomLayoutTest {
 
     #[test]
     pub fn test_create(&self)   {
-        assert_throws(IllegalArgumentException.class, CustomLayout::create);
-        assert_throws(IllegalArgumentException.class, () -> CustomLayout::create(f64::NEG_INFINITY));
-        assert_throws(IllegalArgumentException.class, () -> CustomLayout::create(1, 0));
+        assert_throws(DynaHist::IllegalArgumentError.class, CustomLayout::create);
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> CustomLayout::create(f64::NEG_INFINITY));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> CustomLayout::create(1, 0));
     }
 }

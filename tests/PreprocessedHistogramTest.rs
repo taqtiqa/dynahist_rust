@@ -9,15 +9,15 @@ pub struct PreprocessedHistogramTest {
 
 impl PreprocessedHistogramTest {
 
-    pub fn create(&self,  layout: &Layout) -> Histogram  {
+    pub fn create(&self,  layout: impl Layout) -> impl Histogram  {
         return Histogram::create_dynamic(layout)::get_preprocessed_copy();
     }
 
-    pub fn read(&self,  layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
         return Ok(Histogram::read_as_preprocessed(layout, &data_input));
     }
 
-    pub fn add_values(&self,  histogram: &Histogram,  values: f64) -> Histogram  {
+    pub fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram  {
         if values == null {
             return histogram;
         }
@@ -49,12 +49,12 @@ impl PreprocessedHistogramTest {
         assert_throws(UnsupportedOperationException.class, () -> preprocessed_histogram.add_value(-5.5, 5));
         assert_throws(UnsupportedOperationException.class, () -> preprocessed_histogram.add_histogram(histogram));
         assert_throws(UnsupportedOperationException.class, () -> preprocessed_histogram.add_ascending_sequence( j: & -> 100, 10));
-        assert_throws(IllegalArgumentException.class, () -> preprocessed_histogram.get_bin_by_rank(-1));
-        assert_throws(IllegalArgumentException.class, () -> preprocessed_histogram.get_bin_by_rank(1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> preprocessed_histogram.get_bin_by_rank(-1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> preprocessed_histogram.get_bin_by_rank(1));
     }
 
     #[test]
-    pub fn test_read_as_preprocessed(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test_read_as_preprocessed(&self)  -> Result<Void, Rc<DynaHistError>>   {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5);

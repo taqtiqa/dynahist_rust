@@ -296,8 +296,8 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     #[test]
     pub fn test_create(&self)   {
         assert_eq!(actual_error_kind, expected_error_kind);
-        assert_throws(IllegalArgumentException.class, () -> OpenTelemetryExponentialBucketsLayout::create(-1));
-        assert_throws(IllegalArgumentException.class, () -> OpenTelemetryExponentialBucketsLayout::create(MAX_PRECISION + 1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> OpenTelemetryExponentialBucketsLayout::create(-1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> OpenTelemetryExponentialBucketsLayout::create(MAX_PRECISION + 1));
     }
 
     #[test]

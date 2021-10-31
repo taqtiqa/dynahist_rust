@@ -34,7 +34,7 @@ impl AbstractBinTest {
                 return bin_count;
             }
 
-            pub fn get_histogram(&self) -> Histogram  {
+            pub fn get_histogram(&self) -> impl Histogram  {
                 return histogram;
             }
         };

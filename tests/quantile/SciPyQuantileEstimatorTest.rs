@@ -91,10 +91,10 @@ impl SciPyQuantileEstimatorTest {
 
     #[test]
     pub fn test_sci_py_quantile_estimator_constructor(&self)   {
-        assert_throws(IllegalArgumentException.class, () -> SciPyQuantileEstimator::create(-1, 1));
-        assert_throws(IllegalArgumentException.class, () -> SciPyQuantileEstimator::create(2, 1));
-        assert_throws(IllegalArgumentException.class, () -> SciPyQuantileEstimator::create(1, -1));
-        assert_throws(IllegalArgumentException.class, () -> SciPyQuantileEstimator::create(1, 2));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> SciPyQuantileEstimator::create(-1, 1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> SciPyQuantileEstimator::create(2, 1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> SciPyQuantileEstimator::create(1, -1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> SciPyQuantileEstimator::create(1, 2));
     }
 
     #[test]

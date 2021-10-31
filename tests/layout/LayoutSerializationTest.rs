@@ -9,7 +9,7 @@ pub struct LayoutSerializationTest {
 impl LayoutSerializationTest {
 
     #[test]
-    pub fn test(&self)  -> /*  throws IOException */Result<Void, Rc<Exception>>   {
+    pub fn test(&self)  -> Result<Void, Rc<DynaHistError>>   {
          let absolute_bin_width_limit: f64 = 0.01;
          let relative_bin_width_limit: f64 = 0.05;
          let value_range_lower_bound: f64 = 10;
@@ -89,7 +89,7 @@ impl LayoutSerializationTest {
         //     TestLayout2.class,
         //     (data, dataOutput) -> {},
         //     dataInput -> new TestLayout2());
-        assert_throws(IllegalArgumentException.class, () -> Layout::register(// registration of another serialization using the same serial version must
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> Layout::register(// registration of another serialization using the same serial version must
         def2));
     // fail
     }
@@ -107,7 +107,7 @@ impl LayoutSerializationTest {
          let serial_version: i64 = 0x3e148a4afd4a0c36;
          let def: LayoutSerializationDefinition = Layout::define_serialization(serial_version, TestLayout.class, ( data: &,  data_output: &) -> {
         },  data_input: & -> TestLayout::new());
-        assert_throws(IllegalArgumentException.class, () -> Layout::register(def));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> Layout::register(def));
     }
 
     #[test]
@@ -140,7 +140,7 @@ impl LayoutSerializationTest {
         //     TestLayout2.class,
         //     (data, dataOutput) -> {},
         //     dataInput -> new TestLayout2());
-        assert_throws(IllegalArgumentException.class, () -> Layout::register(def1, def2));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> Layout::register(def1, def2));
     }
 
     #[test]
@@ -183,7 +183,7 @@ impl LayoutSerializationTest {
         //         TestLayout.class,
         //         (data, dataOutput) -> {},
         //         dataInput -> new TestLayout());
-        assert_throws(IllegalArgumentException.class, () -> Layout::register(def1, def2));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> Layout::register(def1, def2));
     }
 
     #[test]

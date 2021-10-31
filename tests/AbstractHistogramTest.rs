@@ -8,11 +8,11 @@ pub struct AbstractHistogramTest {
 
 impl AbstractHistogramTest {
 
-    pub fn create(&self,  layout: &Layout) -> Histogram ;
+    pub fn create(&self,  layout: impl Layout) -> impl Histogram ;
 
-    pub fn read(&self,  layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>  ;
+    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>  ;
 
-    pub fn add_values(&self,  histogram: &Histogram,  values: f64) -> Histogram ;
+    pub fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram ;
 
     #[test]
     pub fn test_to_string(&self)   {
@@ -32,7 +32,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_serialization(&self,  layout: &Layout,  histogram: &Histogram)   {
+    pub fn test_serialization(&self,  layout: impl Layout,  histogram: impl Histogram)   {
         let tryResult1 = 0;
         'try1: loop {
         {
@@ -50,7 +50,7 @@ impl AbstractHistogramTest {
         let tryResult1 = 0;
         'try1: loop {
         {
-             let deserialized_histogram: Histogram = SerializationTestUtil::test_serialization(histogram, Histogram::write,  in: & -> Histogram::read_as_static(layout, in));
+             let deserialized_histogram: Histogram = SerializationTestUtil::test_serialization(histogram, Histogram::write,  in: & -> impl Histogram::read_as_static(layout, in));
             assert_eq!(histogram, deserialized_histogram);
         }
         break 'try1
@@ -64,7 +64,7 @@ impl AbstractHistogramTest {
         let tryResult1 = 0;
         'try1: loop {
         {
-             let deserialized_histogram: Histogram = SerializationTestUtil::test_serialization(histogram, Histogram::write,  in: & -> Histogram::read_as_dynamic(layout, in));
+             let deserialized_histogram: Histogram = SerializationTestUtil::test_serialization(histogram, Histogram::write,  in: & -> impl Histogram::read_as_dynamic(layout, in));
             assert_eq!(histogram, deserialized_histogram);
         }
         break 'try1

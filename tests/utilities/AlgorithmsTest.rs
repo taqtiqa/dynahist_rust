@@ -255,10 +255,10 @@ impl Algorithms for AlgorithmsTest {
         self.test_find_first(i64::MAX - 1, i64::MIN, i64::MAX, max_num_evaluations);
         self.test_find_first(i64::MAX, i64::MIN, i64::MAX, max_num_evaluations);
         self.test_find_first(0, 0, i64::MAX, max_num_evaluations);
-        assert_throws(IllegalArgumentException.class, () -> Algorithms::find_first( l: & -> false, 0, i64::MAX));
-    // assertThrows(IllegalArgumentException.class, () -> Algorithms.findFirst(l -> false, 1, -1));
-    // assertThrows(IllegalArgumentException.class, () -> Algorithms.findFirst(l -> false, -1, 1, 2));
-    // assertThrows(IllegalArgumentException.class, () -> Algorithms.findFirst(l -> false, -1, 1, -2));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> Algorithms::find_first( l: & -> false, 0, i64::MAX));
+    // assertThrows(DynaHist::IllegalArgumentError.class, () -> Algorithms.findFirst(l -> false, 1, -1));
+    // assertThrows(DynaHist::IllegalArgumentError.class, () -> Algorithms.findFirst(l -> false, -1, 1, 2));
+    // assertThrows(DynaHist::IllegalArgumentError.class, () -> Algorithms.findFirst(l -> false, -1, 1, -2));
     }
 
     fn test_find_first_with_initial_guess( first_true_index: i64,  min: i64,  max: i64,  initial_guess: i64,  max_num_evaluations: i32)   {
@@ -292,7 +292,7 @@ impl Algorithms for AlgorithmsTest {
         ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MIN, max_num_evaluations);
         ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MAX - 1, max_num_evaluations);
         ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MIN + 1, max_num_evaluations);
-        assert_throws(IllegalArgumentException.class, () -> Algorithms::find_first_guess( l: & -> false, i64::MIN, i64::MAX, 0));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> Algorithms::find_first_guess( l: & -> false, i64::MIN, i64::MAX, 0));
     }
 
     #[test]
@@ -573,6 +573,6 @@ impl Algorithms for AlgorithmsTest {
         assert_eq!(3, &Algorithms::clip(1, 3, 7));
         assert_eq!(5, &Algorithms::clip(5, 3, 7));
         assert_eq!(7, &Algorithms::clip(8, 3, 7));
-        assert_throws(IllegalArgumentException.class, () -> Algorithms::clip(10, 5, 4));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> Algorithms::clip(10, 5, 4));
     }
 }

@@ -125,27 +125,27 @@ impl AbstractErrorLimitingLayoutTest {
         ;
         for  let absolute_error_limit: f64 in absolute_error_limits {
             self.create_layout(absolute_error_limit, 0, 0, absolute_error_limit * (Integer::MAX_VALUE - 1.0));
-            assert_throws(IllegalArgumentException.class, () -> self.create_layout(absolute_error_limit, 0, 0, absolute_error_limit * Integer::MAX_VALUE));
+            assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(absolute_error_limit, 0, 0, absolute_error_limit * Integer::MAX_VALUE));
         }
     }
 
     #[test]
     pub fn test_create(&self)   {
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, -1e6, f64::INFINITY));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, f64::NEG_INFINITY, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, 1e6, 1e-6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, 1, f64::NAN));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-2, f64::NAN, 1));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-10, 1e-6, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-10, i64::MIN, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, 1e-9, 1e-6, 1e6));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-2, -1e6, f64::INFINITY));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-2, f64::NEG_INFINITY, 1e6));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-2, 1e6, 1e-6));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-2, 1, f64::NAN));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-2, f64::NAN, 1));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-10, 1e-6, 1e6));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-10, i64::MIN, 1e6));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-9, 1e-6, 1e6));
         self.create_layout(self.min_normal_f64(), 0, 0, 1000 * self.min_normal_f64());
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(self.min_normal_f64(), 0, 0, f64::MAX));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(-1, 1e-2, -1e6, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1e-8, -1, -1e6, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(f64::INFINITY, 1, -1e6, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1, f64::INFINITY, -1e6, 1e6));
-        assert_throws(IllegalArgumentException.class, () -> self.create_layout(1, 0, -2, Integer::MAX_VALUE - 3));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(self.min_normal_f64(), 0, 0, f64::MAX));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(-1, 1e-2, -1e6, 1e6));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, -1, -1e6, 1e6));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(f64::INFINITY, 1, -1e6, 1e6));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1, f64::INFINITY, -1e6, 1e6));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1, 0, -2, Integer::MAX_VALUE - 3));
         // no exception should be thrown in this case
         self.create_layout(1, 0, -2, Integer::MAX_VALUE - 4);
     }

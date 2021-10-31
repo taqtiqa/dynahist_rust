@@ -9,11 +9,11 @@ pub struct StaticHistogramTest {
 
 impl StaticHistogramTest {
 
-    pub fn create(&self,  layout: &Layout) -> Histogram  {
+    pub fn create(&self,  layout: impl Layout) -> impl Histogram  {
         return Histogram::create_static(layout);
     }
 
-    pub fn read(&self,  layout: &Layout,  data_input: &DataInput) -> /*  throws IOException */Result<Histogram, Rc<Exception>>   {
+    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>>   {
         return Ok(Histogram::read_as_static(layout, &data_input));
     }
 
@@ -44,6 +44,6 @@ impl StaticHistogramTest {
                 return -1;
             }
         };
-        assert_throws(IllegalArgumentException.class, () -> Histogram::create_static(layout));
+        assert_throws(DynaHist::IllegalArgumentError.class, () -> impl Histogram::create_static(layout));
     }
 }
