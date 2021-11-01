@@ -59,7 +59,7 @@ pub trait Histogram {
    ///
    /// @return the number of added values greater than {@link Layout#getNormalRangeUpperBound()}
    ///
-    fn get_overflow_count(&self) -> i64  {
+    fn get_overflow_count(&self) -> i64 {
         if !self.is_empty() {
              let it: &Self::B = self.get_last_non_empty_bin();
             if it.is_overflow_bin() {
@@ -74,7 +74,7 @@ pub trait Histogram {
    ///
    /// @return the number of added values less than {@link Layout#getNormalRangeLowerBound()}
    ///
-    fn get_underflow_count(&self) -> i64  {
+    fn get_underflow_count(&self) -> i64 {
         if !self.is_empty() {
              let it: &Self::B = self.get_first_non_empty_bin();
             if it.is_underflow_bin() {
@@ -163,69 +163,6 @@ pub trait Histogram {
    ///
     fn get_value_from_estimator(&self,   rank: i64,   value_estimator: &Self::V) -> f64 ;
 
-
-   /// Return an estimate for the quantile value using the estimated values as given by {@link
-   /// #getValue(long)} and the default quantile estimation method. The default behavior might change
-   /// in future. Therefore, if well-defined behavior is wanted, use {@link #getQuantile(double,
-   /// QuantileEstimator)}.
-   ///
-   /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
-   /// function is called many times, it is recommended to transform the histogram using {@link
-   /// #getPreprocessedCopy()} into a @link {@link PreprocessedHistogram} first (which is an O(N)
-   /// operation), whose implementation has a worst case complexity of O(log N).
-   ///
-   /// @param p the p-value in range [0,1]
-   /// @return an estimate for the p-quantile
-   ///
-    fn get_quantile(&self,  p: f64) -> f64 ;
-
-
-   /// Return an estimate for the quantile value using the estimated values as given by {@link
-   /// #getValue(long)} and the given [`QuantileEstimation`].
-   ///
-   /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
-   /// function is called many times, it is recommended to transform the histogram using {@link
-   /// #getPreprocessedCopy()} into a @link {@link PreprocessedHistogram} first (which is an O(N)
-   /// operation), whose implementation has a worst case complexity of O(log N).
-   ///
-   /// @param p the p-value in range [0,1]
-   /// @param quantileEstimator the quantile estimator
-   /// @return an estimate for the p-quantile
-   ///
-    fn get_quantile(&self,  p: f64,  quantile_estimator: &Self::Q) -> f64 ;
-
-
-   /// Return an estimate for the quantile value using the estimated values as given by {@link
-   /// #getValue(long)} and the given [`QuantileEstimation`].
-   ///
-   /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
-   /// function is called many times, it is recommended to transform the histogram using {@link
-   /// #getPreprocessedCopy()} into a @link {@link PreprocessedHistogram} first (which is an O(N)
-   /// operation), whose implementation has a worst case complexity of O(log N).
-   ///
-   /// @param p the p-value in range [0,1]
-   /// @param valueEstimator the value estimator
-   /// @return an estimate for the p-quantile
-   ///
-    fn get_quantile(&self,  p: f64,  value_estimator: &Self::V) -> f64 ;
-
-
-   /// Return an estimate for the quantile value using the estimated values as given by {@link
-   /// #getValue(long)} and the given [`QuantileEstimation`] implementation.
-   ///
-   /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
-   /// function is called many times, it is recommended to transform the histogram using {@link
-   /// #getPreprocessedCopy()} into a @link {@link PreprocessedHistogram} first (which is an O(N)
-   /// operation), whose implementation has a worst case complexity of O(log N).
-   ///
-   /// @param p the p-value in range [0,1]
-   /// @param quantileEstimator the quantile estimator
-   /// @param valueEstimator the value estimator
-   /// @return an estimate for the p-quantile
-   ///
-    fn get_quantile(&self,  p: f64,  quantile_estimator: &Self::Q,  value_estimator: &Self::V) -> f64 ;
-
-
    /// Return an estimate for the quantile value using the estimated values as given by {@link
    /// #getValue(long)} using the default quantile estimator.
    ///
@@ -235,7 +172,6 @@ pub trait Histogram {
    /// @return an immutable pre-processed copy of this histogram
    ///
     fn get_preprocessed_copy(&self) -> Self ;
-
 
    /// Adds a given value to the histogram.
    ///
@@ -248,10 +184,9 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn add_value(&self,  value: f64) -> Self  {
+    fn add_value(&self,  value: f64) -> Self {
         return self.add_value(value, 1);
     }
-
 
    /// Adds a given value to the histogram with a given multiplicity.
    ///
@@ -282,7 +217,7 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn add_histogram(&self,  histogram: impl Histogram) -> Self ;
+    fn add_histogram(&self,  histogram: &Self) -> Self ;
 
 
    /// Adds a given histogram to the histogram.
@@ -300,7 +235,7 @@ pub trait Histogram {
    /// @throws ArithmeticException if the total count of the histogram would overflow
    /// @throws UnsupportedOperationException if modifications are not supported
    ///
-    fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &Self::V) -> Self ;
+    fn add_histogram(&self,  histogram: &Self,  value_estimator: &Self::V) -> Self ;
 
 
    /// Adds an ascending sequence to the histogram.
@@ -351,30 +286,27 @@ pub trait Histogram {
    ///
     fn is_mutable(&self) -> bool ;
 
-
-   /// Create an empty {@link Histogram} that allocates internal arrays for bin counts dynamically.
+   /// Create an empty [`Histogram`] that allocates internal arrays for bin counts dynamically.
    ///
    /// Choose this, if memory efficiency is more important than speed.
    ///
    /// @param layout the [`Layout`] of the histogram
-   /// @return an empty {@link Histogram}
+   /// @return an empty [`Histogram`]
    ///
-    fn create_dynamic( layout: impl Layout) -> Self  {
+    fn create_dynamic( layout: impl Layout) -> Self {
         return DynamicHistogram::new(layout);
     }
 
-
-   /// Create an empty {@link Histogram} that allocates internal arrays for bin counts statically.
+   /// Create an empty [`Histogram`] that allocates internal arrays for bin counts statically.
    ///
    /// Choose this, if speed is more efficient than memory efficiency.
    ///
    /// @param layout the [`Layout`] of the histogram
-   /// @return an empty {@link Histogram}
+   /// @return an empty [`Histogram`]
    ///
-    fn create_static( layout: impl Layout) -> Self  {
+    fn create_static( layout: impl Layout) -> Self {
         return StaticHistogram::new(layout);
     }
-
 
    /// Reads a histogram from a given [`DataInput`].
    ///
@@ -386,7 +318,7 @@ pub trait Histogram {
    /// @return the deserialized histogram
    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn read_as_dynamic( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>> {
+    fn read_as_dynamic( layout: impl Layout,  data_input: impl DataInput) -> Result<Self, Rc<DynaHistError>> {
         return Ok(DynamicHistogram::read(layout, &data_input));
     }
 
@@ -400,7 +332,7 @@ pub trait Histogram {
    /// @return the deserialized histogram
    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn read_as_static( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>> {
+    fn read_as_static( layout: impl Layout,  data_input: impl DataInput) -> Result<Self, Rc<DynaHistError>> {
         return Ok(StaticHistogram::read(layout, &data_input));
     }
 
@@ -415,7 +347,7 @@ pub trait Histogram {
    /// @return the deserialized histogram
    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
-    fn read_as_preprocessed( layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>> {
+    fn read_as_preprocessed( layout: impl Layout,  data_input: impl DataInput) -> Result<Self, Rc<DynaHistError>> {
         return Ok(DynamicHistogram::read(layout, &data_input)::get_preprocessed_copy());
     }
 

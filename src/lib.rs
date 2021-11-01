@@ -15,8 +15,13 @@ mod bins;
 // Bin value estimators
 mod values;
 
-// Histogram bucket layouts;
+// Histogram bucket layouts
 mod layouts;
+
+// Histogram (de)serialization
+mod seriate;
+
+mod quantiles;
 
 pub mod histogram;
 pub use crate::histogram::Histogram;

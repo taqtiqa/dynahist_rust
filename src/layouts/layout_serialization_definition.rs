@@ -3,19 +3,22 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::seriate::{deserialization::SerializationReader, serialization::SerializationWriter};
+use crate::layouts::layout::Layout;
+
 // Represents the serialization definition for some [`Layout`].
 pub struct LayoutSerializationDefinition {
     serial_version: i64,
-    clazz: T,
-    writer: SerializationWriter<Layout>,
-    reader: SerializationReader<Layout>,
+    clazz: T: Layout,
+    writer: SerializationWriter<T>,
+    reader: SerializationReader<T>,
 }
 
 impl Layout for LayoutSerializationDefinition {
-    fn new( serial_version: i64,  clazz: &Class<T>,  writer: &SerializationWriter<T>,  reader: &SerializationReader<T>) -> LayoutSerializationDefinition {
+    fn new( serial_version: i64,  clazz: &T,  writer: &SerializationWriter<T>,  reader: &SerializationReader<T>) -> LayoutSerializationDefinition {
         serial_version;
-        clazz = require_non_null(&clazz);
-        writer = require_non_null(writer) as SerializationWriter<Layout>;
-        reader = require_non_null(reader) as SerializationReader<Layout>;
+        clazz;
+        writer as SerializationWriter<T>;
+        reader as SerializationReader<T>;
     }
 }

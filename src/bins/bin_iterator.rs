@@ -13,6 +13,8 @@ use crate::bins::bin::Bin;
 /// is modified at the same time.
 ///
 pub trait BinIterator: Bin {
+    type B: Bin;
+
     /// Advance to the next non-empty bin.
     ///
     /// Must not be called if bin iterator represents the last non-empty bin,
@@ -20,7 +22,8 @@ pub trait BinIterator: Bin {
     ///
     /// # Errors
     ///
-    /// Return [`DynaHist::NoSuchElementError`] when a bin is the last non-empty bin
+    /// Return [`DynaHist::NoSuchElementError`] when called, and the current
+    /// bin is the last non-empty bin.  TODO change this behavior to return `None`.
     ///
     fn next(&self);
 
@@ -35,11 +38,12 @@ pub trait BinIterator: Bin {
     ///
     fn previous(&self);
 
-    /// Create a new {@link Bin} instance representing the current position of this bin iterator
+    /// Create a new [`Bin`] instance representing the current position of
+    /// this bin iterator
     ///
     /// The returned bin is immutable with respect to this bin iterator.
     /// However, the behavior of the returned bin is undefined when the
     /// underlying histogram gets modified.
     ///
-    fn get_bin_copy(&self) -> Bin;
+    fn get_bin_copy(&self) -> Self::B;
 }

@@ -9,14 +9,14 @@ pub struct SerializationUtilTest {
 impl SerializationUtilTest {
 
     #[test]
-    pub fn test_read_unsigned_var_int(&self)   {
+    pub fn test_read_unsigned_var_int(&self) {
          let array : vec![i8; 9] = vec![-1, -2, -3, -4, -5, -6, -7, -8, -9, ]
         ;
         assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_int(DataInputStream::new(ByteArrayInputStream::new(&array))));
     }
 
     #[test]
-    pub fn test_read_unsigned_var_long(&self)   {
+    pub fn test_read_unsigned_var_long(&self) {
          let array : vec![i8; 10] = vec![-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, ]
         ;
         assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_long(DataInputStream::new(ByteArrayInputStream::new(&array))));
@@ -31,7 +31,7 @@ impl SerializationUtilTest {
         histogram_dynamic.add_ascending_sequence( i: & -> i + 1, 1000000000);
         histogram_preprocessed.add_ascending_sequence(i -> i + 1, 1000000000);
         histogram_static.add_ascending_sequence(i -> i + 1, 1000000000);
-        {
+       {
              let serialized_histogram: Vec<i8>;
              let compressed_histogram: Vec<i8>;
              let decompressed_histogram: Histogram;
@@ -45,7 +45,7 @@ impl SerializationUtilTest {
             assert_eq!(&histogram_dynamic.hash_code(), &deserialized_histogram.hash_code());
             assert_eq!(&histogram_dynamic.hash_code(), &decompressed_histogram.hash_code());
         }
-        {
+       {
              let serialized_histogram: Vec<i8>;
              let compressed_histogram: Vec<i8>;
              let decompressed_histogram: Histogram;
@@ -59,7 +59,7 @@ impl SerializationUtilTest {
             assert_eq!(&histogram_dynamic.hash_code(), &deserialized_histogram.hash_code());
             assert_eq!(&histogram_dynamic.hash_code(), &decompressed_histogram.hash_code());
         }
-        {
+       {
              let serialized_histogram: Vec<i8>;
              let compressed_histogram: Vec<i8>;
              let decompressed_histogram: Histogram;
@@ -73,7 +73,7 @@ impl SerializationUtilTest {
             assert_eq!(&histogram_static.hash_code(), &deserialized_histogram.hash_code());
             assert_eq!(&histogram_static.hash_code(), &decompressed_histogram.hash_code());
         }
-        {
+       {
              let serialized_histogram: Vec<i8>;
              let compressed_histogram: Vec<i8>;
              let decompressed_histogram: Histogram;

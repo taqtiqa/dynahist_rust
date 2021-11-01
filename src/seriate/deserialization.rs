@@ -16,6 +16,7 @@
 ///     - [`OpenTelemetryLayout`]
 ///
 pub trait SerializationReader<T> {
+    
     /// Deserializes an object by reading from a given [`DataInput`].
     ///
     /// Implementations should never return {@code null} except for the case {@code null} was really
@@ -32,5 +33,5 @@ pub trait SerializationReader<T> {
     /// @return the deserialized object
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs.
     ///
-    fn read(&self, data_input: impl DataInput) -> Result<T, Rc<DynaHistError>>;
+    fn read(&self, data_input: impl DataInput) -> Result<T, std::rc::Rc<DynaHistError>>;
 }

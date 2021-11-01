@@ -9,7 +9,7 @@ pub struct AbstractMutableHistogramTest {
 
 impl AbstractMutableHistogramTest {
 
-    pub fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram  {
+    pub fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram {
         if values != null {
             for  let x: f64 in values {
                 histogram.add_value(x);
@@ -19,7 +19,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_count_overflow(&self)   {
+    pub fn test_count_overflow(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
         histogram.add_value(10.0, i64::MAX);
@@ -31,7 +31,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_na_n(&self)   {
+    pub fn test_na_n(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
         HistogramTestUtil::check_histogram_data_consistency(histogram);
@@ -42,7 +42,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_positive_infinity(&self)   {
+    pub fn test_positive_infinity(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
         histogram.add_value(f64::INFINITY);
@@ -54,7 +54,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_negative_infinity(&self)   {
+    pub fn test_negative_infinity(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
         histogram.add_value(f64::NEG_INFINITY);
@@ -66,15 +66,15 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_get_bin_by_rank(&self)   {
+    pub fn test_get_bin_by_rank(&self) {
          const K: i64 = 57;
          const Z: i64 = 5;
          let layout: Layout = LogQuadraticLayout::create(1.0, 0.0, 0.0, K);
          let histogram: Histogram = create(layout);
-         {
+        {
              let mut k: i64 = 0;
             while k < K {
-                {
+               {
                     histogram.add_value(k, Z);
                 }
                 k += 1;
@@ -83,10 +83,10 @@ impl AbstractMutableHistogramTest {
 
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
-         {
+        {
              let mut k: i32 = 0;
             while k < Z * K {
-                {
+               {
                      let bin: BinIterator = histogram.get_bin_by_rank(k);
                     assert_eq!(Z, &bin.get_bin_count());
                     assert_eq!((k / Z) * Z, &bin.get_less_count());
@@ -99,7 +99,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_single_value_histogram_normal(&self)   {
+    pub fn test_single_value_histogram_normal(&self) {
          let histogram: Histogram = create(TestLayout::new(-100, 100)).add_value(5);
         assert_eq!(1, &HistogramTestUtil::number_of_non_empty_bins(histogram));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
@@ -107,7 +107,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_single_value_histogram_underflow(&self)   {
+    pub fn test_single_value_histogram_underflow(&self) {
          let histogram: Histogram = create(TestLayout::new(-100, 100)).add_value(1000);
         assert_eq!(1, &HistogramTestUtil::number_of_non_empty_bins(histogram));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
@@ -115,7 +115,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_single_value_histogram_overflow(&self)   {
+    pub fn test_single_value_histogram_overflow(&self) {
          let histogram: Histogram = create(TestLayout::new(-100, 100)).add_value(-1000);
         assert_eq!(1, &HistogramTestUtil::number_of_non_empty_bins(histogram));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
@@ -123,7 +123,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_two_values_histogram_underflow_and_overflow(&self)   {
+    pub fn test_two_values_histogram_underflow_and_overflow(&self) {
          let histogram: Histogram = create(TestLayout::new(-100, 100)).add_value(-1000).add_value(1000);
         assert_eq!(2, &HistogramTestUtil::number_of_non_empty_bins(histogram));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
@@ -131,13 +131,13 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_general(&self)   {
+    pub fn test_general(&self) {
          const N: i32 = 10_000;
          let random: Random = Random::new(0);
-         {
+        {
              let mut i: i32 = 0;
             while i < N {
-                {
+               {
                      let layout: Layout = TestLayout::new(-1000, 1000);
                      let histogram: Histogram = create(layout);
                      const N_Data: i32 = random.next_int(50);
@@ -145,10 +145,10 @@ impl AbstractMutableHistogramTest {
                      let total_count: i64 = 0;
                      let mut min: f64 = f64::INFINITY;
                      let mut max: f64 = f64::NEG_INFINITY;
-                     {
+                    {
                          let mut j: i32 = 0;
                         while j < N_Data {
-                            {
+                           {
                                  let count: i64 = count_base + random.next_int(10);
                                  let value: f64 = random.next_double() * 200.0 - 100.0;
                                 histogram.add_value(value, count);
@@ -179,7 +179,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_get_preprocessed_data(&self)   {
+    pub fn test_get_preprocessed_data(&self) {
          let histogram: Histogram = create(TestLayout::new(-100, 100));
         histogram.add_value(-101, 3);
         histogram.add_value(-53, 2);
@@ -243,14 +243,14 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_ascending_sequence(&self)   {
+    pub fn test_add_ascending_sequence(&self) {
          let layout: TestLayout = TestLayout::new(-5, 5);
          let num_cycles: i32 = 10000;
          let rnd: Random = Random::new(0);
-         {
+        {
              let mut i: i32 = 0;
             while i < num_cycles {
-                {
+               {
                      let values: Vec<f64> = rnd.doubles(&rnd.next_int(100)).map( |d| d * 12 - 6).to_array();
                     Arrays::sort(&values);
                      let histogram1: Histogram = create(layout);
@@ -269,7 +269,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_ascending_sequence_unique_value(&self)   {
+    pub fn test_add_ascending_sequence_unique_value(&self) {
          let layout: TestLayout = TestLayout::new(-5, 5);
          let values: vec![Vec<f64>; 5] = vec![f64::NEG_INFINITY, -5.5, -0.1, 5.3, f64::INFINITY, ]
         ;
@@ -283,7 +283,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_ascending_sequence_invalid_length(&self)   {
+    pub fn test_add_ascending_sequence_invalid_length(&self) {
          let layout: TestLayout = TestLayout::new(-5, 5);
          let histogram: Histogram = create(layout);
          let values: vec![Vec<f64>; 5] = vec![f64::NEG_INFINITY, -5.5, -0.1, 5.3, f64::INFINITY, ]
@@ -296,7 +296,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_histogram(&self)   {
+    pub fn test_histogram(&self) {
          let layout: TestLayout = TestLayout::new(-2, 2);
          let histogram: Histogram = create(layout);
         histogram.add_value(f64::NEG_INFINITY);
@@ -324,23 +324,23 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_histogram_equal_layout(&self)   {
+    pub fn test_add_histogram_equal_layout(&self) {
          let cycles: i32 = 1000;
          let random: Random = Random::new(0);
          let layout: Layout = TestLayout::new(-100, 100);
-         {
+        {
              let cycle_counter: i32 = 0;
             while cycle_counter < cycles {
-                {
+               {
                      let num_values1: i32 = random.next_int(1000);
                      let num_values2: i32 = random.next_int(1000);
                      let histogram1: Histogram = create(layout);
                      let histogram2: Histogram = create(layout);
                      let histogram_total: Histogram = create(layout);
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < num_values1 {
-                            {
+                           {
                                  let value: f64 = -101.0 + random.next_double() * 202.0;
                                 histogram1.add_value(value);
                                 histogram_total.add_value(value);
@@ -349,10 +349,10 @@ impl AbstractMutableHistogramTest {
                          }
                      }
 
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < num_values2 {
-                            {
+                           {
                                  let value: f64 = -101.0 + random.next_double() * 202.0;
                                 histogram2.add_value(value);
                                 histogram_total.add_value(value);
@@ -372,25 +372,25 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_histogram_non_equal_layout(&self)   {
+    pub fn test_add_histogram_non_equal_layout(&self) {
          let cycles: i32 = 1000;
          let random: Random = Random::new(0);
          let layout1: Layout = TestLayout::new(-100, 100);
          let layout2: Layout = TestLayout::new(-100, 101);
          let layout_total: Layout = layout1;
-         {
+        {
              let cycle_counter: i32 = 0;
             while cycle_counter < cycles {
-                {
+               {
                      let num_values1: i32 = random.next_int(1000);
                      let num_values2: i32 = random.next_int(1000);
                      let histogram1: Histogram = create(layout1);
                      let histogram2: Histogram = create(layout2);
                      let histogram_total: Histogram = create(layout_total);
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < num_values1 {
-                            {
+                           {
                                  let value: f64 = -101.0 + random.next_double() * 202.0;
                                 histogram1.add_value(value);
                                 histogram_total.add_value(value);
@@ -399,10 +399,10 @@ impl AbstractMutableHistogramTest {
                          }
                      }
 
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < num_values2 {
-                            {
+                           {
                                  let value: f64 = -101.0 + random.next_double() * 202.0;
                                 histogram2.add_value(value);
                                 histogram_total.add_value(value);
@@ -422,21 +422,21 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_empty_histogram(&self)   {
+    pub fn test_add_empty_histogram(&self) {
          let cycles: i32 = 100;
          let random: Random = Random::new(0);
          let layout: Layout = TestLayout::new(-100, 100);
-         {
+        {
              let cycle_counter: i32 = 0;
             while cycle_counter < cycles {
-                {
+               {
                      let num_values: i32 = random.next_int(10);
                      let histogram1: Histogram = create(layout);
                      let histogram2: Histogram = create(layout);
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < num_values {
-                            {
+                           {
                                  let value: f64 = -101.0 + random.next_double() * 202.0;
                                 histogram1.add_value(value);
                                 histogram2.add_value(value);
@@ -456,7 +456,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_negative_count(&self)   {
+    pub fn test_add_negative_count(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
          let test_result = histogram.add_value(2.4, -1);
@@ -465,7 +465,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_zero_count(&self)   {
+    pub fn test_add_zero_count(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
         histogram.add_value(2.4, 0);
@@ -474,7 +474,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_quantile_of_single_value(&self)   {
+    pub fn test_quantile_of_single_value(&self) {
          let value: f64 = 5.4;
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
@@ -488,22 +488,22 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_non_empty_bins(&self)   {
+    pub fn test_non_empty_bins(&self) {
          const K: i32 = 1000;
          let layout: Layout = LogQuadraticLayout::create(1.0, 0.0, 0.0, K);
          let num_cycles: i32 = 100;
          let random: Random = Random::new(0);
-         {
+        {
              let mut i: i32 = 0;
             while i < num_cycles {
-                {
+               {
                      let histogram: Histogram = create(layout);
                      let mut count: i64 = 0;
                      let non_empty_bins_count: i32 = 0;
-                     {
+                    {
                          let mut k: i32 = 0;
                         while k < K {
-                            {
+                           {
                                 if random.next_boolean() {
                                      let n: i32 = random.next_int(1_000_000);
                                     non_empty_bins_count += 1;
@@ -526,7 +526,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_empty_histogram(&self)   {
+    pub fn test_empty_histogram(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-3, 0.0, 0.0, 10.0);
          let histogram: Histogram = create(layout);
         assert_eq!(0, &HistogramTestUtil::number_of_non_empty_bins(histogram));
@@ -534,20 +534,20 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_serialization1(&self)   {
+    pub fn test_serialization1(&self) {
          let rnd: Random = Random::new(0);
          let num_cycles: i32 = 10000;
-         {
+        {
              let mut cycle: i32 = 0;
             while cycle < num_cycles {
-                {
+               {
                      let layout: Layout = TestLayout::new(-10 + rnd.next_int(10), &rnd.next_int(10));
                      let histogram: Histogram = create(layout);
                      let num_values: i32 = rnd.next_int(20);
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < num_values {
-                            {
+                           {
                                 histogram.add_value(-11 + rnd.next_int(24));
                             }
                             i += 1;
@@ -563,20 +563,20 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_serialization2(&self)   {
+    pub fn test_serialization2(&self) {
          let rnd: Random = Random::new(0);
          let num_cycles: i32 = 10000;
-         {
+        {
              let mut cycle: i32 = 0;
             while cycle < num_cycles {
-                {
+               {
                      let layout: Layout = TestLayout::new(-10 + rnd.next_int(10), &rnd.next_int(10));
                      let histogram: Histogram = create(layout);
                      let num_values: i32 = rnd.next_int(20);
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < num_values {
-                            {
+                           {
                                 histogram.add_value(-11 + rnd.next_int(24), 1 << rnd.next_int(34));
                             }
                             i += 1;
@@ -592,7 +592,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_minimal_layout(&self)   {
+    pub fn test_minimal_layout(&self) {
          let layout: Layout = TestLayout::new(-1, 0);
          let histogram: Histogram = create(layout);
         histogram.add_value(1000);
@@ -608,7 +608,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_very_small_effective_bin(&self)   {
+    pub fn test_very_small_effective_bin(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let x_values: vec![Vec<f64>; 4] = vec![-12143.43, -12.0, 34.535, 21314234.0, ]
         ;
@@ -622,10 +622,10 @@ impl AbstractMutableHistogramTest {
             assert_eq!(c1 + c2, &histogram.get_total_count());
              let mut previous: f64 = histogram.get_value(0);
             assert_that(previous).is_greater_than_or_equal_to(min);
-             {
+            {
                  let mut i: i64 = 1;
                 while i < c1 + c2 {
-                    {
+                   {
                          let current: f64 = histogram.get_value(i);
                         assert_that(previous).is_less_than_or_equal_to(current);
                         previous = current;
@@ -639,30 +639,30 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_negative_zero(&self)   {
+    pub fn test_negative_zero(&self) {
          let layout: Layout = TestLayout::new(-1, 1);
-        {
+       {
              let histogram: Histogram = create(layout);
             histogram.add_value(0.0);
             histogram.add_value(-0.0);
             assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
             assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
         }
-        {
+       {
              let histogram: Histogram = create(layout);
             histogram.add_value(-0.0);
             histogram.add_value(0.0);
             assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
             assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
         }
-        {
+       {
              let histogram: Histogram = create(layout);
             histogram.add_value(0.0);
             histogram.add_value(0.0);
             assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
             assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
         }
-        {
+       {
              let histogram: Histogram = create(layout);
             histogram.add_value(-0.0);
             histogram.add_value(-0.0);
@@ -672,11 +672,11 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_get_estimated_footprint_in_byte(&self)   {
+    pub fn test_get_estimated_footprint_in_byte(&self) {
     }
 
     #[test]
-    pub fn test_add_histogram_first_non_empty_bin_equals_last_non_empty_bin(&self)   {
+    pub fn test_add_histogram_first_non_empty_bin_equals_last_non_empty_bin(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram1: Histogram = create(layout);
          let histogram2: Histogram = create(layout);
@@ -691,7 +691,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_histogram_overflow(&self)   {
+    pub fn test_add_histogram_overflow(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram1: Histogram = create(layout);
          let histogram2: Histogram = create(layout);
@@ -701,7 +701,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_deserialize_invalid_serial_version(&self)   {
+    pub fn test_deserialize_invalid_serial_version(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let data_input_stream: DataInputStream = DataInputStream::new(ByteArrayInputStream::new( : vec![i8; 1] = vec![1, ]
         ));
@@ -709,7 +709,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_get_value_estimate_invalid_order(&self)   {
+    pub fn test_get_value_estimate_invalid_order(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = create(layout);
         histogram.add_value(5);
@@ -718,7 +718,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_get_bin_by_rank_invalid_order(&self)   {
+    pub fn test_get_bin_by_rank_invalid_order(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = create(layout);
         histogram.add_value(5);
@@ -727,7 +727,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_equals(&self)   {
+    pub fn test_equals(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = create(layout);
          let other_histogram: Histogram = create(layout);
@@ -757,14 +757,14 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_total_count_overflow(&self)   {
+    pub fn test_total_count_overflow(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = create(layout);
         histogram.add_value(1, i64::MAX);
         assert_throws(ArithmeticException.class, () -> histogram.add_value(2));
     }
 
-    fn test_add_histogram_helper( histogram_factory1: &Function<Layout, Histogram>,  histogram_factory2: &Function<Layout, Histogram>)   {
+    fn test_add_histogram_helper( histogram_factory1: &Function<Layout, Histogram>,  histogram_factory2: &Function<Layout, Histogram>) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let random: SplittableRandom = SplittableRandom::new(0);
          let num_values1: i64 = 1000;
@@ -777,7 +777,7 @@ impl AbstractMutableHistogramTest {
             histogram_total.add_value(x);
         });
         // DoubleStream.generate(random::nextDouble)
-        //     .limit(numValues2)
+        //     .limit(`num_values`2)
         //     .forEach(
         //         x -> {
         //           histogram2.addValue(x);
@@ -788,13 +788,13 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_histogram(&self)   {
+    pub fn test_add_histogram(&self) {
         ::test_add_histogram_helper(self::create, Histogram::createDynamic);
         ::test_add_histogram_helper(self::create, Histogram::createStatic);
     }
 
     #[test]
-    pub fn test_add_histogram_with_static(&self)   {
+    pub fn test_add_histogram_with_static(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let random: SplittableRandom = SplittableRandom::new(0);
          let num_values1: i64 = 1000;
@@ -807,7 +807,7 @@ impl AbstractMutableHistogramTest {
             histogram_total.add_value(x);
         });
         // DoubleStream.generate(random::nextDouble)
-        //     .limit(numValues2)
+        //     .limit(`num_values`2)
         //     .forEach(
         //         x -> {
         //           histogram2.addValue(x);
@@ -818,7 +818,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_add_histogram_with_under_and_over_flow_counts_only(&self)   {
+    pub fn test_add_histogram_with_under_and_over_flow_counts_only(&self) {
          let layout: Layout = TestLayout::new(-1, 1);
          let histogram1: Histogram = create(layout);
          let histogram2: Histogram = Histogram::create_dynamic(layout);
@@ -836,7 +836,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_is_mutable(&self)   {
+    pub fn test_is_mutable(&self) {
          let layout: Layout = TestLayout::new(-1, 1);
          let histogram: Histogram = create(layout);
         assert_true(&histogram.is_mutable());
@@ -847,18 +847,18 @@ impl AbstractMutableHistogramTest {
          let layouts: List<Layout> = Arrays::as_list(&LogLinearLayout::create(1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1.1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1.1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1e-1, 1.1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1.1e-1, -5, 5), &CustomLayout::create(-2, 4, 5), &CustomLayout::create(-2), &CustomLayout::create(1));
          let num_iterations: i64 = 10000;
          let random: SplittableRandom = SplittableRandom::new(0);
-         {
+        {
              let mut i: i32 = 0;
             while i < num_iterations {
-                {
+               {
                     for  let write_layout: Layout in layouts {
                         for  let read_layout: Layout in layouts {
                              let histogram: Histogram = create(write_layout);
                              let num_values: i64 = random.next_long(100);
-                             {
+                            {
                                  let mut j: i64 = 0;
                                 while j < num_values {
-                                    {
+                                   {
                                         histogram.add_value(&random.next_double(-6, 6));
                                     }
                                     j += 1;
@@ -905,10 +905,10 @@ impl AbstractMutableHistogramTest {
         to_byte_array(SerializationUtil::writeSignedVarInt, min_regular_idx)));
         sb.append(&byte_array_to_hex_string(&// regular max index
         to_byte_array(SerializationUtil::writeSignedVarInt, max_regular_idx)));
-         {
+        {
              let mut idx: i32 = min_regular_idx;
             while idx <= max_regular_idx {
-                {
+               {
                     sb.append(&byte_array_to_hex_string(&to_byte_array(( i: &,  d: &) -> d.write_long(i), 1)));
                     total_count += 1;
                 }

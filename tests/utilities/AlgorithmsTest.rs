@@ -11,7 +11,7 @@ impl Preconditions for AlgorithmsTest { }
 impl Algorithms for AlgorithmsTest {
 
     #[test]
-    fn test_interpolate(&self)   {
+    fn test_interpolate(&self) {
         assert_eq!(4.5, interpolate(3.5, 3, 4, 4, 5), 0.0);
         assert_eq!(4.5, interpolate(3, 3, 4, 3, 5), 0.0);
         assert_eq!(4.5, interpolate(2, 3, 4, 3, 5), 0.0);
@@ -72,13 +72,13 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_interpolate_symmetry(&self)   {
+    fn test_interpolate_symmetry(&self) {
          let random: Random = Random::new(0);
          let num_test_cycles: i32 = 1000;
-         {
+        {
              let mut i: i32 = 0;
             while i < num_test_cycles {
-                {
+               {
                      let x_vals: vec![Vec<f64>; 3] = vec![random.next_double(), random.next_double(), random.next_double(), ]
                     ;
                     Arrays::sort(&x_vals);
@@ -98,13 +98,13 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_interpolate_monotonicity(&self)   {
+    fn test_interpolate_monotonicity(&self) {
          let random: Random = Random::new(0);
          let num_test_cycles: i32 = 1000;
-         {
+        {
              let mut i: i32 = 0;
             while i < num_test_cycles {
-                {
+               {
                      let x_vals: vec![Vec<f64>; 3] = vec![random.next_double(), random.next_double(), random.next_double(), ]
                     ;
                     Arrays::sort(&x_vals);
@@ -131,7 +131,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_interpolate_na_n(&self)   {
+    fn test_interpolate_na_n(&self) {
         assert_eq!(f64::NAN, interpolate(f64::NAN, 3, 4, 4, 5), 0.0);
         assert_eq!(f64::NAN, interpolate(3.5, f64::NAN, 4, 4, 5), 0.0);
         assert_eq!(f64::NAN, interpolate(3.5, 3, 4, f64::NAN, 5), 0.0);
@@ -156,7 +156,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_calculate_midpoint(&self)   {
+    fn test_calculate_midpoint(&self) {
         assert_eq!(-1, &Algorithms::calculate_midpoint(i64::MIN, i64::MAX));
         assert_eq!(-1, &Algorithms::calculate_midpoint(i64::MIN, i64::MAX - 1));
         assert_eq!(-2, &Algorithms::calculate_midpoint(i64::MIN, i64::MAX - 2));
@@ -186,7 +186,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_map_double_to_long(&self)   {
+    fn test_map_double_to_long(&self) {
         assert_eq!(0, &Algorithms::map_double_to_long(0));
         assert_eq!(1, &Algorithms::map_double_to_long(f64::MIN));
         assert_eq!(0x7fefffffffffffff, &Algorithms::map_double_to_long(f64::MAX));
@@ -199,7 +199,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_long_to_double(&self)   {
+    fn test_long_to_double(&self) {
         assert_eq!(0, &Algorithms::map_long_to_double(0), 0.0);
         assert_eq!(f64::MIN, &Algorithms::map_long_to_double(1), 0.0);
         assert_eq!(f64::MAX, &Algorithms::map_long_to_double(0x7fefffffffffffff), 0.0);
@@ -217,13 +217,13 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_double_mapping(&self)   {
+    fn test_double_mapping(&self) {
          let cycles: i32 = 100000;
          let rnd: Random = Random::new(0);
-         {
+        {
              let mut i: i32 = 0;
             while i < cycles {
-                {
+               {
                      let d: f64 = rnd.next_double() * 2 - 1;
                     assert_eq!(d, &Algorithms::map_long_to_double(&Algorithms::map_double_to_long(d)), 0.0);
                 }
@@ -234,7 +234,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_find_first(&self)   {
+    fn test_find_first(&self) {
          let max_num_evaluations: i32 = 65;
         self.test_find_first(3, i64::MIN, i64::MAX, max_num_evaluations);
         self.test_find_first(i64::MAX, i64::MIN, i64::MAX, max_num_evaluations);
@@ -261,7 +261,7 @@ impl Algorithms for AlgorithmsTest {
     // assertThrows(DynaHist::IllegalArgumentError.class, () -> Algorithms.findFirst(l -> false, -1, 1, -2));
     }
 
-    fn test_find_first_with_initial_guess( first_true_index: i64,  min: i64,  max: i64,  initial_guess: i64,  max_num_evaluations: i32)   {
+    fn test_find_first_with_initial_guess( first_true_index: i64,  min: i64,  max: i64,  initial_guess: i64,  max_num_evaluations: i32) {
          let evaluated_values: Set<Long> = HashSet<>::new();
          let predicate: LongPredicate =  value: & -> {
             assert_true(&evaluated_values.add(value));
@@ -271,7 +271,7 @@ impl Algorithms for AlgorithmsTest {
         assert_that(&evaluated_values.size()).is_less_than_or_equal_to(max_num_evaluations);
     }
 
-    fn test_find_first( first_true_index: i64,  min: i64,  max: i64,  max_num_evaluations: i32)   {
+    fn test_find_first( first_true_index: i64,  min: i64,  max: i64,  max_num_evaluations: i32) {
          let evaluated_values: Set<Long> = HashSet<>::new();
          let predicate: LongPredicate =  value: & -> {
             assert_true(&evaluated_values.add(value));
@@ -282,7 +282,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_find_first_with_initial_guess(&self)   {
+    fn test_find_first_with_initial_guess(&self) {
          let max_num_evaluations: i32 = 128;
         ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MIN, max_num_evaluations);
         ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MAX, max_num_evaluations);
@@ -296,18 +296,18 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_find_first_with_initial_guess2(&self)   {
+    fn test_find_first_with_initial_guess2(&self) {
          let max_num_evaluations_with_initial_guess: i32 = 128;
          let max_num_evaluations: i32 = 65;
-         {
+        {
              let mut j: i32 = 0;
             while j < 100 {
-                {
+               {
                      let first_true_index: i64 = i64::MAX - j;
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < 100 {
-                            {
+                           {
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
@@ -323,15 +323,15 @@ impl Algorithms for AlgorithmsTest {
              }
          }
 
-         {
+        {
              let mut j: i32 = 0;
             while j < 100 {
-                {
+               {
                      let first_true_index: i64 = i64::MIN + j;
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < 100 {
-                            {
+                           {
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
@@ -347,15 +347,15 @@ impl Algorithms for AlgorithmsTest {
              }
          }
 
-         {
+        {
              let mut j: i32 = 0;
             while j < 100 {
-                {
+               {
                      let first_true_index: i64 = j;
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < 100 {
-                            {
+                           {
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
@@ -371,15 +371,15 @@ impl Algorithms for AlgorithmsTest {
              }
          }
 
-         {
+        {
              let mut j: i32 = 0;
             while j < 100 {
-                {
+               {
                      let first_true_index: i64 = -j - 1;
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < 100 {
-                            {
+                           {
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
                                 ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
@@ -395,19 +395,19 @@ impl Algorithms for AlgorithmsTest {
              }
          }
 
-         {
+        {
              let mut j: i32 = 0;
             while j < 20 {
-                {
-                     {
+               {
+                    {
                          let mut i: i32 = 0;
                         while i <= j {
-                            {
+                           {
                                  let first_true_index: i64 = i64::MAX - i;
-                                 {
+                                {
                                      let mut k: i32 = 0;
                                     while k <= j {
-                                        {
+                                       {
                                             ::test_find_first_with_initial_guess(first_true_index, i64::MAX - j, i64::MAX, i64::MAX - k, max_num_evaluations_with_initial_guess);
                                         }
                                         k += 1;
@@ -424,19 +424,19 @@ impl Algorithms for AlgorithmsTest {
              }
          }
 
-         {
+        {
              let mut j: i32 = 0;
             while j < 20 {
-                {
-                     {
+               {
+                    {
                          let mut i: i32 = 0;
                         while i <= j {
-                            {
+                           {
                                  let first_true_index: i64 = i64::MIN + i;
-                                 {
+                                {
                                      let mut k: i32 = 0;
                                     while k <= j {
-                                        {
+                                       {
                                             ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MIN + j, i64::MIN + k, max_num_evaluations_with_initial_guess);
                                         }
                                         k += 1;
@@ -456,7 +456,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_find_first_with_initial_guess3(&self)   {
+    fn test_find_first_with_initial_guess3(&self) {
         ::test_find_first_with_initial_guess(1, i64::MIN, i64::MAX, 0, 2);
         ::test_find_first_with_initial_guess(134325, i64::MIN, i64::MAX, 134324, 2);
         ::test_find_first_with_initial_guess(0, i64::MIN, i64::MAX, 1, 4);
@@ -466,16 +466,16 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_interpolate_random(&self)   {
+    fn test_interpolate_random(&self) {
          let random: SplittableRandom = SplittableRandom::new(0);
          let num_iterations: i32 = 1000;
          let a: i64 = 10;
          let maxb: i64 = 100;
          let c: i64 = 10;
-         {
+        {
              let mut i: i32 = 0;
             while i < num_iterations {
-                {
+               {
                      let b: i64 = random.next_long(maxb);
                      let l: i64 = random.next_long(Algorithms::NEGATIVE_INFINITY_MAPPED_TO_LONG + 1 + a, Algorithms::POSITIVE_INFINITY_MAPPED_TO_LONG - b - c);
                      let mut x1: f64 = Algorithms::map_long_to_double(l);
@@ -488,10 +488,10 @@ impl Algorithms for AlgorithmsTest {
                      let y1: f64 = random.next_double(-1, 1);
                      let y2: f64 = random.next_double(-1, 1);
                      let previous_y: f64 = f64::NAN;
-                     {
+                    {
                          let mut j: i64 = 0;
                         while j < a + b + c {
-                            {
+                           {
                                  let x: f64 = Algorithms::map_long_to_double(l + j - a);
                                  let y: f64 = Algorithms::interpolate(x, x1, y1, x2, y2);
                                 assert_that(y).is_between(&std::cmp::min(y1, y2), &std::cmp::max(y1, y2));
@@ -517,13 +517,13 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_interpolate_equal_x(&self)   {
+    fn test_interpolate_equal_x(&self) {
          let random: SplittableRandom = SplittableRandom::new(0);
          let num_iterations: i32 = 1000;
-         {
+        {
              let mut i: i32 = 0;
             while i < num_iterations {
-                {
+               {
                      let x: f64 = random.next_double(-10, 10);
                      let y1: f64 = random.next_double(-10, 10);
                      let y2: f64 = random.next_double(-10, 10);
@@ -539,7 +539,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_interpolate_negative_zero(&self)   {
+    fn test_interpolate_negative_zero(&self) {
         assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(-0.0 * 5.0));
         assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(-0.0, -1.0, -0.0, -0.0, -0.0)));
         assert_eq!(&Algorithms::map_double_to_long(-0.0), &Algorithms::map_double_to_long(interpolate(-0.0, -0.0, -0.0, -0.0, -0.0)));
@@ -568,7 +568,7 @@ impl Algorithms for AlgorithmsTest {
     }
 
     #[test]
-    fn test_clip(&self)   {
+    fn test_clip(&self) {
         assert_eq!(-3, &Algorithms::clip(1, -3, -3));
         assert_eq!(3, &Algorithms::clip(1, 3, 7));
         assert_eq!(5, &Algorithms::clip(5, 3, 7));

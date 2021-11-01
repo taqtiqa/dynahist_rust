@@ -5,6 +5,7 @@
 
 pub(crate) mod layout;
 pub(crate) mod guess_layout;
+pub(crate) mod layout_serialization;
 pub mod layout_serialization_definition;
 
 // reexport for `use crate::Layout`

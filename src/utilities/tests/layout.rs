@@ -52,7 +52,7 @@ impl LayoutTestUtil {
         return pair;
         // return Condition<>::new() {
 
-        //     pub fn matches(&self,  value: &Integer) -> bool  {
+        //     pub fn matches(&self,  value: &Integer) -> bool {
         //         return value >= over_flow_index || value <= under_flow_index;
         //     }
         // };
@@ -68,7 +68,7 @@ impl LayoutTestUtil {
         return pair;
         // return Condition<>::new() {
 
-        //     pub fn matches(&self,  value: &Integer) -> bool  {
+        //     pub fn matches(&self,  value: &Integer) -> bool {
         //         return value >= over_flow_index;
         //     }
         // };
@@ -84,7 +84,7 @@ impl LayoutTestUtil {
         return pair;
         // return Condition<>::new() {
 
-        //     pub fn matches(&self,  value: &Integer) -> bool  {
+        //     pub fn matches(&self,  value: &Integer) -> bool {
         //         return value <= under_flow_index;
         //     }
         // };
@@ -226,10 +226,7 @@ impl LayoutTestUtil {
         // This guarantees the NaN will not be present
         let int_stream: std::ops::Range<i32> = start..end;
         // Select the index of the max
-        let maxed: Option<u64> = int_stream
-            .iter()
-            .map(|index| i64::into(index))
-            .max();
+        let maxed: Option<u64> = int_stream.iter().map(|index| i64::into(index)).max();
         match maxed {
             Some(i) => i,
             None => 0u64,

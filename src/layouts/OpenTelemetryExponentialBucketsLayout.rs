@@ -41,7 +41,7 @@ pub struct OpenTelemetryExponentialBucketsLayout {
 
 impl OpenTelemetryExponentialBucketsLayout {
 
-    fn get_boundary_constant( idx: i32) -> i64  {
+    fn get_boundary_constant( idx: i32) -> i64 {
         return BOUNDARY_CONSTANTS[idx];
     }
 
@@ -51,7 +51,7 @@ impl OpenTelemetryExponentialBucketsLayout {
    /// @param precision the precision
    /// @return a new {@link OpenTelemetryExponentialBucketsLayout} instance
    ///
-    pub fn create( precision: i32) -> OpenTelemetryExponentialBucketsLayout  {
+    pub fn create( precision: i32) -> OpenTelemetryExponentialBucketsLayout {
         check_argument(precision >= 0);
         check_argument(precision <= MAX_PRECISION);
         return INSTANCES::update_and_get(precision,  x: & -> {
@@ -63,13 +63,13 @@ impl OpenTelemetryExponentialBucketsLayout {
         });
     }
 
-    fn calculate_boundaries( precision: i32) -> Vec<i64>  {
+    fn calculate_boundaries( precision: i32) -> Vec<i64> {
          let mut len: i32 = 1 << precision;
          let mut boundaries: [i64; len + 1] = [0; len + 1];
-         {
+        {
              let mut i: i32 = 0;
             while i < len - 1 {
-                {
+               {
                     boundaries[i] = ::get_boundary_constant((i + 1) << (MAX_PRECISION - precision));
                 }
                 i += 1;
@@ -81,14 +81,14 @@ impl OpenTelemetryExponentialBucketsLayout {
         return boundaries;
     }
 
-    fn calculate_indices( boundaries: &Vec<i64>,  precision: i32) -> Vec<i32>  {
+    fn calculate_indices( boundaries: &Vec<i64>,  precision: i32) -> Vec<i32> {
          let len: i32 = 1 << precision;
          let mut indices: [i32; len] = [0; len];
          let mut c: i32 = 0;
-         {
+        {
              let mut i: i32 = 0;
             while i < len {
-                {
+               {
                      let mantissa_lower_bound: i64 = (i as i64) << (52 - precision);
                     while boundaries[c] <= mantissa_lower_bound {
                         c += 1;
@@ -123,7 +123,7 @@ impl OpenTelemetryExponentialBucketsLayout {
         let .underflowBinIndex = -overflow_bin_index;
     }
 
-    fn map_to_bin_index_helper( value_bits: i64,  indices: &Vec<i32>,  boundaries: &Vec<i64>,  precision: i32,  first_normal_value_bits: i64,  index_offset: i32) -> i32  {
+    fn map_to_bin_index_helper( value_bits: i64,  indices: &Vec<i32>,  boundaries: &Vec<i64>,  precision: i32,  first_normal_value_bits: i64,  index_offset: i32) -> i32 {
          let mut mantissa: i64 = 0xfffffffffffff & value_bits;
          let mut exponent: i32 = ((0x7ff0000000000000 & value_bits) >> 52) as i32;
         if exponent == 0 {
@@ -141,21 +141,21 @@ impl OpenTelemetryExponentialBucketsLayout {
         return (exponent << precision) + k + index_offset;
     }
 
-    pub fn map_to_bin_index(&self,  value: f64) -> usize  {
+    pub fn map_to_bin_index(&self,  value: f64) -> usize {
          let value_bits: i64 = value.to_bits();
          let index: i32 = ::map_to_bin_index_helper(value_bits, &self.indices, &self.boundaries, self.precision, self.first_normal_value_bits, self.index_offset);
         return  if (value_bits >= 0) { index } else { -index };
     }
 
-    pub fn get_underflow_bin_index(&self) -> usize  {
+    pub fn get_underflow_bin_index(&self) -> usize {
         return self.underflow_bin_index;
     }
 
-    pub fn get_overflow_bin_index(&self) -> usize  {
+    pub fn get_overflow_bin_index(&self) -> usize {
         return self.overflow_bin_index;
     }
 
-    fn get_bin_lower_bound_approximation_helper(&self,  abs_bin_index: usize) -> f64  {
+    fn get_bin_lower_bound_approximation_helper(&self,  abs_bin_index: usize) -> f64 {
         if abs_bin_index < self.first_normal_value_bits {
             return f64::from_bits(abs_bin_index as i64);
         } else {
@@ -173,22 +173,22 @@ impl OpenTelemetryExponentialBucketsLayout {
         }
     }
 
-    pub fn get_bin_lower_bound_approximation(&self,  bin_index: usize) -> f64  {
+    pub fn get_bin_lower_bound_approximation(&self,  bin_index: usize) -> f64 {
         if bin_index == 0 {
             return -0.0;
         } else if bin_index > 0 {
             return self.get_bin_lower_bound_approximation_helper(bin_index);
         }
-        {
+       {
             return Math::next_up(-self.get_bin_lower_bound_approximation_helper(-bin_index + 1));
         }
     }
 
-    pub fn to_string(&self) -> String  {
+    pub fn to_string(&self) -> String {
         return format!("OpenTelemetryExponentialBucketsLayout [precision={}]", self.precision);
     }
 
-    pub fn equals(&self,  o: &Object) -> bool  {
+    pub fn equals(&self,  o: &Object) -> bool {
         if self == o {
             return true;
         }
@@ -201,7 +201,7 @@ impl OpenTelemetryExponentialBucketsLayout {
         return self.precision == that.precision;
     }
 
-    pub fn hash_code(&self) -> i32  {
+    pub fn hash_code(&self) -> i32 {
         return 31 * self.precision;
     }
 

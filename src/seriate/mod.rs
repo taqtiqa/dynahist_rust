@@ -3,6 +3,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+pub(crate) mod deserialization;
+pub(crate) mod serialization;
+
 trait Seriate {
     type H: Histogram; // TODO: rename Histogram trait to Sketch
 
@@ -133,7 +136,7 @@ trait Seriate {
     /// the layout when reading using {@link #readAsDynamic(Layout, byte[])}, {@link
     /// #readAsStatic(Layout, byte[])} or {@link #readAsPreprocessed(Layout, byte[])}.
     ///
-    /// @param histogram the {@link Histogram}
+    /// @param histogram the [`Histogram`]
     /// @return the [`[u8]`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
@@ -148,7 +151,7 @@ trait Seriate {
     ///
     /// @param `layout`: Any type which implements the [`Layout`] trait
     /// @param serializedHistogram the [`[u8]`]
-    /// @return the {@link Histogram}
+    /// @return the [`Histogram`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn read_as_static(
@@ -166,7 +169,7 @@ trait Seriate {
     ///
     /// @param layout the [`Layout`]
     /// @param serializedHistogram the [`[u8]`]
-    /// @return the {@link Histogram}
+    /// @return the [`Histogram`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn read_as_dynamic(
@@ -184,7 +187,7 @@ trait Seriate {
     ///
     /// @param layout the [`Layout`]
     /// @param serializedHistogram the [`[u8]`]
-    /// @return the {@link Histogram}
+    /// @return the [`Histogram`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn read_as_preprocessed(
@@ -202,7 +205,7 @@ trait Seriate {
     /// #readCompressedAsStatic(Layout, byte[])} or {@link #readCompressedAsPreprocessed(Layout,
     /// byte[])}.
     ///
-    /// @param histogram the {@link Histogram}
+    /// @param histogram the [`Histogram`]
     /// @return the [`[u8]`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
@@ -217,7 +220,7 @@ trait Seriate {
     ///
     /// @param layout the [`Layout`]
     /// @param serializedHistogram the [`[u8]`]
-    /// @return the {@link Histogram}
+    /// @return the [`Histogram`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     /// @throws DataFormatException if a data format error occurs
     ///
@@ -238,7 +241,7 @@ trait Seriate {
     ///
     /// @param layout the [`Layout`]
     /// @param serializedHistogram the [`[u8]`]
-    /// @return the {@link Histogram}
+    /// @return the [`Histogram`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     /// @throws DataFormatException if a data format error occurs
     ///
@@ -258,8 +261,8 @@ trait Seriate {
     /// The behavior is undefined if the given layout does not match the layout before serialization.
     ///
     /// @param layout the [`Layout`]
-    /// @param serializedHistogram the {@link Histogram}
-    /// @return the {@link Histogram}
+    /// @param serializedHistogram the [`Histogram`]
+    /// @return the [`Histogram`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     /// @throws DataFormatException if a data format error occurs
     ///

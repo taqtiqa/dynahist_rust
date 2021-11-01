@@ -10,12 +10,12 @@ impl AbstractErrorLimitingLayoutTest {
 
     pub fn create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout ;
 
-    pub fn assert_index_symmetry(&self,  idx: i32,  negative_idx: i32)   {
+    pub fn assert_index_symmetry(&self,  idx: i32,  negative_idx: i32) {
         assert_eq!(-idx - 1, negative_idx);
     }
 
     #[test]
-    pub fn test1(&self)   {
+    pub fn test1(&self) {
          let layout: Layout = self.create_layout(1e-6, 0.001, 0, 1);
         assert_true(layout.get_underflow_bin_index() >= layout.map_to_bin_index(f64::NEG_INFINITY));
         assert_true(layout.get_overflow_bin_index() <= layout.map_to_bin_index(f64::INFINITY));
@@ -24,7 +24,7 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn test_general(&self)   {
+    pub fn test_general(&self) {
          let absolute_bin_width_limits: vec![Vec<f64>; 4] = vec![1e0, 1e1, 1e2, 1e3, ]
         ;
          let relative_bin_width_limits: vec![Vec<f64>; 8] = vec![0.0, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
@@ -35,10 +35,10 @@ impl AbstractErrorLimitingLayoutTest {
          let eps: f64 = 1e-6;
          let mut values: [f64; num_values] = [0.0; num_values];
          let random: Random = Random::new(0);
-         {
+        {
              let mut i: i32 = 0;
             while i < num_values {
-                {
+               {
                     values[i] = value_range_lower_bound + random.next_double() * (value_range_upper_bound - value_range_lower_bound);
                 }
                 i += 1;
@@ -61,10 +61,10 @@ impl AbstractErrorLimitingLayoutTest {
                      let is_absolute_bin_width_limit_fulfilled: bool = Math::abs(upper_bound - lower_bound) <= absolute_bin_width_limit * (1.0 + eps);
                     assert_true(is_absolute_bin_width_limit_fulfilled || is_relative_bin_width_limit_fulfilled);
                 }
-                 {
+                {
                      let mut i: i32 = layout.get_underflow_bin_index() + 1;
                     while i <= layout.get_overflow_bin_index() - 1 {
-                        {
+                       {
                              let lower_bound: f64 = layout.get_bin_lower_bound(i);
                              let upper_bound: f64 = layout.get_bin_upper_bound(i);
                              let is_relative_bin_width_limit_fulfilled: bool = Math::abs(upper_bound - lower_bound) / std::cmp::max(&Math::abs(lower_bound), &Math::abs(upper_bound)) <= relative_bin_width_limit * (1.0 + eps);
@@ -80,12 +80,12 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn test_large_layout(&self)   {
+    pub fn test_large_layout(&self) {
          let layout: Layout = self.create_layout(1e-6, 1e-3, -1e12, 1e12);
-         {
+        {
              let bin_index: i32 = layout.get_underflow_bin_index() + 1;
             while bin_index < layout.get_overflow_bin_index() {
-                {
+               {
                     assert_eq!(bin_index, &layout.map_to_bin_index(&layout.get_bin_lower_bound(bin_index)));
                     assert_eq!(bin_index, &layout.map_to_bin_index(&layout.get_bin_upper_bound(bin_index)));
                 }
@@ -96,15 +96,15 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn test_get_bin_lower_bound_approximation(&self)   {
+    pub fn test_get_bin_lower_bound_approximation(&self) {
          let absolute_bin_width_limit: f64 = 1;
          let relative_bin_width_limit: f64 = 0.01;
          let eps: f64 = 1e-4;
          let layout: GuessLayout = self.create_layout(absolute_bin_width_limit, relative_bin_width_limit, 0, 2000);
-         {
+        {
              let transition_idx: i32 = 0;
             while transition_idx <= layout.get_overflow_bin_index() {
-                {
+               {
                      let transition: f64 = layout.get_bin_lower_bound_approximation(transition_idx);
                      let transition_low: f64 = std::cmp::min(transition * (1.0 - eps * relative_bin_width_limit), transition - eps * absolute_bin_width_limit);
                      let transition_high: f64 = std::cmp::max(transition * (1.0 + eps * relative_bin_width_limit), transition + eps * absolute_bin_width_limit);
@@ -120,7 +120,7 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn test_create_equidistant_layout(&self)   {
+    pub fn test_create_equidistant_layout(&self) {
          let absolute_error_limits: vec![Vec<f64>; 4] = vec![self.min_normal_f64(), 1.0, 100.0, f64::MAX / i32::MAX, ]
         ;
         for  let absolute_error_limit: f64 in absolute_error_limits {
@@ -130,7 +130,7 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn test_create(&self)   {
+    pub fn test_create(&self) {
         assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-2, -1e6, f64::INFINITY));
         assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-2, f64::NEG_INFINITY, 1e6));
         assert_throws(DynaHist::IllegalArgumentError.class, () -> self.create_layout(1e-8, 1e-2, 1e6, 1e-6));
@@ -151,7 +151,7 @@ impl AbstractErrorLimitingLayoutTest {
     }
 
     #[test]
-    pub fn test_same_equals(&self)   {
+    pub fn test_same_equals(&self) {
          let layout: Layout = self.create_layout(1e-8, 1e-2, -1e6, 1e6);
         assert_eq!(layout, layout);
     }

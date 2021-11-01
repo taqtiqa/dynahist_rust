@@ -9,7 +9,7 @@ pub struct CustomLayoutTest {
 impl CustomLayoutTest {
 
     #[test]
-    pub fn test_consistency(&self)   {
+    pub fn test_consistency(&self) {
         LayoutTestUtil::assert_consistency(&CustomLayout::create(f64::INFINITY));
         LayoutTestUtil::assert_consistency(&CustomLayout::create(-1, 1));
         LayoutTestUtil::assert_consistency(&CustomLayout::create(-1, 0, 1));
@@ -29,19 +29,19 @@ impl CustomLayoutTest {
     }
 
     #[test]
-    pub fn test_hash_code(&self)   {
+    pub fn test_hash_code(&self) {
          let layout: CustomLayout = CustomLayout::create(-3, -1.5, 234, 4324234);
         assert_eq!(327767682, &layout.hash_code());
     }
 
     #[test]
-    pub fn test_to_string(&self)   {
+    pub fn test_to_string(&self) {
          let layout: Layout = CustomLayout::create(-3, -1.5, 234, 4324234);
         assert_eq!("CustomLayout [sortedBinBoundaries=[-3.0, -1.5, 234.0, 4324234.0]]", &layout.to_string());
     }
 
     #[test]
-    pub fn test_equals(&self)   {
+    pub fn test_equals(&self) {
          let layout: Layout = CustomLayout::create(-3, -1.5, 234, 4324234);
         assert_false(&layout.equals(null));
         assert_eq!(layout, layout);
@@ -50,7 +50,7 @@ impl CustomLayoutTest {
     }
 
     #[test]
-    pub fn test_create(&self)   {
+    pub fn test_create(&self) {
         assert_throws(DynaHist::IllegalArgumentError.class, CustomLayout::create);
         assert_throws(DynaHist::IllegalArgumentError.class, () -> CustomLayout::create(f64::NEG_INFINITY));
         assert_throws(DynaHist::IllegalArgumentError.class, () -> CustomLayout::create(1, 0));

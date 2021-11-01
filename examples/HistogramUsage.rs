@@ -10,7 +10,7 @@ pub struct HistogramUsage {
 impl HistogramUsage {
 
 
-   /// The [`Layout`] defines the bins for a {@link Histogram} and maps a given value to a
+   /// The [`Layout`] defines the bins for a [`Histogram`] and maps a given value to a
    /// histogram bin index. {@link LogLinearLayout#create(double, double, double, double)} creates a
    /// [`Layout`] Choose [`LogLinearLayout`], if speed is more important than memory
    /// efficiency. {@link LogQuadraticLayout#create(double, double, double, double)} creates a {@link
@@ -18,11 +18,11 @@ impl HistogramUsage {
    /// LogLinearLayout and LogQuadraticLayout guarantee that the bins cover a given interval and that
    /// the bin widths either satisfy an absolute bin width limit or a relative bin width limit.
    ///
-   /// {@link Histogram#createDynamic(Layout)} creates a dynamic {@link Histogram} {@link
-   /// Histogram#createStatic(Layout)} creates a static {@link Histogram}.
+   /// {@link Histogram#createDynamic(Layout)} creates a dynamic [`Histogram`] {@link
+   /// Histogram#createStatic(Layout)} creates a static [`Histogram`].
    ///
     #[test]
-    pub fn create_histogram(&self)   {
+    pub fn create_histogram(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=0, min=Infinity, max=-Infinity, counts={}]", histogram.get_class().get_simple_name(), layout), &histogram.to_string());
@@ -30,7 +30,7 @@ impl HistogramUsage {
 
  Add values using {@link Histogram#addValue(double)} adds a given value to the histogram. */
     #[test]
-    pub fn add_single_value(&self)   {
+    pub fn add_single_value(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5);
@@ -42,7 +42,7 @@ impl HistogramUsage {
    /// to the histogram with a given multiplicity.
    ///
     #[test]
-    pub fn add_value_with_multiplicity(&self)   {
+    pub fn add_value_with_multiplicity(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5, 5);
@@ -54,7 +54,7 @@ impl HistogramUsage {
    /// quantile value. p = 0.5 returns median.
    ///
     #[test]
-    pub fn get_median_single_value(&self)   {
+    pub fn get_median_single_value(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(5.5);
@@ -63,13 +63,13 @@ impl HistogramUsage {
     }
 
     #[test]
-    pub fn get_median_multiple_values(&self)   {
+    pub fn get_median_multiple_values(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
-         {
+        {
              let mut i: i32 = 0;
             while i <= 100 {
-                {
+               {
                     histogram.add_value(i, 5);
                 }
                 i += 1;
@@ -84,7 +84,7 @@ impl HistogramUsage {
    /// a different layout, this operation may lead to an unwanted loss of precision.
    ///
     #[test]
-    pub fn merge_histogram(&self)   {
+    pub fn merge_histogram(&self) {
          let layout1: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let layout2: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram1: Histogram = Histogram::create_dynamic(layout1);
@@ -110,7 +110,7 @@ impl HistogramUsage {
    /// DataInput)} or {@link Histogram#readAsStatic(Layout, DataInput)}.
    ///
     #[test]
-    pub fn serialize_and_deserialize_histogram(&self)   {
+    pub fn serialize_and_deserialize_histogram(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5);

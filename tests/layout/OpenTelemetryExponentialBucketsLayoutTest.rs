@@ -9,11 +9,11 @@ pub struct OpenTelemetryExponentialBucketsLayoutTest {
 impl OpenTelemetryExponentialBucketsLayoutTest {
 
     #[test]
-    pub fn test_consistency(&self)   {
-         {
+    pub fn test_consistency(&self) {
+        {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
-                {
+               {
                      let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(precision);
                     LayoutTestUtil::assert_consistency(layout);
                 }
@@ -24,7 +24,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_mapping0(&self)   {
+    pub fn test_mapping0(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(0);
         assert_eq!(0, &layout.map_to_bin_index(&f64::from_bits(0)));
         assert_eq!(1, &layout.map_to_bin_index(&f64::from_bits(1)));
@@ -78,7 +78,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_mapping1(&self)   {
+    pub fn test_mapping1(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(1);
         assert_eq!(0, &layout.map_to_bin_index(&f64::from_bits(0)));
         assert_eq!(1, &layout.map_to_bin_index(&f64::from_bits(1)));
@@ -132,7 +132,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_mapping2(&self)   {
+    pub fn test_mapping2(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(2);
         assert_eq!(0, &layout.map_to_bin_index(&f64::from_bits(0)));
         assert_eq!(1, &layout.map_to_bin_index(&f64::from_bits(1)));
@@ -200,11 +200,11 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_lower_bound_approximation(&self)   {
-         {
+    pub fn test_lower_bound_approximation(&self) {
+        {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
-                {
+               {
                      let layout: OpenTelemetryExponentialBucketsLayout = OpenTelemetryExponentialBucketsLayout::create(precision);
                     assert_that(&LayoutTestUtil::max_lower_bound_approximation_offset(layout)).is_equal_to(0);
                 }
@@ -215,40 +215,40 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_boundary_consistency(&self)   {
+    pub fn test_boundary_consistency(&self) {
          let tolerance: f64 = 1e-14;
-         {
+        {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
-                {
+               {
                      let relative_error_limit: f64 = Math::pow(2.0, &Math::pow(2.0, -precision)) * (1.0 + tolerance);
                      let len: i32 = 1 << precision;
                      let boundaries: Vec<i64> = OpenTelemetryExponentialBucketsLayout::calculate_boundaries(precision);
                     assert_that(2 * boundaries[0]).is_greater_than_or_equal_to(1 << (52 - precision));
-                     {
+                    {
                          let mut i: i32 = 1;
                         while i < len {
-                            {
+                           {
                                 assert_that(boundaries[i - 1]).is_less_than(boundaries[i]);
                             }
                             i += 1;
                          }
                      }
 
-                     {
+                    {
                          let mut i: i32 = 1;
                         while i < len {
-                            {
+                           {
                                 assert_that(boundaries[i - 1] - ( if (i == 1) { 0 } else { boundaries[i - 2] })).is_less_than_or_equal_to(boundaries[i] - boundaries[i - 1]);
                             }
                             i += 1;
                          }
                      }
 
-                     {
+                    {
                          let mut i: i32 = 0;
                         while i < len {
-                            {
+                           {
                                  let low: f64 =  if (i > 0.0) { f64::from_bits(0x3ff0000000000000 | boundaries[i - 1]) } else { 1.0 };
                                  let high: f64 =  if (i < len - 1.0) { f64::from_bits(0x3ff0000000000000 | boundaries[i]) } else { 2.0 };
                                 assert_that(low).is_less_than_or_equal_to(high);
@@ -266,19 +266,19 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_hash_code(&self)   {
+    pub fn test_hash_code(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
         assert_eq!(93, &layout.hash_code());
     }
 
     #[test]
-    pub fn test_to_string(&self)   {
+    pub fn test_to_string(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
         assert_eq!("OpenTelemetryExponentialBucketsLayout [precision=3]", &layout.to_string());
     }
 
     #[test]
-    pub fn test_equals(&self)   {
+    pub fn test_equals(&self) {
          let layout3a: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
          let layout3b: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
          let layout3c: Layout = OpenTelemetryExponentialBucketsLayout::new(3);
@@ -294,25 +294,25 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_create(&self)   {
+    pub fn test_create(&self) {
         assert_eq!(actual_error_kind, expected_error_kind);
         assert_throws(DynaHist::IllegalArgumentError.class, () -> OpenTelemetryExponentialBucketsLayout::create(-1));
         assert_throws(DynaHist::IllegalArgumentError.class, () -> OpenTelemetryExponentialBucketsLayout::create(MAX_PRECISION + 1));
     }
 
     #[test]
-    pub fn test_accuracy(&self)   {
+    pub fn test_accuracy(&self) {
          let tolerance: f64 = 1e-14;
-         {
+        {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
-                {
+               {
                      let layout: OpenTelemetryExponentialBucketsLayout = OpenTelemetryExponentialBucketsLayout::create(precision);
                      let relative_error_limit: f64 = Math::pow(2.0, &Math::pow(2.0, -precision)) * (1.0 + tolerance);
-                     {
+                    {
                          let mut i: i32 = layout.get_underflow_bin_index() + 1;
                         while i < layout.get_overflow_bin_index() {
-                            {
+                           {
                                  let low: f64 = layout.get_bin_lower_bound(i);
                                  let high: f64 = layout.get_bin_upper_bound(i);
                                 if low > 0.0 && high > 0.0 {
@@ -338,16 +338,16 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_inclusiveness(&self)   {
-         {
+    pub fn test_inclusiveness(&self) {
+        {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
-                {
+               {
                      let layout: OpenTelemetryExponentialBucketsLayout = OpenTelemetryExponentialBucketsLayout::create(precision);
-                     {
+                    {
                          let mut exponent: i32 = -1000;
                         while exponent <= 1000 {
-                            {
+                           {
                                  let x: f64 = Math::pow(2.0, exponent);
                                 assert_that(&layout.map_to_bin_index(x)).is_greater_than(&layout.map_to_bin_index(&Math::next_down(x)));
                                 assert_that(&layout.map_to_bin_index(x)).is_equal_to(&layout.map_to_bin_index(&Math::next_up(x)));
@@ -366,20 +366,20 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_sqrt2(&self)   {
+    pub fn test_sqrt2(&self) {
          let sqrt2_lower_bound: f64 = Math::next_down(&StrictMath::sqrt(2.0));
          let sqrt2_upper_bound: f64 = Math::next_up(sqrt2_lower_bound);
         assert_that(&Math::pow(sqrt2_lower_bound, 2.0)).is_less_than(2.0);
         assert_that(&Math::pow(sqrt2_upper_bound, 2.0)).is_greater_than(2.0);
-         {
+        {
              let mut precision: i32 = 1;
             while precision <= MAX_PRECISION {
-                {
+               {
                      let layout: OpenTelemetryExponentialBucketsLayout = OpenTelemetryExponentialBucketsLayout::create(precision);
-                     {
+                    {
                          let mut exponent: i32 = -100;
                         while exponent <= 100 {
-                            {
+                           {
                                 assert_that(&layout.map_to_bin_index(sqrt2_upper_bound)).is_greater_than(&layout.map_to_bin_index(sqrt2_lower_bound));
                                 assert_that(&layout.map_to_bin_index(sqrt2_upper_bound)).is_equal_to(&layout.map_to_bin_index(&Math::next_up(sqrt2_upper_bound)));
                                 assert_that(&layout.map_to_bin_index(sqrt2_lower_bound)).is_equal_to(&layout.map_to_bin_index(&Math::next_down(sqrt2_lower_bound)));
@@ -399,14 +399,14 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_num_buckets(&self)   {
+    pub fn test_num_buckets(&self) {
          let sb: StringBuilder = StringBuilder::new();
         sb.append(" p    num. positive buckets    relative bucket width\n");
         sb.append("----------------------------------------------------\n");
-         {
+        {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
-                {
+               {
                      let layout: OpenTelemetryExponentialBucketsLayout = OpenTelemetryExponentialBucketsLayout::create(precision);
                      let precision_str: String = Integer::to_string(precision);
                      let bucket_str: String = Integer::to_string(layout.get_overflow_bin_index() - 1);
@@ -423,14 +423,14 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_that(&sb.to_string()).is_equal_to(format!(" p    num. positive buckets    relative bucket width\n----------------------------------------------------\n 0                     2098                100.000 %\n 1                     4195                 41.421 %\n 2                     8387                 18.921 %\n 3                    16767                  9.051 %\n 4                    33518                  4.427 %\n 5                    67005                  2.190 %\n 6                   133946                  1.089 %\n 7                   267764                  0.543 %\n 8                   535273                  0.271 %\n 9                  1070035                  0.135 %\n10                  2139047                  0.068 %\n"));
     }
 
-    fn calculate_expected_boundaries( precision: i32) -> Vec<i64>  {
+    fn calculate_expected_boundaries( precision: i32) -> Vec<i64> {
          let len: i32 = 1 << precision;
          let mut boundaries: [i64; len] = [0; len];
         boundaries[0] = 0;
-         {
+        {
              let mut i: i32 = 0;
             while i < len {
-                {
+               {
                     boundaries[i] = ::calculate_boundary_exact(len, i);
                 }
                 i += 1;
@@ -441,20 +441,20 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_boundaries(&self)   {
-         {
+    pub fn test_boundaries(&self) {
+        {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
-                {
+               {
                      let len: i32 = 1 << precision;
                      let expected_boundaries: Vec<i64> = ::calculate_expected_boundaries(precision);
                      let actual_boundaries: [i64; len] = [0; len];
                      let layout: OpenTelemetryExponentialBucketsLayout = OpenTelemetryExponentialBucketsLayout::create(precision);
                      let start_index: i32 = layout.map_to_bin_index(1.0);
-                     {
+                    {
                          let mut idx: i32 = 0;
                         while idx < len {
-                            {
+                           {
                                 actual_boundaries[idx] = Double::double_to_raw_long_bits(&layout.get_bin_lower_bound(start_index + idx)) & 0xfffffffffffff;
                             }
                             idx += 1;
@@ -469,7 +469,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
 
     }
 
-    fn calculate_boundary_approximate( len: i32,  i: i32) -> i64  {
+    fn calculate_boundary_approximate( len: i32,  i: i32) -> i64 {
         return 0x000fffffffffffff & Double::double_to_raw_long_bits(&Math::pow(2.0, i / len as f64));
     }
 
@@ -481,7 +481,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     // This inequality can be evaluated exactly
     // and platform-independent using BigInteger.
     // m can then be found using binary search.
-    fn calculate_boundary_exact( len: i32,  i: i32) -> i64  {
+    fn calculate_boundary_exact( len: i32,  i: i32) -> i64 {
          let expected: BigInteger = BigInteger::value_of(2)::pow(52 * len + i);
          let predicate: LongPredicate =  m: & -> {
              let actual: BigInteger = BigInteger::value_of(m)::add(&BigInteger::value_of(1 << 52))::pow(len);
@@ -492,13 +492,13 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_precalculated_boundary_constans(&self)   {
+    pub fn test_precalculated_boundary_constans(&self) {
          let mut expected: [i64; 1 << MAX_PRECISION] = [0; 1 << MAX_PRECISION];
          let mut actual: [i64; 1 << MAX_PRECISION] = [0; 1 << MAX_PRECISION];
-         {
+        {
              let mut i: i32 = 0;
             while i < 1 << MAX_PRECISION {
-                {
+               {
                     expected[i] = ::calculate_boundary_exact(1 << MAX_PRECISION, i);
                     actual[i] = get_boundary_constant(i);
                 }

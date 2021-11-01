@@ -24,7 +24,7 @@ assert_eq!(POSITIVE_INFINITY_MAPPED_TO_LONG, isize::MAX);
 // pub struct Algorithms {}
 
 pub trait Algorithms: Preconditions {
-    //fn new() -> Box<dyn Algorithms>  {}
+    //fn new() -> Box<dyn Algorithms> {}
 
     /// Interpolates the y-value at given x-value from two given points (x1, y1) and (x2, y2).
     ///

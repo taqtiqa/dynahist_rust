@@ -9,7 +9,7 @@ use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 use crate::values::value_estimators::*;
 
-// Sealed trait stops crates other than DynaHist from implementing any traits
+// Sealing a trait stops crates other than DynaHist from implementing any traits
 // that use it.
 mod private {
     pub trait Sealed {}
@@ -108,7 +108,6 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     ///     hold
     ///
     fn get_value_estimate(&self, histogram: impl Histogram, rank: i64) -> f64 {
-        //require_non_null(histogram);
         let total_count: i64 = histogram.get_total_count();
         Self::check_argument(rank >= 0);
         Self::check_argument(rank < total_count);
@@ -186,20 +185,21 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
         <dyn std::any::Any>::downcast_ref(x)
     }
 
-    //fn get_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64;
-    fn get_estimate_from_bin<'static, Bin, i64>(&self, bin: &Bin, rank: i64) -> f64 {
+    // The original port implementtaion
+    // fn get_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64;
+    fn get_estimate_from_bin<'a, B: Bin, i64>(&self, bin: &B, rank: i64) -> f64 {
         if let Some(_u) = Self::as_type::<_, ValueEstimatorUniform>(self) {
             tracing::info!("it's a ValueEstimatorUniform");
-            get_uniform_estimate_from_bin(&self, bin, rank)
+            Self::get_uniform_estimate_from_bin(&self, bin, rank)
         } else if let Some(_l) = Self::as_type::<_, ValueEstimatorLowerBound>(self) {
             tracing::info!("it's a ValueEstimatorLowerBound");
-            get_lower_bound_estimate_from_bin(&self, bin, rank)
+            Self::get_lower_bound_estimate_from_bin(&self, bin, rank)
         } else if let Some(_p) = Self::as_type::<_, ValueEstimatorUpperBound>(self) {
             tracing::info!("it's a ValueEstimatorUpperBound");
-            get_upper_bound_estimate_from_bin(&self, bin, rank)
+            Self::get_upper_bound_estimate_from_bin(&self, bin, rank)
         } else if let Some(_m) = Self::as_type::<_, ValueEstimatorMidPoint>(self) {
             tracing::info!("it's a ValueEstimatorMidPoint");
-            get_mid_point_estimate_from_bin(&self, bin, rank)
+            Self::get_mid_point_estimate_from_bin(&self, bin, rank)
         } else {
             tracing::info!("it's something we don't know")
         }

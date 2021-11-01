@@ -17,9 +17,10 @@ All upstream base implementations are ported:
 The crate contains all upstream bin layout implementations:
 
 - LogOptimalLayout
-- LogLinearLayout
-- LogQuadraticLayout
-- OpenTelemetryLayout
+- LogLinearLayout (approximates log-optimal)
+- LogQuadraticLayout (approximates log-optimal)
+- OpenTelemetryLayout (exponential base-2 layout)
+
   - [Specification](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/datamodel.md#histogram)
   - [Discussion](https://github.com/open-telemetry/opentelemetry-specification/issues/1776)
   - [PR](https://github.com/open-telemetry/opentelemetry-proto/pull/322)
@@ -27,6 +28,43 @@ The crate contains all upstream bin layout implementations:
   - [Transport Protocol](https://github.com/open-telemetry/opentelemetry-proto/blob/main/opentelemetry/proto/metrics/v1/metrics.proto)
     - Idea convert OTLP ProtoBuf schema to Cap'nProto Schema
 - CustomLayout
+
+## CLI Examples
+
+### Recording
+
+Grab event time deltas from the local kerenl `dmesg`. We convert all values
+to integers, remove leading zeros and use '0' for values smaller than the kernel
+log interval tick size.
+
+```bash
+dmesg --show-delta --notime |\
+      cut -d"]" -f1| \
+      tr -d "[<.> "| \
+      sed -e 's/^0*//' -e 's/^$/0/g' | \
+      dynahist --log-quadratic --dynamic --output "dmesg-dynahist-${$(date --iso-8601=date)}.dth"
+```
+
+### Porting HDR Histograms
+
+Note there maybe some further precision loss if you do not choose
+appropriate parameters.  What is appropriate depends on the parameters
+used to record input data-sketch.
+
+```bash
+dynahist --hdr mydata.hdr --log-optimal --output "mydata-${$(date --iso-8601=date)}.dth"
+```
+
+### Porting OpenTelemetry
+
+Note there maybe some further precision loss if you do not choose
+appropriate parameters.  What is appropriate depends on the parameters
+used to record input data-sketch.
+
+```bash
+dynahist --otlp mydata.oth --log-optimal --output "mydata-${$(date --iso-8601=date)}.dth"
+```
+
 
 https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/http.md
 https://docs.rs/tracing-error/0.2.0/tracing_error/
@@ -38,6 +76,7 @@ https://docs.rs/static_assertions/1.1.0/static_assertions/
 https://docs.rs/quickcheck/1.0.3/quickcheck/index.html
 https://whileydave.com/2021/10/26/test-driving-the-rust-model-checker-rmc/
 https://alastairreid.github.io/automatic-rust-verification-tools-2021/
+
   - https://github.com/tokio-rs/loom
   - https://crates.io/crates/shuttle
   - KLEE: https://project-oak.github.io/rust-verification-tools/
