@@ -50,7 +50,7 @@ impl QuantileEstimation for SciPyQuantileEstimator {
         Self::check_argument(alphap <= 1.0);
         Self::check_argument(betap >= 0.0);
         Self::check_argument(betap <= 1.0);
-        SciPyQuantileEstimator {
+        Self {
             alphap,
             betap,
         }

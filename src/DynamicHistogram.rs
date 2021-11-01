@@ -66,7 +66,7 @@ impl DynamicHistogram {
         let .counts = EMPTY_COUNTS;
     }
 
-    pub fn read( layout: impl Layout,  data_input: impl DataInput) -> Result<DynamicHistogram, Rc<DynaHistError>> {
+    pub fn read( layout: impl Layout,  data_input: impl DataInput) -> Result<DynamicHistogram, std::rc::Rc<DynaHistError>> {
         require_non_null(layout);
         require_non_null(&data_input);
          let histogram: DynamicHistogram = DynamicHistogram::new(layout);

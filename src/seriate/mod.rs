@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::errors::DynaHistError;
+
 pub(crate) mod deserialization;
 pub(crate) mod serialization;
 
@@ -16,7 +18,7 @@ trait Seriate {
     fn check_serial_version(
         expected_serial_version: i8,
         current_serial_version: i32,
-    ) -> Result<(), Rc<DynaHistError>> {
+    ) -> Result<(), std::rc::Rc<DynaHistError>> {
         if expected_serial_version != current_serial_version {
             return Err(DynaHistError::IOError::new(&String::format(
                 &INCOMPATIBLE_SERIAL_VERSION_MSG,
@@ -30,12 +32,12 @@ trait Seriate {
     ///
     /// @param value the [`u64`] value
     /// @param data_utput the [`DataOutput`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// @return Err(DynaHistError::IOError) if an I/O error occurs
     ///
     fn write_unsigned_var_long(
         value: i64,
         data_output: &DataOutput,
-    ) -> Result<Void, Rc<DynaHistError>> {
+    ) -> Result<(), std::rc::Rc<DynaHistError>> {
         while (value & 0xFFFFFFFFFFFFFF80_u64) != 0 {
             data_output.write_byte((value as i32 & 0x7F) | 0x80);
             value >>= /* >>>= */ 7;
@@ -53,7 +55,7 @@ trait Seriate {
     fn write_signed_var_int(
         value: i32,
         data_output: &DataOutput,
-    ) -> Result<Void, Rc<DynaHistError>> {
+    ) -> Result<(), std::rc::Rc<DynaHistError>> {
         ::write_unsigned_var_int((value << 1) ^ (value >> 31), &data_output);
     }
 
@@ -66,7 +68,7 @@ trait Seriate {
     fn write_unsigned_var_int(
         value: i32,
         data_output: &DataOutput,
-    ) -> Result<Void, Rc<DynaHistError>> {
+    ) -> Result<(), std::rc::Rc<DynaHistError>> {
         while (value & 0xFFFFFF80) != 0 {
             data_output.write_byte((value & 0x7F) | 0x80);
             value >>= /* >>>= */ 7;
@@ -80,7 +82,9 @@ trait Seriate {
     /// @return the read [`u64`] value
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
-    fn read_unsigned_var_long(data_input: impl DataInput) -> Result<i64, Rc<DynaHistError>> {
+    fn read_unsigned_var_long(
+        data_input: impl DataInput,
+    ) -> Result<i64, std::rc::Rc<DynaHistError>> {
         let mut value: i64 = 0;
         let mut i: i32 = 0;
         let mut b: i64;
@@ -102,7 +106,7 @@ trait Seriate {
     /// @return the read [`u64`] value
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
-    fn read_signed_var_int(data_input: impl DataInput) -> Result<i32, Rc<DynaHistError>> {
+    fn read_signed_var_int(data_input: impl DataInput) -> Result<i32, std::rc::Rc<DynaHistError>> {
         let raw: i32 = ::read_unsigned_var_int(&data_input);
         let temp: i32 = (((raw << 31) >> 31) ^ raw) >> 1;
         return Ok(temp ^ (raw & (1 << 31)));
@@ -114,7 +118,9 @@ trait Seriate {
     /// @return the read [`i32`] value
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
-    fn read_unsigned_var_int(data_input: impl DataInput) -> Result<i32, Rc<DynaHistError>> {
+    fn read_unsigned_var_int(
+        data_input: impl DataInput,
+    ) -> Result<i32, std::rc::Rc<DynaHistError>> {
         let mut value: i32 = 0;
         let mut i: i32 = 0;
         let mut b: i32;
@@ -140,7 +146,7 @@ trait Seriate {
     /// @return the [`[u8]`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
-    fn write(histogram: impl Histogram) -> Result<Vec<i8>, Rc<DynaHistError>> {
+    fn write(histogram: impl Histogram) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         return Ok(Self::to_byte_array(Histogram::write, histogram));
     }
 
@@ -157,7 +163,7 @@ trait Seriate {
     fn read_as_static(
         layout: impl Layout,
         serialized_histogram: &Vec<i8>,
-    ) -> Result<Self::H, Rc<DynaHistError>> {
+    ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
         let data_input: SerializationReader<Self::H> = Self::H::read_as_static(layout, data_input);
         return Ok(Self::from_byte_array(data_input, &serialized_histogram));
     }
@@ -175,7 +181,7 @@ trait Seriate {
     fn read_as_dynamic(
         layout: impl Layout,
         serialized_histogram: &Vec<i8>,
-    ) -> Result<Self::H, Rc<DynaHistError>> {
+    ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
         let data_input: SerializationReader<Self::H> = Self::H::read_as_dynamic(layout, data_input);
         return Ok(Self::from_byte_array(data_input, &serialized_histogram));
     }
@@ -193,7 +199,7 @@ trait Seriate {
     fn read_as_preprocessed(
         layout: impl Layout,
         serialized_histogram: &Vec<i8>,
-    ) -> Result<Self::H, Rc<DynaHistError>> {
+    ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
         let data_input = Self::H::read_as_preprocessed(layout, data_input);
         return Ok(Self::from_byte_array(data_input, &serialized_histogram));
     }
@@ -209,7 +215,7 @@ trait Seriate {
     /// @return the [`[u8]`]
     /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
-    fn write_compressed(histogram: Self::H) -> Result<Vec<i8>, Rc<DynaHistError>> {
+    fn write_compressed(histogram: Self::H) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         return Ok(Self::compress(&Self::L::write(histogram)));
     }
 
@@ -227,7 +233,7 @@ trait Seriate {
     fn read_compressed_as_static(
         layout: impl Layout,
         serialized_histogram: &Vec<i8>,
-    ) -> Result<Self::H, Rc<DynaHistError>> {
+    ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
         return Ok(Self::H::read_as_static(
             layout,
             &Self::H::decompress(&serialized_histogram),
@@ -248,7 +254,7 @@ trait Seriate {
     fn read_compressed_as_dynamic(
         layout: impl Layout,
         serialized_histogram: &Vec<i8>,
-    ) -> Result<Self::H, Rc<DynaHistError>> {
+    ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
         return Ok(::read_as_dynamic(
             layout,
             &::decompress(&serialized_histogram),
@@ -269,14 +275,14 @@ trait Seriate {
     fn read_compressed_as_preprocessed(
         layout: impl Layout,
         serialized_histogram: &Vec<i8>,
-    ) -> Result<Self::H, Rc<DynaHistError>> {
+    ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
         return Ok(::read_as_preprocessed(
             layout,
             &::decompress(&serialized_histogram),
         ));
     }
 
-    fn compress(data: &Vec<i8>) -> Result<Vec<i8>, Rc<DynaHistError>> {
+    fn compress(data: &Vec<i8>) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         match ByteArrayOutputStream::new() {
             Ok(output_stream) => {
                 let deflater: Deflater = Deflater::new();
@@ -312,7 +318,7 @@ trait Seriate {
     /// # Errors
     ///
     /// Return [`DynaHistError::DataFormatError`]
-    fn decompress(data: &Vec<i8>) -> Result<Vec<i8>, Rc<DynaHistError>> {
+    fn decompress(data: &Vec<i8>) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         match ByteArrayOutputStream::new(data.len()) {
             Ok(output_stream) => {
                 let inflater: Inflater = Inflater::new();
@@ -354,7 +360,7 @@ trait Seriate {
     fn from_byte_array(
         serialization_reader: impl SerializationReader<T>,
         byte_array: &Vec<i8>,
-    ) -> Result<T, Rc<DynaHistError>> {
+    ) -> Result<T, std::rc::Rc<DynaHistError>> {
         match ByteArrayInputStream::new(&byte_array) {
             Ok(byte_array_input_stream) => match DataInputStream::new(&byte_array_input_stream) {
                 Ok(data_input_stream) => return Ok(serialization_reader.read(&data_input_stream)),
@@ -375,7 +381,7 @@ trait Seriate {
     fn to_byte_array(
         serialization_writer: impl SerializationWriter<T>,
         data: &T,
-    ) -> Result<Vec<i8>, Rc<DynaHistError>> {
+    ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         match ByteArrayOutputStream::new() {
             Ok(byte_array_output_stream) => {
                 match DataOutputStream::new(&byte_array_output_stream) {

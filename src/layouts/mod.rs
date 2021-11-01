@@ -3,10 +3,15 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-pub(crate) mod layout;
+pub(crate) mod custom_layout;
 pub(crate) mod guess_layout;
+pub(crate) mod layout_serialization_definition;
 pub(crate) mod layout_serialization;
-pub mod layout_serialization_definition;
+pub(crate) mod layout;
+pub(crate) mod log_linear_layout;
+pub(crate) mod log_optimal_layout;
+pub(crate) mod log_quadratic_layout;
+pub(crate) mod open_telemetry_exponential_buckets_layout;
 
 // reexport for `use crate::Layout`
 //pub(crate) use crate::layouts::layout::Layout;

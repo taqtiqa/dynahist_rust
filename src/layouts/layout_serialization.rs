@@ -3,7 +3,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::errors::DynaHistError;
 use crate::layouts::layout_serialization_definition::LayoutSerializationDefinition;
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
 
 /// Prevent registration of layouts with serial versions listed below.
 /// In this way the library can be extended by layouts without potentially
@@ -113,46 +116,51 @@ const RESERVED_SERIAL_VERSIONS: std::collections::HashSet<u64> = [
 
 struct LayoutSerialization {
     serial_to_definitions: std::collections::BTreeMap<u64, LayoutSerializationDefinition>,
-    class_to_definitions: std::collections::BTreeMap<T: Layout, LayoutSerializationDefinition>,
+    class_to_definitions: std::collections::BTreeMap<String, LayoutSerializationDefinition>,
 }
+
+impl Preconditions for LayoutSerialization {}
+impl Algorithms for LayoutSerialization {}
 
 impl LayoutSerialization {
     fn new() -> LayoutSerialization {
         let serial_to_definitions: std::collections::BTreeMap<u64, LayoutSerializationDefinition> =
             std::collections::btree_map::BTreeMap::new();
 
-        let class_to_definitions: std::collections::BTreeMap<T, LayoutSerializationDefinition> =
-            std::collections::btree_map::BTreeMap::new();
+        let class_to_definitions: std::collections::BTreeMap<
+            String,
+            LayoutSerializationDefinition,
+        > = std::collections::btree_map::BTreeMap::new();
 
         Self::register(
             vec![LayoutSerializationDefinition; 5] = vec![
                 LayoutSerializationDefinition::new(
                     0x7f862c3808df6fcd,
-                    CustomLayout.class,
+                    std::any::type_name::<CustomLayout>().to_string(),
                     CustomLayout::write,
                     CustomLayout::read,
                 ),
                 LayoutSerializationDefinition::new(
                     0x05d0c7e2dc0316e8,
-                    LogLinearLayout.class,
+                    std::any::type_name::<LogLinearLayout>().to_string(),
                     LogLinearLayout::write,
                     LogLinearLayout::read,
                 ),
                 LayoutSerializationDefinition::new(
                     0x9d36115de11d38d6,
-                    LogQuadraticLayout.class,
+                    std::any::type_name::<LogQuadraticLayout>().to_string(),
                     LogQuadraticLayout::write,
                     LogQuadraticLayout::read,
                 ),
                 LayoutSerializationDefinition::new(
                     0x70c0ef16c3809948,
-                    LogOptimalLayout.class,
+                    std::any::type_name::<LogOptimalLayout>().to_string(),
                     LogOptimalLayout::write,
                     LogOptimalLayout::read,
                 ),
                 LayoutSerializationDefinition::new(
                     0xf6e717a16f0a6a4a,
-                    OpenTelemetryExponentialBucketsLayout.class,
+                    std::any::type_name::<OpenTelemetryExponentialBucketsLayout>().to_string(),
                     OpenTelemetryExponentialBucketsLayout::write,
                     OpenTelemetryExponentialBucketsLayout::read,
                 ),
@@ -168,36 +176,39 @@ impl LayoutSerialization {
         }
 
         let new_serial_to_definitions = std::collections::HashMap::with_capacity(
-            self.serial_to_definitions.size() + definitions.len(),
+            Self.serial_to_definitions.size() + definitions.len(),
         );
 
         let new_class_to_definitions = std::collections::HashMap::with_capacity(
-            self.class_to_definitions.size() + definitions.len(),
+            Self.class_to_definitions.size() + definitions.len(),
         );
 
         new_serial_to_definitions.put_all(&serial_to_definitions);
         new_class_to_definitions.put_all(&class_to_definitions);
 
         for definition in definitions {
-            check_argument(!RESERVED_SERIAL_VERSIONS::contains(
+            Self::check_argument(!RESERVED_SERIAL_VERSIONS::contains(
                 definition.serialVersion,
             ));
             let old_def1: LayoutSerializationDefinition =
                 new_serial_to_definitions.put(definition.serialVersion, definition);
             if old_def1 != null {
-                check_argument(&old_def1.clazz.equals(definition.clazz));
+                Self::check_argument(&old_def1.clazz.equals(definition.clazz));
             }
             let old_def2: LayoutSerializationDefinition =
                 new_class_to_definitions.put(definition.clazz, definition);
             if old_def2 != null {
-                check_argument(old_def2.serialVersion == definition.serialVersion);
+                Self::check_argument(old_def2.serialVersion == definition.serialVersion);
             }
         }
         serial_to_definitions = HashMap::new(&new_serial_to_definitions);
         class_to_definitions = HashMap::new(&new_class_to_definitions);
     }
 
-    fn write(layout: impl Layout, data_output: &DataOutput) -> Result<Void, Rc<DynaHistError>> {
+    fn write(
+        layout: impl Layout,
+        data_output: &DataOutput,
+    ) -> Result<(), std::rc::Rc<DynaHistError>> {
         let definition: LayoutSerializationDefinition =
             class_to_definitions.get(&layout.get_class());
         if definition == null {
@@ -210,7 +221,7 @@ impl LayoutSerialization {
         definition.writer.write(layout, &data_output);
     }
 
-    fn read(data_input: impl DataInput) -> Result<Layout, Rc<DynaHistError>> {
+    fn read(data_input: impl DataInput) -> Result<Layout, std::rc::Rc<DynaHistError>> {
         let serialization_version: i64 = data_input.read_long();
         let definition: LayoutSerializationDefinition =
             serial_to_definitions.get(serialization_version);

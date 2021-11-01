@@ -15,7 +15,9 @@ use crate::layouts::layout::Layout;
 /// - [`LogLinearLayout`]
 /// - [`OpenTelemetryLayout`]
 ///
+
 pub(crate) trait GuessLayout: Layout {
+
     fn get_bin_lower_bound(&self, bin_index: i32) -> f64 {
         if bin_index <= self.get_underflow_bin_index() {
             return f64::NEG_INFINITY;

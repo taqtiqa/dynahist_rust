@@ -15,6 +15,8 @@ use crate::utilities::Preconditions;
 pub(crate) trait Layout: Preconditions + Algorithms {
     type L: Layout;
 
+    const SERIAL_VERSION_V0: i8 = 0;
+    
     /// Map a given value to a histogram bin index, the index of the histogram
     /// bin to which the given value is mapped to.
     ///

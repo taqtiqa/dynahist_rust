@@ -18,7 +18,7 @@ impl SeriateTest for SerializationTestUtil {
         data: &T,
         writer: &SerializationWriter<T>,
         reader: &SerializationReader<T>,
-    ) -> Result<T, Rc<DynaHistError>> {
+    ) -> Result<T, std::rc::Rc<DynaHistError>> {
         let bytes: Vec<i8> = ::to_byte_array(writer, data);
         return Ok(::from_byte_array(reader, &bytes));
     }
@@ -28,7 +28,7 @@ impl SeriateTest for SerializationTestUtil {
         writer: &SerializationWriter<T>,
         reader: &SerializationReader<T>,
         expected_hex_serialization: &String,
-    ) -> Result<T, Rc<DynaHistError>> {
+    ) -> Result<T, std::rc::Rc<DynaHistError>> {
         let hex_serialization: String = ::byte_array_to_hex_string(&::to_byte_array(writer, data));
         assert_that(&hex_serialization).is_equal_to(&expected_hex_serialization);
         return Ok(::from_byte_array(
@@ -40,7 +40,7 @@ impl SeriateTest for SerializationTestUtil {
     fn test_reading(
         reader: &SerializationReader<T>,
         hex_serialization: &String,
-    ) -> Result<T, Rc<DynaHistError>> {
+    ) -> Result<T, std::rc::Rc<DynaHistError>> {
         return Ok(::from_byte_array(
             reader,
             &::hex_string_to_byte_array(&hex_serialization),
@@ -50,7 +50,7 @@ impl SeriateTest for SerializationTestUtil {
     fn to_byte_array(
         writer: &SerializationWriter<T>,
         data: &T,
-    ) -> Result<Vec<i8>, Rc<DynaHistError>> {
+    ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         let bytes: Vec<i8> = ::to_byte_array_helper(writer, data);
         // repeat serialization multiple times to see if output is the same
         let repetitions: i32 = 5;
@@ -70,7 +70,7 @@ impl SeriateTest for SerializationTestUtil {
     fn to_byte_array_helper(
         writer: &SerializationWriter<T>,
         data: &T,
-    ) -> Result<Vec<i8>, Rc<DynaHistError>> {
+    ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         let bos: ByteArrayOutputStream = ByteArrayOutputStream::new();
         let dos: DataOutputStream = DataOutputStream::new(&bos);
         writer.write(data, &dos);
@@ -80,7 +80,7 @@ impl SeriateTest for SerializationTestUtil {
     fn from_byte_array(
         reader: &SerializationReader<T>,
         bytes: &Vec<i8>,
-    ) -> Result<T, Rc<DynaHistError>> {
+    ) -> Result<T, std::rc::Rc<DynaHistError>> {
         let bis: ByteArrayInputStream = ByteArrayInputStream::new(&bytes);
         let dis: DataInputStream = DataInputStream::new(&bis);
         let deserialized_data: T = reader.read(&dis);
