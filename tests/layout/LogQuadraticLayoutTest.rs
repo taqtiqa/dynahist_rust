@@ -50,7 +50,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_serialization(&self)  -> Result<Void, Rc<DynaHistError>> {
+    pub fn test_serialization(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let value_range_upper_bound: f64 = 1e7;
          let value_range_lower_bound: f64 = -1e6;
          let relative_bin_width_limit: f64 = 1e-3;

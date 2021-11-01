@@ -23,7 +23,7 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn test_serialization(&self)  -> Result<Void, Rc<DynaHistError>> {
+    pub fn test_serialization(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram_dynamic: Histogram = Histogram::create_dynamic(layout);
          let histogram_static: Histogram = Histogram::create_dynamic(layout);
@@ -90,7 +90,7 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn test_write_and_write_compressed(&self)  -> Result<Void, Rc<DynaHistError>> {
+    pub fn test_write_and_write_compressed(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let expected_serialized_histogram_hex_string: String = "00393FF00000000000004049000000000000BC0EF413800000000008000000080000100000800040010010010040100808082041082108221108912249249494A528";
@@ -103,7 +103,7 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn test_from_byte_array(&self)  -> Result<Void, Rc<DynaHistError>> {
+    pub fn test_from_byte_array(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let serialization_reader: SerializationReader<Histogram> =  data_input: & -> impl Histogram::read_as_dynamic(layout, data_input);
@@ -127,7 +127,7 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn test_to_byte_array(&self)  -> Result<Void, Rc<DynaHistError>> {
+    pub fn test_to_byte_array(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let serialization_writer: SerializationWriter<Histogram> = ( data: &,  data_output: &) -> histogram.write(data_output);

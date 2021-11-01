@@ -843,7 +843,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_deserialization_using_wrong_layout(&self)  -> Result<Void, Rc<DynaHistError>> {
+    pub fn test_deserialization_using_wrong_layout(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layouts: List<Layout> = Arrays::as_list(&LogLinearLayout::create(1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1.1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1.1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1e-1, 1.1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1.1e-1, -5, 5), &CustomLayout::create(-2, 4, 5), &CustomLayout::create(-2), &CustomLayout::create(1));
          let num_iterations: i64 = 10000;
          let random: SplittableRandom = SplittableRandom::new(0);
@@ -879,7 +879,7 @@ impl AbstractMutableHistogramTest {
     }
 
     #[test]
-    pub fn test_deserialization_special(&self)  -> Result<Void, Rc<DynaHistError>> {
+    pub fn test_deserialization_special(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let min: f64 = -100;
          let max: f64 = 120;
          let min_regular_idx: i32 = -30;

@@ -13,7 +13,7 @@ impl StaticHistogramTest {
         return Histogram::create_static(layout);
     }
 
-    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>> {
+    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>> {
         return Ok(Histogram::read_as_static(layout, &data_input));
     }
 

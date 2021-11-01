@@ -13,7 +13,7 @@ impl PreprocessedHistogramTest {
         return Histogram::create_dynamic(layout)::get_preprocessed_copy();
     }
 
-    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, Rc<DynaHistError>> {
+    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>> {
         return Ok(Histogram::read_as_preprocessed(layout, &data_input));
     }
 
@@ -54,7 +54,7 @@ impl PreprocessedHistogramTest {
     }
 
     #[test]
-    pub fn test_read_as_preprocessed(&self)  -> Result<Void, Rc<DynaHistError>> {
+    pub fn test_read_as_preprocessed(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5);

@@ -22,7 +22,7 @@ impl CustomLayoutTest {
     }
 
     #[test]
-    pub fn test_serialization(&self)  -> Result<Void, Rc<DynaHistError>> {
+    pub fn test_serialization(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: CustomLayout = CustomLayout::create(-3, -1.5, 234, 4324234);
          let deserialized_layout: CustomLayout = SerializationTestUtil::test_serialization(layout, CustomLayout::write, CustomLayout::read, "0004C008000000000000BFF8000000000000406D40000000000041507EE280000000");
         assert_eq!(deserialized_layout, layout);
