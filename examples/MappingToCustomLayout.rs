@@ -7,7 +7,7 @@ pub struct MappingToCustomLayout {}
 
 impl MappingToCustomLayout {
     #[test]
-    pub fn record_values_and_map_to_custom_layout1(&self) {
+    fn record_values_and_map_to_custom_layout1(&self) {
         let layout: Layout = LogLinearLayout::create(1e-5, 1e-2, 0, 1e6);
         let histogram: Histogram = Histogram::create_dynamic(layout);
         let random: Random = Random::new(0);
@@ -28,7 +28,7 @@ impl MappingToCustomLayout {
     }
 
     #[test]
-    pub fn record_values_and_map_to_custom_layout2(&self) {
+    fn record_values_and_map_to_custom_layout2(&self) {
         let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, 0, 1e6);
         let histogram: Histogram = Histogram::create_dynamic(layout);
         let random: Random = Random::new(0);

@@ -3,20 +3,17 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+#[derive(Debug)]
 struct DynamicHistogram {
-    super: AbstractMutableHistogram;
-
-     let mut counts: Vec<i64>;
-
+    counts: Vec<i64>,
     // use 2^mode bits for counting, mode is in the range {0, 1, 2, 3, 4, 5, 6}
-     let mut mode: i8;
-
-     let number_of_unused_counts: i8;
-
-     let index_offset: i32;
+    mode: i8,
+    number_of_unused_counts: i8,
+    index_offset: i32,
+    histogram_type: &str,
 }
 
-impl DynamicHistogram {
+impl AbstractMutableHistogram for DynamicHistogram {
 
     fn get_bit_offset( idx: i32,  mode: i8) -> i32 {
         return (idx << mode);
@@ -54,19 +51,18 @@ impl DynamicHistogram {
         return (counts.len() << (6 - mode)) - number_of_unused_counts;
     }
 
-    pub fn get_mode(&self) -> i8 {
+    fn get_mode(&self) -> i8 {
         return self.mode;
     }
 
     fn new( layout: impl Layout) -> DynamicHistogram {
-        super(&require_non_null(layout));
-        let .mode = 0;
-        let .indexOffset = layout.get_underflow_bin_index() + 1;
-        let .numberOfUnusedCounts = 0;
-        let .counts = EMPTY_COUNTS;
+        let mode = 0;
+        let indexOffset = layout.get_underflow_bin_index() + 1;
+        let numberOfUnusedCounts = 0;
+        let counts = EMPTY_COUNTS;
     }
 
-    pub fn read( layout: impl Layout,  data_input: impl DataInput) -> Result<DynamicHistogram, std::rc::Rc<DynaHistError>> {
+    fn read( layout: impl Layout,  data_input: &DataInput) -> Result<DynamicHistogram, std::rc::Rc<DynaHistError>> {
         require_non_null(layout);
         require_non_null(&data_input);
          let histogram: DynamicHistogram = DynamicHistogram::new(layout);
@@ -74,7 +70,7 @@ impl DynamicHistogram {
         return Ok(histogram);
     }
 
-    pub fn add_value(&self,  value: f64,  count: i64) -> DynamicHistogram {
+    fn add_value(&self,  value: f64,  count: i64) -> DynamicHistogram {
          let absolute_index: i32 = get_layout().map_to_bin_index(value);
          let relative_index: i32 = absolute_index - self.index_offset;
          let array_idx: i32 = ::get_array_index(relative_index, self.mode);
@@ -96,7 +92,7 @@ impl DynamicHistogram {
                     self.try_to_extend_and_increase_count(absolute_index, count, value);
                 }
             } else {
-                throw ArithmeticException::new(OVERFLOW_MSG);
+                ArithmeticError(OVERFLOW_MSG);
             }
         } else if count < 0 {
             return Err(DynaHist::IllegalArgumentError::new(&String::format(null as Locale, NEGATIVE_COUNT_MSG, count)));
@@ -113,7 +109,7 @@ impl DynamicHistogram {
         }
     }
 
-    pub fn increase_count(&self,  absolute_index: i32,  count: i64) {
+    fn increase_count(&self,  absolute_index: i32,  count: i64) {
         if absolute_index <= get_layout().get_underflow_bin_index() {
             increment_underflow_count(count);
         } else if absolute_index >= get_layout().get_overflow_bin_index() {
@@ -131,10 +127,10 @@ impl DynamicHistogram {
         }
     }
 
-    pub fn ensure_count_array(&self,  min_absolute_index: i32,  max_absolute_index: i32,  required_mode: i8) {
-        check_argument(min_absolute_index <= max_absolute_index);
-        check_argument(min_absolute_index > get_layout().get_underflow_bin_index());
-        check_argument(max_absolute_index < get_layout().get_overflow_bin_index());
+    fn ensure_count_array(&self,  min_absolute_index: i32,  max_absolute_index: i32,  required_mode: i8) {
+        Self::check_argument(min_absolute_index <= max_absolute_index);
+        Self::check_argument(min_absolute_index > get_layout().get_underflow_bin_index());
+        Self::check_argument(max_absolute_index < get_layout().get_overflow_bin_index());
          let new_min_absolute_index: i32;
          let new_max_absolute_index: i32;
          let current_num_counters: i32 = ::get_num_counters(&self.counts, self.number_of_unused_counts, self.mode);
@@ -189,7 +185,7 @@ impl DynamicHistogram {
         }
     }
 
-    pub fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram {
+    fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram {
         require_non_null(histogram);
         require_non_null(value_estimator);
         if histogram.is_empty() {
@@ -199,7 +195,7 @@ impl DynamicHistogram {
             total_count += histogram.get_total_count();
             if total_count < 0 {
                 total_count -= histogram.get_total_count();
-                throw ArithmeticException::new(OVERFLOW_MSG);
+                ArithmeticError(OVERFLOW_MSG);
             }
             update_min_max(&histogram.get_min(), &histogram.get_max());
             increment_underflow_count(&histogram.get_underflow_count());
@@ -215,7 +211,7 @@ impl DynamicHistogram {
                 }
                {
                      let desired_mode: i8;
-                    if histogram instanceof DynamicHistogram {
+                    if histogram.type == "DynamicHistogram" {
                         desired_mode = std::cmp::max(self.mode, (histogram as DynamicHistogram)::mode) as i8;
                     } else {
                         desired_mode = self.mode;
@@ -243,7 +239,7 @@ impl DynamicHistogram {
         return self;
     }
 
-    pub fn get_estimated_footprint_in_bytes(&self) -> i64 {
+    fn get_estimated_footprint_in_bytes(&self) -> i64 {
         return (ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES + (self.counts.len() as i64) * Long::BYTES + ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES + // counts
         Integer::BYTES) + // mode
         Byte::BYTES + // numberOfUnusedCounts
@@ -251,15 +247,15 @@ impl DynamicHistogram {
         Integer::BYTES + super.get_estimated_footprint_in_bytes();
     }
 
-    pub fn min_allocated_bin_index_inclusive(&self) -> i32 {
+    fn min_allocated_bin_index_inclusive(&self) -> i32 {
         return self.index_offset;
     }
 
-    pub fn max_allocated_bin_index_exclusive(&self) -> i32 {
+    fn max_allocated_bin_index_exclusive(&self) -> i32 {
         return self.index_offset + ::get_num_counters(&self.counts, self.number_of_unused_counts, self.mode);
     }
 
-    pub fn get_allocated_bin_count(&self,  bin_index: i32) -> i64 {
+    fn get_allocated_bin_count(&self,  bin_index: i32) -> i64 {
         return ::get_count(&self.counts, bin_index - self.index_offset, self.mode);
     }
 }

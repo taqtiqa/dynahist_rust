@@ -9,12 +9,12 @@ pub struct LogOptimalLayoutTest {
 
 impl LogOptimalLayoutTest {
 
-    pub fn create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout {
+    fn create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout {
         return LogOptimalLayout::create(absolute_bin_width_limit, relative_bin_width_limit, value_range_lower_bound, value_range_upper_bound);
     }
 
     #[test]
-    pub fn test_overflow_and_underflow_indices(&self) {
+    fn test_overflow_and_underflow_indices(&self) {
        {
              let layout: LogOptimalLayout = LogOptimalLayout::create(1e-7, 1e-6, -1e12, 1e12);
             assert_eq!(30933622, &layout.get_overflow_bin_index());
@@ -28,7 +28,7 @@ impl LogOptimalLayoutTest {
     }
 
     #[test]
-    pub fn test_serialization(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn test_serialization(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let value_range_upper_bound: f64 = 1e7;
          let value_range_lower_bound: f64 = -1e6;
          let relative_bin_width_limit: f64 = 1e-3;
@@ -39,13 +39,13 @@ impl LogOptimalLayoutTest {
     }
 
     #[test]
-    pub fn test_to_string(&self) {
+    fn test_to_string(&self) {
          let layout: Layout = LogOptimalLayout::create(1e-8, 1e-2, -1e6, 1e6);
         assert_eq!("LogOptimalLayout [absoluteBinWidthLimit=1.0E-8, relativeBinWidthLimit=0.01, underflowBinIndex=-2878, overflowBinIndex=2877]", &layout.to_string());
     }
 
     #[test]
-    pub fn test_get_width(&self) {
+    fn test_get_width(&self) {
          let layout: Layout = LogOptimalLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_static(layout);
         histogram.add_value(0);
@@ -55,7 +55,7 @@ impl LogOptimalLayoutTest {
     }
 
     #[test]
-    pub fn test_equals(&self) {
+    fn test_equals(&self) {
          let layout: Layout = LogOptimalLayout::create(1e-8, 1e-2, -1e6, 1e6);
         assert_false(&layout.equals(null));
         assert_false(&layout.equals(&LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6)));
@@ -66,7 +66,7 @@ impl LogOptimalLayoutTest {
     }
 
     #[test]
-    pub fn test_initial_guesses(&self) {
+    fn test_initial_guesses(&self) {
          let absolute_bin_width_limits: vec![Vec<f64>; 10] = vec![1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
         ;
          let relative_bin_width_limits: vec![Vec<f64>; 12] = vec![0.0, 1e-100, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
@@ -88,12 +88,12 @@ impl LogOptimalLayoutTest {
     }
 
     #[test]
-    pub fn test_hash_code(&self) {
+    fn test_hash_code(&self) {
         assert_eq!(-1348565571, &self.create_layout(1e-6, 1e-4, -10, 1000).hash_code());
     }
 
     #[test]
-    pub fn test_lower_bound_approximation(&self) {
+    fn test_lower_bound_approximation(&self) {
          let absolute_bin_width_limits: vec![Vec<f64>; 10] = vec![1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
         ;
          let relative_bin_width_limits: vec![Vec<f64>; 12] = vec![0.0, 1e-100, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]

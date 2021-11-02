@@ -8,31 +8,31 @@ pub struct AbstractHistogramTest {
 
 impl AbstractHistogramTest {
 
-    pub fn create(&self,  layout: impl Layout) -> impl Histogram ;
+    fn create(&self,  layout: impl Layout) -> impl Histogram ;
 
-    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>>  ;
+    fn read(&self,  layout: impl Layout,  data_input: &DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>>  ;
 
-    pub fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram ;
+    fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram ;
 
     #[test]
-    pub fn test_to_string(&self) {
+    fn test_to_string(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let mut histogram: Histogram = self.create(layout);
-        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=0, min=Infinity, max=-Infinity, counts={}]", histogram.get_class().get_simple_name(), layout), &histogram.to_string());
+        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=0, min=Infinity, max=-Infinity, counts={}]", histogram.histogram_type.get_simple_name(), layout), &histogram.to_string());
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
         histogram = self.add_values(histogram, 0);
-        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=1, min=0.0, max=0.0, counts={0: 1}]", histogram.get_class().get_simple_name(), layout), &histogram.to_string());
+        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=1, min=0.0, max=0.0, counts={0: 1}]", histogram.histogram_type.get_simple_name(), layout), &histogram.to_string());
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
         histogram = self.add_values(histogram, 1);
-        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=2, min=0.0, max=1.0, counts={0: 1, 1: 1}]", histogram.get_class().get_simple_name(), layout), &histogram.to_string());
+        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=2, min=0.0, max=1.0, counts={0: 1, 1: 1}]", histogram.histogram_type.get_simple_name(), layout), &histogram.to_string());
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
 
     #[test]
-    pub fn test_serialization(&self,  layout: impl Layout,  histogram: impl Histogram) {
+    fn test_serialization(&self,  layout: impl Layout,  histogram: impl Histogram) {
         let tryResult1 = 0;
         'try1: loop {
        {
@@ -78,7 +78,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_hash_code(&self) {
+    fn test_hash_code(&self) {
          let layout: Layout = TestLayout::new(-10, 10);
        {
              let histogram: Histogram = self.create(layout);
@@ -107,21 +107,21 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_serialization_of_empty_histogram(&self) {
+    fn test_serialization_of_empty_histogram(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = self.create(layout);
         self.test_serialization(layout, histogram);
     }
 
     #[test]
-    pub fn test_same_equals(&self) {
+    fn test_same_equals(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = self.create(layout);
         assert_true(&histogram.equals(histogram));
     }
 
     #[test]
-    pub fn test_get_value(&self) {
+    fn test_get_value(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let mut histogram: Histogram = self.create(layout);
         histogram = self.add_values(histogram, 2, 2, 2, 2, 2);
@@ -133,7 +133,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_get_quantile(&self) {
+    fn test_get_quantile(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let mut histogram: Histogram = self.create(layout);
         histogram = self.add_values(histogram, 2, 2, 2, 2, 2);
@@ -170,7 +170,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_non_empty_bins_ascending_iterator_for_non_empty_histogram(&self) {
+    fn test_non_empty_bins_ascending_iterator_for_non_empty_histogram(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
          let bins: List<Bin> = ArrayList<>::new();
@@ -199,7 +199,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_non_empty_bins_ascending_for_each_for_non_empty_histogram(&self) {
+    fn test_non_empty_bins_ascending_for_each_for_non_empty_histogram(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
          let bins: List<Bin> = ArrayList<>::new();
@@ -226,7 +226,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_non_empty_bins_descending_iterator_for_non_empty_histogram(&self) {
+    fn test_non_empty_bins_descending_iterator_for_non_empty_histogram(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
          let bins: List<Bin> = ArrayList<>::new();
@@ -255,7 +255,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_non_empty_bins_descending_for_each_for_non_empty_histogram(&self) {
+    fn test_non_empty_bins_descending_for_each_for_non_empty_histogram(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
          let bins: List<Bin> = ArrayList<>::new();
@@ -282,7 +282,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_non_empty_bins_ascending_iterator_for_empty_histogram(&self) {
+    fn test_non_empty_bins_ascending_iterator_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
          let bins: List<Bin> = ArrayList<>::new();
         for  let bin: Bin in histogram.non_empty_bins_ascending() {
@@ -292,7 +292,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_non_empty_bins_ascending_for_each_for_empty_histogram(&self) {
+    fn test_non_empty_bins_ascending_for_each_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
          let bins: List<Bin> = ArrayList<>::new();
         histogram.non_empty_bins_ascending().for_each(bins::add);
@@ -300,7 +300,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_non_empty_bins_descending_iterator_for_empty_histogram(&self) {
+    fn test_non_empty_bins_descending_iterator_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
          let bins: List<Bin> = ArrayList<>::new();
         for  let bin: Bin in histogram.non_empty_bins_descending() {
@@ -310,7 +310,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_non_empty_bins_descending_for_each_for_empty_histogram(&self) {
+    fn test_non_empty_bins_descending_for_each_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
          let bins: List<Bin> = ArrayList<>::new();
         histogram.non_empty_bins_descending().for_each(bins::add);
@@ -318,7 +318,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_bin_iterator_next_for_last_bin(&self) {
+    fn test_bin_iterator_next_for_last_bin(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, 5);
          let iterator: BinIterator = histogram.get_last_non_empty_bin();
@@ -326,7 +326,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_bin_iterator_previous_for_first_bin(&self) {
+    fn test_bin_iterator_previous_for_first_bin(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, 5);
          let iterator: BinIterator = histogram.get_first_non_empty_bin();
@@ -334,7 +334,7 @@ impl AbstractHistogramTest {
     }
 
     #[test]
-    pub fn test_get_bin_iterator_for_empty_histogram(&self) {
+    fn test_get_bin_iterator_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         assert_throws(NoSuchElementException.class, histogram::getFirstNonEmptyBin);
         assert_throws(NoSuchElementException.class, histogram::getLastNonEmptyBin);

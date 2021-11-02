@@ -5,9 +5,9 @@
 
 pub(crate) mod custom_layout;
 pub(crate) mod guess_layout;
-pub(crate) mod layout_serialization_definition;
-pub(crate) mod layout_serialization;
 pub(crate) mod layout;
+pub(crate) mod layout_serialization;
+pub(crate) mod layout_serialization_definition;
 pub(crate) mod log_linear_layout;
 pub(crate) mod log_optimal_layout;
 pub(crate) mod log_quadratic_layout;

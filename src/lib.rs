@@ -1,6 +1,7 @@
 // Copyright 2021 Mark van de Vyver
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
+#![deny(unsafe_code)]
 #[macro_use]
 extern crate approx;
 extern crate static_assertions;
@@ -31,4 +32,5 @@ mod quantiles;
 mod data;
 
 pub mod histogram;
+pub mod DynamicHistogram;
 pub use crate::histogram::Histogram;

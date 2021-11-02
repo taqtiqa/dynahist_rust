@@ -9,7 +9,7 @@ pub struct BinIteration {
 impl BinIteration {
 
     #[test]
-    pub fn test_bin_iteration_ascending_order(&self) {
+    fn test_bin_iteration_ascending_order(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-3, 1e-2, 0, 1E6);
          let histogram: Histogram = Histogram::create_dynamic(layout)::add_value(7.5, 3)::add_value(3.5, 6)::add_value(8.5, 11)::add_value(9.5, 2);
          let expected_bin_counts : vec![i64; 4] = vec![6, 3, 11, 2, ]
@@ -26,7 +26,7 @@ impl BinIteration {
     }
 
     #[test]
-    pub fn test_bin_iteration_descending_order(&self) {
+    fn test_bin_iteration_descending_order(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-3, 1e-2, 0, 1E6);
          let histogram: Histogram = Histogram::create_dynamic(layout)::add_value(7.5, 3)::add_value(3.5, 6)::add_value(8.5, 11)::add_value(9.5, 2);
          let expected_bin_counts : vec![i64; 4] = vec![2, 11, 3, 6, ]

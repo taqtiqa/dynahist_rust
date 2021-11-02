@@ -10,12 +10,12 @@ pub struct LogQuadraticLayoutTest {
 impl LogQuadraticLayoutTest {
 
     #[test]
-    pub fn test(&self) {
-        assert_true(4.0 * StrictMath::log1p(f64::MAX) <= 2840.0);
+    fn test(&self) {
+        assert_true(4.0 * num::Float::log_1p(f64::MAX) <= 2840.0);
     }
 
     #[test]
-    pub fn test_map_to_bin_index_helper_special_values(&self) {
+    fn test_map_to_bin_index_helper_special_values(&self) {
         assert_eq!(6144.0, &LogQuadraticLayout::map_to_bin_index_helper(i64::MAX), 0.0);
         assert_eq!(6144.0, &LogQuadraticLayout::map_to_bin_index_helper(0x7fffffffffffffff), 0.0);
         assert_eq!(6142.75, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(f64::NAN)), 0.0);
@@ -31,12 +31,12 @@ impl LogQuadraticLayoutTest {
         assert_eq!(3081.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(16.0)), 0.0);
     }
 
-    pub fn create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout {
+    fn create_layout(&self,  absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> GuessLayout {
         return LogQuadraticLayout::create(absolute_bin_width_limit, relative_bin_width_limit, value_range_lower_bound, value_range_upper_bound);
     }
 
     #[test]
-    pub fn test_overflow_and_underflow_indices(&self) {
+    fn test_overflow_and_underflow_indices(&self) {
        {
              let layout: LogQuadraticLayout = LogQuadraticLayout::create(1e-7, 1e-6, -1e12, 1e12);
             assert_eq!(33391320, &layout.get_overflow_bin_index());
@@ -50,7 +50,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_serialization(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn test_serialization(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let value_range_upper_bound: f64 = 1e7;
          let value_range_lower_bound: f64 = -1e6;
          let relative_bin_width_limit: f64 = 1e-3;
@@ -61,13 +61,13 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_to_string(&self) {
+    fn test_to_string(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
         assert_eq!("LogQuadraticLayout [absoluteBinWidthLimit=1.0E-8, relativeBinWidthLimit=0.01, underflowBinIndex=-3107, overflowBinIndex=3106]", &layout.to_string());
     }
 
     #[test]
-    pub fn test_get_width(&self) {
+    fn test_get_width(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_static(layout);
         histogram.add_value(0);
@@ -77,7 +77,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_equals(&self) {
+    fn test_equals(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
         assert_false(&layout.equals(null));
         assert_false(&layout.equals(&LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6)));
@@ -88,7 +88,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_initial_guesses(&self) {
+    fn test_initial_guesses(&self) {
          let absolute_bin_width_limits: vec![Vec<f64>; 10] = vec![1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
         ;
          let relative_bin_width_limits: vec![Vec<f64>; 12] = vec![0.0, 1e-100, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
@@ -109,7 +109,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_hash_code(&self) {
+    fn test_hash_code(&self) {
         assert_eq!(-1339415786, &self.create_layout(1e-6, 1e-4, -10, 1000).hash_code());
     }
 
@@ -118,7 +118,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_monotonicity_close_to2(&self) {
+    fn test_monotonicity_close_to2(&self) {
          let mantissa_plus1: f64 = 2;
         {
              let mut l: i64 = 0;
@@ -135,7 +135,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_monotonicity_close_to2_strict(&self) {
+    fn test_monotonicity_close_to2_strict(&self) {
          let mantissa_plus1: f64 = 2;
         {
              let mut l: i64 = 0;
@@ -152,7 +152,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_monotonicity_close_to1(&self) {
+    fn test_monotonicity_close_to1(&self) {
          let mantissa_plus1: f64 = 1;
         {
              let mut l: i64 = 0;
@@ -169,7 +169,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_monotonicity_close_to1_strict(&self) {
+    fn test_monotonicity_close_to1_strict(&self) {
          let mantissa_plus1: f64 = 1;
         {
              let mut l: i64 = 0;
@@ -186,7 +186,7 @@ impl LogQuadraticLayoutTest {
     }
 
     #[test]
-    pub fn test_lower_bound_approximation(&self) {
+    fn test_lower_bound_approximation(&self) {
          let absolute_bin_width_limits: vec![Vec<f64>; 10] = vec![1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
         ;
          let relative_bin_width_limits: vec![Vec<f64>; 12] = vec![0.0, 1e-100, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]

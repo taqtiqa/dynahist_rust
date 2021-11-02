@@ -35,14 +35,14 @@ impl GuessLayout for LogQuadraticLayout {
    /// @param valueRangeUpperBound the range upper bound
    /// @return a new [`LogLinearLayout`] instance
    ///
-    pub fn create( absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> LogQuadraticLayout {
-        check_argument(value_range_upper_bound.is_finite());
-        check_argument(value_range_lower_bound.is_finite());
-        check_argument(value_range_upper_bound >= value_range_lower_bound);
-        check_argument(absolute_bin_width_limit >= self.min_normal_f64());
-        check_argument(absolute_bin_width_limit <= f64::MAX);
-        check_argument(relative_bin_width_limit >= 0.0);
-        check_argument(relative_bin_width_limit <= f64::MAX);
+    fn create( absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> LogQuadraticLayout {
+        Self::check_argument(value_range_upper_bound.is_finite());
+        Self::check_argument(value_range_lower_bound.is_finite());
+        Self::check_argument(value_range_upper_bound >= value_range_lower_bound);
+        Self::check_argument(absolute_bin_width_limit >= self.min_normal_f64());
+        Self::check_argument(absolute_bin_width_limit <= f64::MAX);
+        Self::check_argument(relative_bin_width_limit >= 0.0);
+        Self::check_argument(relative_bin_width_limit <= f64::MAX);
          let first_normal_idx: i32 = ::calculate_first_normal_index(relative_bin_width_limit);
         // will always be >= 1 because 0 <= relativeBinWidthLimit <= Double.MAX_VALUE
          let factor_normal: f64 = ::calculate_factor_normal(relative_bin_width_limit);
@@ -51,11 +51,11 @@ impl GuessLayout for LogQuadraticLayout {
          let offset: f64 = ::calculate_offset(unsigned_value_bits_normal_limit, factor_normal, first_normal_idx);
          let value_range_lower_bound_bin_index: i32 = ::map_to_bin_index(value_range_lower_bound, factor_normal, factor_subnormal, unsigned_value_bits_normal_limit, offset);
          let value_range_upper_bound_bin_index: i32 = ::map_to_bin_index(value_range_upper_bound, factor_normal, factor_subnormal, unsigned_value_bits_normal_limit, offset);
-        check_argument(value_range_lower_bound_bin_index > i32::MIN);
-        check_argument(value_range_upper_bound_bin_index < i32::MAX);
+        Self::check_argument(value_range_lower_bound_bin_index > i32::MIN);
+        Self::check_argument(value_range_upper_bound_bin_index < i32::MAX);
          let underflow_bin_index: i32 = value_range_lower_bound_bin_index - 1;
          let overflow_bin_index: i32 = value_range_upper_bound_bin_index + 1;
-        check_argument(overflow_bin_index as i64 - underflow_bin_index as i64 - 1 <= i32::MAX as i64);
+        Self::check_argument(overflow_bin_index as i64 - underflow_bin_index as i64 - 1 <= i32::MAX as i64);
         return LogQuadraticLayout::new(absolute_bin_width_limit, relative_bin_width_limit, underflow_bin_index, overflow_bin_index, factor_normal, factor_subnormal, offset, unsigned_value_bits_normal_limit);
     }
 
@@ -71,11 +71,11 @@ impl GuessLayout for LogQuadraticLayout {
     }
 
     fn calculate_unsigned_value_bits_normal_limit( factor_subnormal: f64,  first_normal_idx: i32) -> i64 {
-        return Algorithms::find_first_guess( l: & -> ::calculate_sub_normal_idx(l, factor_subnormal) >= first_normal_idx, 0, &Double::double_to_raw_long_bits(f64::INFINITY), &::calculate_unsigned_value_bits_normal_limit_approximate(factor_subnormal, first_normal_idx));
+        return Self::find_first_guess( l: & -> ::calculate_sub_normal_idx(l, factor_subnormal) >= first_normal_idx, 0, &Double::double_to_raw_long_bits(f64::INFINITY), &::calculate_unsigned_value_bits_normal_limit_approximate(factor_subnormal, first_normal_idx));
     }
 
     fn calculate_unsigned_value_bits_normal_limit_approximate( factor_subnormal: f64,  first_normal_idx: i32) -> i64 {
-        return Algorithms::map_double_to_long(first_normal_idx / factor_subnormal);
+        return Self::map_double_to_long(first_normal_idx / factor_subnormal);
     }
 
     fn calculate_first_normal_index( relative_bin_width_limit: f64) -> i32 {
@@ -83,7 +83,7 @@ impl GuessLayout for LogQuadraticLayout {
     }
 
     fn calculate_factor_normal( relative_bin_width_limit: f64) -> f64 {
-        return 0.25 / StrictMath::log1p(relative_bin_width_limit);
+        return 0.25 / num::Float::log_1p(relative_bin_width_limit);
     }
 
     fn calculate_factor_sub_normal( absolute_bin_width_limit: f64) -> f64 {
@@ -91,11 +91,11 @@ impl GuessLayout for LogQuadraticLayout {
     }
 
     fn calculate_offset( unsigned_value_bits_normal_limit: i64,  factor_normal: f64,  first_normal_idx: i32) -> f64 {
-        return Algorithms::map_long_to_double(&Algorithms::find_first_guess( l: & -> {
-             let offset_candidate: f64 = Algorithms::map_long_to_double(l);
+        return Self::map_long_to_double(&Self::find_first_guess( l: & -> {
+             let offset_candidate: f64 = Self::map_long_to_double(l);
              let bin_index: i32 = ::calculate_normal_idx(unsigned_value_bits_normal_limit, factor_normal, offset_candidate);
             return bin_index >= first_normal_idx;
-        }, Algorithms::NEGATIVE_INFINITY_MAPPED_TO_LONG, Algorithms::POSITIVE_INFINITY_MAPPED_TO_LONG, &Algorithms::map_double_to_long(&::calculate_offset_approximate(unsigned_value_bits_normal_limit, factor_normal, first_normal_idx))));
+        }, Self::NEGATIVE_INFINITY_MAPPED_TO_LONG, Self::POSITIVE_INFINITY_MAPPED_TO_LONG, &Self::map_double_to_long(&::calculate_offset_approximate(unsigned_value_bits_normal_limit, factor_normal, first_normal_idx))));
     }
 
     fn calculate_offset_approximate( unsigned_value_bits_normal_limit: i64,  factor_normal: f64,  first_normal_idx: i32) -> f64 {
@@ -139,28 +139,28 @@ impl GuessLayout for LogQuadraticLayout {
         return  if (value_bits >= 0) { idx } else { ~idx };
     }
 
-    pub fn map_to_bin_index(&self,  value: f64) -> usize {
+    fn map_to_bin_index(&self,  value: f64) -> usize {
         return ::map_to_bin_index(value, self.factor_normal, self.factor_subnormal, self.unsigned_value_bits_normal_limit, self.offset);
     }
 
-    pub fn get_underflow_bin_index(&self) -> usize {
+    fn get_underflow_bin_index(&self) -> usize {
         return self.underflow_bin_index;
     }
 
-    pub fn get_overflow_bin_index(&self) -> usize {
+    fn get_overflow_bin_index(&self) -> usize {
         return self.overflow_bin_index;
     }
 
-    pub fn write(&self,  data_output: &DataOutput)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn write(&self,  data_output: &DataOutput)  -> Result<(), std::rc::Rc<DynaHistError>> {
         data_output.write_byte(SERIAL_VERSION_V0);
         data_output.write_double(self.absolute_bin_width_limit);
         data_output.write_double(self.relative_bin_width_limit);
-        write_signed_var_int(self.underflow_bin_index, &data_output);
-        write_signed_var_int(self.overflow_bin_index, &data_output);
+         Self::write_signed_var_int(self.underflow_bin_index, &data_output);
+         Self::write_signed_var_int(self.overflow_bin_index, &data_output);
     }
 
-    pub fn read( data_input: impl DataInput) -> Result<LogQuadraticLayout, std::rc::Rc<DynaHistError>> {
-        check_serial_version(SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
+    fn read( data_input: &DataInput) -> Result<LogQuadraticLayout, std::rc::Rc<DynaHistError>> {
+        Self::check_serial_version(SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
          let absolute_bin_width_limit_tmp: f64 = data_input.read_double();
          let relative_bin_width_limit_tmp: f64 = data_input.read_double();
          let underflow_bin_index_tmp: i32 = SerializationUtil::read_signed_var_int(&data_input);
@@ -173,7 +173,7 @@ impl GuessLayout for LogQuadraticLayout {
         return Ok(LogQuadraticLayout::new(absolute_bin_width_limit_tmp, relative_bin_width_limit_tmp, underflow_bin_index_tmp, overflow_bin_index_tmp, factor_normal_tmp, factor_subnormal_tmp, offset_tmp, unsigned_value_bits_normal_limit_tmp));
     }
 
-    pub fn hash_code(&self) -> i32 {
+    fn hash_code(&self) -> i32 {
          let prime: i32 = 31;
          let mut result: i32 = 1;
          let mut temp: i64;
@@ -186,14 +186,14 @@ impl GuessLayout for LogQuadraticLayout {
         return result;
     }
 
-    pub fn equals(&self,  obj: &Object) -> bool {
+    fn equals(&self,  obj: &Object) -> bool {
         if self == obj {
             return true;
         }
         if obj == null {
             return false;
         }
-        if get_class() != obj.get_class() {
+        if self.histogram_type != obj.histogram_type {
             return false;
         }
          let other: LogQuadraticLayout = obj as LogQuadraticLayout;
@@ -212,7 +212,7 @@ impl GuessLayout for LogQuadraticLayout {
         return true;
     }
 
-    pub fn get_bin_lower_bound_approximation(&self,  bin_index: i32) -> f64 {
+    fn get_bin_lower_bound_approximation(&self,  bin_index: i32) -> f64 {
         if bin_index >= 0 {
             return self.get_bin_lower_bound_approximation_helper(bin_index);
         } else {
@@ -234,7 +234,7 @@ impl GuessLayout for LogQuadraticLayout {
         }
     }
 
-    pub fn to_string(&self) -> String {
-        return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", get_class().get_simple_name(), self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);
+    fn to_string(&self) -> String {
+        return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", self.histogram_type.get_simple_name(), self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);
     }
 }

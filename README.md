@@ -71,6 +71,7 @@ https://docs.rs/tracing-error/0.2.0/tracing_error/
 
 https://docs.rs/approx/0.5.0/approx/
 https://docs.rs/bytestream/0.4.1/bytestream/
+  - https://github.com/nickbabcock/bitter
 https://docs.rs/decorum/0.3.1/decorum
 https://docs.rs/static_assertions/1.1.0/static_assertions/
 https://docs.rs/quickcheck/1.0.3/quickcheck/index.html

@@ -9,16 +9,18 @@ use crate::layouts::layout::Layout;
 // Represents the serialization definition for some [`Layout`].
 pub struct LayoutSerializationDefinition {
     serial_version: i64,
-    clazz: T: Layout,
-    writer: SerializationWriter<T>,
-    reader: SerializationReader<T>,
+    layout: L,
+    writer: SerializationWriter<L>,
+    reader: SerializationReader<L>,
 }
 
 impl Layout for LayoutSerializationDefinition {
-    fn new( serial_version: i64,  clazz: &T,  writer: &SerializationWriter<T>,  reader: &SerializationReader<T>) -> LayoutSerializationDefinition {
+    type L: Layout;
+
+    fn new( serial_version: i64,  layout: &L,  writer: &SerializationWriter<L>,  reader: &SerializationReader<L>) -> LayoutSerializationDefinition {
         serial_version;
-        clazz;
-        writer as SerializationWriter<T>;
-        reader as SerializationReader<T>;
+        layout;
+        writer as SerializationWriter<L>;
+        reader as SerializationReader<L>;
     }
 }

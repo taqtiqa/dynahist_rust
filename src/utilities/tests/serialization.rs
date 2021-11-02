@@ -71,8 +71,8 @@ impl SeriateTest for SerializationTestUtil {
         writer: &SerializationWriter<T>,
         data: &T,
     ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
-        let bos: ByteArrayOutputStream = ByteArrayOutputStream::new();
-        let dos: DataOutputStream = DataOutputStream::new(&bos);
+        let bos: ByteArrayOutput = ByteArrayOutput::new();
+        let dos: DataOutput = DataOutput::new(&bos);
         writer.write(data, &dos);
         return Ok(bos.to_byte_array());
     }
@@ -81,8 +81,8 @@ impl SeriateTest for SerializationTestUtil {
         reader: &SerializationReader<T>,
         bytes: &Vec<i8>,
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
-        let bis: ByteArrayInputStream = ByteArrayInputStream::new(&bytes);
-        let dis: DataInputStream = DataInputStream::new(&bis);
+        let bis: ByteArrayInput = ByteArrayInput::new(&bytes);
+        let dis: DataInput = DataInput::new(&bis);
         let deserialized_data: T = reader.read(&dis);
         assert_throws(EOFException.class, dis::readByte);
         return Ok(deserialized_data);
@@ -90,7 +90,7 @@ impl SeriateTest for SerializationTestUtil {
 
     fn hex_string_to_byte_array(s: &String) -> Vec<i8> {
         let len: i32 = s.length();
-        check_argument(len % 2 == 0);
+        Self::check_argument(len % 2 == 0);
         let mut data: [i8; len / 2] = [0; len / 2];
         {
             let mut i: i32 = 0;
@@ -108,7 +108,7 @@ impl SeriateTest for SerializationTestUtil {
     }
 
     fn byte_array_to_hex_string(bytes: &Vec<i8>) -> String {
-        check_argument(bytes.len() <= i32::MAX >> /* >>> */ 1);
+        Self::check_argument(bytes.len() <= i32::MAX >> /* >>> */ 1);
         let hex_chars: [Option<char>; bytes.len() << 1] = [None; bytes.len() << 1];
         {
             let mut j: i32 = 0;

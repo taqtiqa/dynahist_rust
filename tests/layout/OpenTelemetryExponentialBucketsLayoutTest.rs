@@ -9,7 +9,7 @@ pub struct OpenTelemetryExponentialBucketsLayoutTest {
 impl OpenTelemetryExponentialBucketsLayoutTest {
 
     #[test]
-    pub fn test_consistency(&self) {
+    fn test_consistency(&self) {
         {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
@@ -24,7 +24,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_mapping0(&self) {
+    fn test_mapping0(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(0);
         assert_eq!(0, &layout.map_to_bin_index(&f64::from_bits(0)));
         assert_eq!(1, &layout.map_to_bin_index(&f64::from_bits(1)));
@@ -78,7 +78,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_mapping1(&self) {
+    fn test_mapping1(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(1);
         assert_eq!(0, &layout.map_to_bin_index(&f64::from_bits(0)));
         assert_eq!(1, &layout.map_to_bin_index(&f64::from_bits(1)));
@@ -132,7 +132,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_mapping2(&self) {
+    fn test_mapping2(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(2);
         assert_eq!(0, &layout.map_to_bin_index(&f64::from_bits(0)));
         assert_eq!(1, &layout.map_to_bin_index(&f64::from_bits(1)));
@@ -200,7 +200,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_lower_bound_approximation(&self) {
+    fn test_lower_bound_approximation(&self) {
         {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
@@ -215,7 +215,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_boundary_consistency(&self) {
+    fn test_boundary_consistency(&self) {
          let tolerance: f64 = 1e-14;
         {
              let mut precision: i32 = 0;
@@ -266,19 +266,19 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_hash_code(&self) {
+    fn test_hash_code(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
         assert_eq!(93, &layout.hash_code());
     }
 
     #[test]
-    pub fn test_to_string(&self) {
+    fn test_to_string(&self) {
          let layout: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
         assert_eq!("OpenTelemetryExponentialBucketsLayout [precision=3]", &layout.to_string());
     }
 
     #[test]
-    pub fn test_equals(&self) {
+    fn test_equals(&self) {
          let layout3a: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
          let layout3b: Layout = OpenTelemetryExponentialBucketsLayout::create(3);
          let layout3c: Layout = OpenTelemetryExponentialBucketsLayout::new(3);
@@ -294,14 +294,14 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_create(&self) {
+    fn test_create(&self) {
         assert_eq!(actual_error_kind, expected_error_kind);
         assert_throws(DynaHist::IllegalArgumentError.class, () -> OpenTelemetryExponentialBucketsLayout::create(-1));
         assert_throws(DynaHist::IllegalArgumentError.class, () -> OpenTelemetryExponentialBucketsLayout::create(MAX_PRECISION + 1));
     }
 
     #[test]
-    pub fn test_accuracy(&self) {
+    fn test_accuracy(&self) {
          let tolerance: f64 = 1e-14;
         {
              let mut precision: i32 = 0;
@@ -338,7 +338,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_inclusiveness(&self) {
+    fn test_inclusiveness(&self) {
         {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
@@ -366,7 +366,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_sqrt2(&self) {
+    fn test_sqrt2(&self) {
          let sqrt2_lower_bound: f64 = Math::next_down(&StrictMath::sqrt(2.0));
          let sqrt2_upper_bound: f64 = Math::next_up(sqrt2_lower_bound);
         assert_that(&Math::pow(sqrt2_lower_bound, 2.0)).is_less_than(2.0);
@@ -399,7 +399,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_num_buckets(&self) {
+    fn test_num_buckets(&self) {
          let sb: StringBuilder = StringBuilder::new();
         sb.append(" p    num. positive buckets    relative bucket width\n");
         sb.append("----------------------------------------------------\n");
@@ -441,7 +441,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_boundaries(&self) {
+    fn test_boundaries(&self) {
         {
              let mut precision: i32 = 0;
             while precision <= MAX_PRECISION {
@@ -492,7 +492,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     #[test]
-    pub fn test_precalculated_boundary_constans(&self) {
+    fn test_precalculated_boundary_constans(&self) {
          let mut expected: [i64; 1 << MAX_PRECISION] = [0; 1 << MAX_PRECISION];
          let mut actual: [i64; 1 << MAX_PRECISION] = [0; 1 << MAX_PRECISION];
         {

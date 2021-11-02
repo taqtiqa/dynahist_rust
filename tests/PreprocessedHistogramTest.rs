@@ -9,15 +9,15 @@ pub struct PreprocessedHistogramTest {
 
 impl PreprocessedHistogramTest {
 
-    pub fn create(&self,  layout: impl Layout) -> impl Histogram {
+    fn create(&self,  layout: impl Layout) -> impl Histogram {
         return Histogram::create_dynamic(layout)::get_preprocessed_copy();
     }
 
-    pub fn read(&self,  layout: impl Layout,  data_input: impl DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>> {
+    fn read(&self,  layout: impl Layout,  data_input: &DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>> {
         return Ok(Histogram::read_as_preprocessed(layout, &data_input));
     }
 
-    pub fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram {
+    fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram {
         if values == null {
             return histogram;
         }
@@ -31,14 +31,14 @@ impl PreprocessedHistogramTest {
     }
 
     #[test]
-    pub fn test_get_estimated_footprint_in_byte(&self) {
+    fn test_get_estimated_footprint_in_byte(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let preprocessed_histogram: Histogram = Histogram::create_dynamic(layout)::get_preprocessed_copy();
         assert_eq!(72, &preprocessed_histogram.get_estimated_footprint_in_bytes());
     }
 
     #[test]
-    pub fn test_exceptions(&self) {
+    fn test_exceptions(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5);
@@ -54,22 +54,22 @@ impl PreprocessedHistogramTest {
     }
 
     #[test]
-    pub fn test_read_as_preprocessed(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn test_read_as_preprocessed(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
         histogram.add_value(-5.5);
-         let byte_array_output_stream: ByteArrayOutputStream = ByteArrayOutputStream::new();
-         let data_output_stream: DataOutputStream = DataOutputStream::new(&byte_array_output_stream);
+         let byte_array_output_stream: ByteArrayOutput = ByteArrayOutput::new();
+         let data_output_stream: DataOutput = DataOutput::new(&byte_array_output_stream);
         histogram.write(&data_output_stream);
          let serialized_histogram: Vec<i8> = byte_array_output_stream.to_byte_array();
-         let data_input_stream: DataInputStream = DataInputStream::new(ByteArrayInputStream::new(&serialized_histogram));
+         let data_input_stream: DataInput = DataInput::new(ByteArrayInput::new(&serialized_histogram));
          let deserialized_histogram: Histogram = Histogram::read_as_preprocessed(layout, &data_input_stream);
         assert_eq!(histogram, deserialized_histogram);
         assert_eq!(&histogram.hash_code(), &deserialized_histogram.hash_code());
     }
 
     #[test]
-    pub fn test_is_mutable(&self) {
+    fn test_is_mutable(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout)::get_preprocessed_copy();
         assert_false(&histogram.is_mutable());

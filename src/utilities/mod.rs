@@ -1,4 +1,5 @@
 // Traits with helper functions for testing
+pub(crate) mod macros;
 pub mod tests;
 
 mod algorithms;

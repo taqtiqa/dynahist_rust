@@ -22,35 +22,35 @@ impl ValueEstimatorImplsTest {
         bin_index: i32,
     ) -> Bin {
         fn new() {
-            pub fn is_underflow_bin(&self) -> bool {
+            fn is_underflow_bin(&self) -> bool {
                 return false;
             }
 
-            pub fn is_overflow_bin(&self) -> bool {
+            fn is_overflow_bin(&self) -> bool {
                 return false;
             }
 
-            pub fn get_upper_bound(&self) -> f64 {
+            fn get_upper_bound(&self) -> f64 {
                 return upper_bound;
             }
 
-            pub fn get_lower_bound(&self) -> f64 {
+            fn get_lower_bound(&self) -> f64 {
                 return lower_bound;
             }
 
-            pub fn get_less_count(&self) -> i64 {
+            fn get_less_count(&self) -> i64 {
                 return less_count;
             }
 
-            pub fn get_greater_count(&self) -> i64 {
+            fn get_greater_count(&self) -> i64 {
                 return greater_count;
             }
 
-            pub fn get_bin_index(&self) -> i32 {
+            fn get_bin_index(&self) -> i32 {
                 return bin_index;
             }
 
-            pub fn get_bin_count(&self) -> i64 {
+            fn get_bin_count(&self) -> i64 {
                 return bin_count;
             }
         };
@@ -58,7 +58,7 @@ impl ValueEstimatorImplsTest {
     }
 
     #[test]
-    pub fn test_lower_bound_value_estimation_policy(&self) {
+    fn test_lower_bound_value_estimation_policy(&self) {
         assert_eq!(
             &BIN1::get_lower_bound(),
             &ValueEstimatorImpls::LOWER_BOUND::get_estimate_from_bin(BIN1, 10),
@@ -142,7 +142,7 @@ impl ValueEstimatorImplsTest {
     }
 
     #[test]
-    pub fn test_upper_bound_value_estimation_policy(&self) {
+    fn test_upper_bound_value_estimation_policy(&self) {
         assert_eq!(
             &BIN1::get_upper_bound(),
             &ValueEstimatorImpls::UPPER_BOUND::get_estimate_from_bin(BIN1, 10),
@@ -226,7 +226,7 @@ impl ValueEstimatorImplsTest {
     }
 
     #[test]
-    pub fn test_mid_point_value_estimation_policy(&self) {
+    fn test_mid_point_value_estimation_policy(&self) {
         assert_eq!(
             0.5 * (BIN1::get_lower_bound() + BIN1::get_upper_bound()),
             &ValueEstimatorImpls::MID_POINT::get_estimate_from_bin(BIN1, 10),
@@ -310,7 +310,7 @@ impl ValueEstimatorImplsTest {
     }
 
     #[test]
-    pub fn test_uniform_value_estimation_policy(&self) {
+    fn test_uniform_value_estimation_policy(&self) {
         assert_eq!(
             3.5,
             &ValueEstimatorImpls::UNIFORM::get_estimate_from_bin(BIN1, 10),
@@ -394,7 +394,7 @@ impl ValueEstimatorImplsTest {
     }
 
     // #[test]
-    // pub fn test_negative_zero(&self) {
+    // fn test_negative_zero(&self) {
     //     for let value_estimator: ValueEstimatorImpls in ValueEstimatorImpls::values() {
     //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 2, 0, -0.0, -0.0, 34), 1)))::is_less_than(0);
     //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 2, 0, -2.0, -0.0, 34), 1)))::is_less_than(0);
@@ -418,7 +418,7 @@ impl ValueEstimatorImplsTest {
     // We'll start with a `>` assertion and see how far we get.
     //
     #[test]
-    pub fn test_negative_zero(&self) {
+    fn test_negative_zero(&self) {
         //for let value_estimator: ValueEstimatorImpls in ValueEstimatorImpls::values() {
         let value_estimate = &ValueEstimatorUniform::new()
             .get_estimate_from_bin(::create_bin(0, 2, 0, -0.0, -0.0, 34), 1);

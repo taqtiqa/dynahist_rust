@@ -71,8 +71,8 @@ impl Layout for CustomLayout {
         }
     }
 
-    fn read( data_input: impl DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
-        check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
+    fn read( data_input: &DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
+        Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
          let len: i32 = read_unsigned_var_int(&data_input);
          let sorted_bin_boundaries: [f64; len] = [0.0; len];
         {
@@ -104,7 +104,7 @@ impl Layout for CustomLayout {
             return false;
         }
 
-        if get_class() != obj.get_class() {
+        if self.histogram_type != obj.histogram_type {
             return false;
         }
 
@@ -117,6 +117,6 @@ impl Layout for CustomLayout {
     }
 
     fn to_string(&self) -> String {
-        return format!("{} [sortedBinBoundaries={}]", get_class().get_simple_name(), Arrays::to_string(&self.sorted_bin_boundaries));
+        return format!("{} [sortedBinBoundaries={}]", self.histogram_type.get_simple_name(), Arrays::to_string(&self.sorted_bin_boundaries));
     }
 }

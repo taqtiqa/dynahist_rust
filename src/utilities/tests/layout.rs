@@ -52,7 +52,7 @@ impl LayoutTestUtil {
         return pair;
         // return Condition<>::new() {
 
-        //     pub fn matches(&self,  value: &Integer) -> bool {
+        //     fn matches(&self,  value: &Integer) -> bool {
         //         return value >= over_flow_index || value <= under_flow_index;
         //     }
         // };
@@ -68,7 +68,7 @@ impl LayoutTestUtil {
         return pair;
         // return Condition<>::new() {
 
-        //     pub fn matches(&self,  value: &Integer) -> bool {
+        //     fn matches(&self,  value: &Integer) -> bool {
         //         return value >= over_flow_index;
         //     }
         // };
@@ -84,13 +84,13 @@ impl LayoutTestUtil {
         return pair;
         // return Condition<>::new() {
 
-        //     pub fn matches(&self,  value: &Integer) -> bool {
+        //     fn matches(&self,  value: &Integer) -> bool {
         //         return value <= under_flow_index;
         //     }
         // };
     }
 
-    pub fn assert_consistency(layout: impl Layout) {
+    fn assert_consistency(layout: impl Layout) {
         approx::relative_eq!(
             &layout.get_bin_lower_bound(&layout.get_underflow_bin_index()),
             &layout.get_bin_lower_bound(layout.get_underflow_bin_index() - 1)
@@ -220,7 +220,7 @@ impl LayoutTestUtil {
         );
     }
 
-    pub fn max_lower_bound_approximation_offset(layout: impl GuessLayout) -> u64 {
+    fn max_lower_bound_approximation_offset(layout: impl GuessLayout) -> u64 {
         let start = layout.get_underflow_bin_index() + 1;
         let end = layout.get_overflow_bin_index() + 1;
         // This guarantees the NaN will not be present

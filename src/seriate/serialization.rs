@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::utilities::data::DataOutput;
 use crate::errors::DynaHistError;
 
 /// A serialization writer for a given type `T`, the type to be serialized.

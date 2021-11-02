@@ -9,7 +9,7 @@ pub struct LayoutSerializationTest {
 impl LayoutSerializationTest {
 
     #[test]
-    pub fn test(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn test(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let absolute_bin_width_limit: f64 = 0.01;
          let relative_bin_width_limit: f64 = 0.05;
          let value_range_lower_bound: f64 = 10;
@@ -49,22 +49,22 @@ impl LayoutSerializationTest {
 
     impl BaseTestLayout {
 
-        pub fn map_to_bin_index(&self,  value: f64) -> usize {
+        fn map_to_bin_index(&self,  value: f64) -> usize {
             throw UnsupportedOperationException::new();
         }
 
-        pub fn get_underflow_bin_index(&self) -> usize {
+        fn get_underflow_bin_index(&self) -> usize {
             throw UnsupportedOperationException::new();
         }
 
-        pub fn get_overflow_bin_index(&self) -> usize {
+        fn get_overflow_bin_index(&self) -> usize {
             throw UnsupportedOperationException::new();
         }
     }
 
 
     #[test]
-    pub fn test_layout_registration(&self) {
+    fn test_layout_registration(&self) {
         struct TestLayout1 {
             super: BaseTestLayout;
         }
@@ -88,14 +88,14 @@ impl LayoutSerializationTest {
         //     serialVersion,
         //     TestLayout2.class,
         //     (data, dataOutput) -> {},
-        //     dataInput -> new TestLayout2());
+        //     [`data_input`] -> new TestLayout2());
         assert_throws(DynaHist::IllegalArgumentError.class, () -> Layout::register(// registration of another serialization using the same serial version must
         def2));
     // fail
     }
 
     #[test]
-    pub fn test_layout_registration_with_reserved_serial_version(&self) {
+    fn test_layout_registration_with_reserved_serial_version(&self) {
         struct TestLayout {
             super: BaseTestLayout;
         }
@@ -111,12 +111,12 @@ impl LayoutSerializationTest {
     }
 
     #[test]
-    pub fn test_layout_registration_with_null_argument(&self) {
+    fn test_layout_registration_with_null_argument(&self) {
         LayoutSerialization::register(null);
     }
 
     #[test]
-    pub fn test_layout_registration_with_same_serials_and_different_types(&self) {
+    fn test_layout_registration_with_same_serials_and_different_types(&self) {
         struct TestLayout1 {
             super: BaseTestLayout;
         }
@@ -139,12 +139,12 @@ impl LayoutSerializationTest {
         //     serialVersion,
         //     TestLayout2.class,
         //     (data, dataOutput) -> {},
-        //     dataInput -> new TestLayout2());
+        //     [`data_input`] -> new TestLayout2());
         assert_throws(DynaHist::IllegalArgumentError.class, () -> Layout::register(def1, def2));
     }
 
     #[test]
-    pub fn test_layout_registration_with_same_serials_and_same_types(&self) {
+    fn test_layout_registration_with_same_serials_and_same_types(&self) {
         struct TestLayout {
             super: BaseTestLayout;
         }
@@ -160,12 +160,12 @@ impl LayoutSerializationTest {
         //     serialVersion,
         //     TestLayout.class,
         //     (data, dataOutput) -> {},
-        //     dataInput -> new TestLayout());
+        //     [`data_input`] -> new TestLayout());
         Layout::register(def1, def2);
     }
 
     #[test]
-    pub fn test_layout_registration_with_different_serials_and_same_types(&self) {
+    fn test_layout_registration_with_different_serials_and_same_types(&self) {
         struct TestLayout {
             super: BaseTestLayout;
         }
@@ -182,12 +182,12 @@ impl LayoutSerializationTest {
         //         serialVersion2,
         //         TestLayout.class,
         //         (data, dataOutput) -> {},
-        //         dataInput -> new TestLayout());
+        //         [`data_input`] -> new TestLayout());
         assert_throws(DynaHist::IllegalArgumentError.class, () -> Layout::register(def1, def2));
     }
 
     #[test]
-    pub fn test_layout_registration_with_different_serials_and_differen_types(&self) {
+    fn test_layout_registration_with_different_serials_and_differen_types(&self) {
         struct TestLayout1 {
             super: BaseTestLayout;
         }
@@ -211,12 +211,12 @@ impl LayoutSerializationTest {
         //         serialVersion2,
         //         TestLayout2.class,
         //         (data, dataOutput) -> {},
-        //         dataInput -> new TestLayout2());
+        //         [`data_input`] -> new TestLayout2());
         Layout::register(def1, def2);
     }
 
     #[test]
-    pub fn test_write_with_type_info_for_unregistered_layout(&self) {
+    fn test_write_with_type_info_for_unregistered_layout(&self) {
         struct TestLayout {
             super: BaseTestLayout;
         }
@@ -229,7 +229,7 @@ impl LayoutSerializationTest {
     }
 
     #[test]
-    pub fn test_read_with_type_info_for_unregistered_layout(&self) {
+    fn test_read_with_type_info_for_unregistered_layout(&self) {
          let data: Vec<i8> = SerializationTestUtil::hex_string_to_byte_array("3ECCC0D9B0D7A08B");
         assert_throws(IOException.class, () -> SerializationTestUtil::from_byte_array(Layout::readWithTypeInfo, &data));
     }

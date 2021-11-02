@@ -9,7 +9,7 @@ pub struct AbstractBinTest {
 impl AbstractBinTest {
 
     #[test]
-    pub fn test_to_string(&self) {
+    fn test_to_string(&self) {
          let less_count: i64 = 2343;
          let greater_count: i64 = 42304;
          let bin_count: i64 = 423489324;
@@ -18,23 +18,23 @@ impl AbstractBinTest {
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let bin: Bin = AbstractBin::new() {
 
-            pub fn get_less_count(&self) -> i64 {
+            fn get_less_count(&self) -> i64 {
                 return less_count;
             }
 
-            pub fn get_greater_count(&self) -> i64 {
+            fn get_greater_count(&self) -> i64 {
                 return greater_count;
             }
 
-            pub fn get_bin_index(&self) -> i32 {
+            fn get_bin_index(&self) -> i32 {
                 return bin_index;
             }
 
-            pub fn get_bin_count(&self) -> i64 {
+            fn get_bin_count(&self) -> i64 {
                 return bin_count;
             }
 
-            pub fn get_histogram(&self) -> impl Histogram {
+            fn get_histogram(&self) -> impl Histogram {
                 return histogram;
             }
         };

@@ -7,6 +7,7 @@ use crate::errors::DynaHistError;
 use crate::utilities::data::{DataInput, DataOutput};
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
+use crate::layouts::layout_serialization::LayoutSerialization;
 
 /// A histogram bin layout, which defines the bins for a [`Histogram`].
 ///
@@ -16,7 +17,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     type L: Layout;
 
     const SERIAL_VERSION_V0: i8 = 0;
-    
+
     /// Map a given value to a histogram bin index, the index of the histogram
     /// bin to which the given value is mapped to.
     ///
@@ -106,7 +107,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
         return Self::map_long_to_double(first);
     }
 
-    /// Writes a [`Layout`] object.
+    /// Write a [`Layout`] object.
     ///
     /// Important: Write methods for specific implementations must be registered
     /// in {@code LayoutSerialization}.
@@ -156,8 +157,8 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     }
 
     /// Defines the serialization of a new layout that can then be registered
-    /// using {@link register(LayoutSerializationDefinition...)}.
-    /// Return a new @link {@link LayoutSerializationDefinition}
+    /// using [`register(LayoutSerializationDefinition...)`].
+    /// Return a new @link [`LayoutSerializationDefinition`]
     ///
     /// # Examples
     ///

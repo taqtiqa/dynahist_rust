@@ -4,10 +4,10 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::bins::bin::Bin;
-use crate::Histogram;
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 use crate::values::value_estimators::*;
+use crate::Histogram;
 
 // Sealing a trait stops crates other than DynaHist from implementing any traits
 // that use it.
@@ -98,13 +98,13 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     ///
     /// The estimated value must always be in the value range of the bin it belongs to.
     ///
-    /// If rank == 0, {@link Histogram#getMin()} is returned. If rank == {@link
-    /// Histogram#getTotalCount()} - 1, {@link Histogram#getMax()} is returned.
+    /// If rank == 0, [`Histogram::getMin()`] is returned. If rank == {@link
+    /// Histogram#getTotalCount()} - 1, [`Histogram::getMax()`] is returned.
     ///
     /// @param histogram the histogram
     /// @param rank the zero-based rank
     /// @return the estimated value
-    /// @throws DynaHist::IllegalArgumentError if 0 &le; rank &lt; {@link Histogram#getTotalCount()} does not
+    /// @throws DynaHist::IllegalArgumentError if 0 &le; rank &lt; [`Histogram::getTotalCount()`] does not
     ///     hold
     ///
     fn get_value_estimate(&self, histogram: impl Histogram, rank: i64) -> f64 {
@@ -161,7 +161,9 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     //
     // fn main() {
     //     let m=MyS::new();
-    //     println!("{}, {}, {}", describe(&1.,&1.,&1.), describe(&1i32,&1,&1), describe(&m,&1.,&1.));
+    //     println!("{}, {}, {}", describe(&1.,&1.,&1.),
+    //                            describe(&1i32,&1,&1),
+    //                            describe(&m,&1.,&1.));
     // }
     //
     // The `dyn Any` should not use an object trait, and should compile to
@@ -172,8 +174,8 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     // 1. the concrete type is known, and
     // 2. the method being called is inline.
     //
-
-    /// Return the estimated the value with given zero-based rank and bin.
+    //
+    /// Return the estimated value with given zero-based rank and bin.
     ///
     /// It can be assumed that the value of given rank was mapped into the
     /// given bin.

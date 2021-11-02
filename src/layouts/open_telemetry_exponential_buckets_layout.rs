@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::data::DataInput;
+use crate::data::DataOutput;
 use crate::{errors::DynaHistError, layouts::layout::Layout};
 
 /// A tentative histogram bin layout that implements the proposal as discussed
@@ -72,7 +74,7 @@ impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
     /// Create a histogram bin layout with exponential buckets with given precision.
     ///
     /// @param precision the precision
-    /// @return a new {@link OpenTelemetryExponentialBucketsLayout} instance
+    /// @return a new [`OpenTelemetryExponentialBucketsLayout`] instance
     ///
     fn new(precision: i32) -> Self {
         Self::check_argument(precision >= 0);
@@ -142,7 +144,7 @@ impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
         let indices = Self::calculate_indices(&boundaries, precision);
         let value_bits: i32 = 0;
         let mut index: i32 = i32::MIN;
-        while true {
+        loop {
             let next_value_bits: i32 = value_bits + 1;
             let next_index: i32 = Self::map_to_bin_index_helper(
                 next_value_bits,
@@ -229,7 +231,7 @@ impl OpenTelemetryExponentialBucketsLayout {
         return (exponent << precision) + k + index_offset;
     }
 
-    pub fn map_to_bin_index(&self, value: f64) -> usize {
+    fn map_to_bin_index(&self, value: f64) -> usize {
         let value_bits: i64 = value.to_bits();
         let index: i32 = Self::map_to_bin_index_helper(
             value_bits,
@@ -242,11 +244,11 @@ impl OpenTelemetryExponentialBucketsLayout {
         return if value_bits >= 0 { index } else { -index };
     }
 
-    pub fn get_underflow_bin_index(&self) -> usize {
+    fn get_underflow_bin_index(&self) -> usize {
         return self.underflow_bin_index;
     }
 
-    pub fn get_overflow_bin_index(&self) -> usize {
+    fn get_overflow_bin_index(&self) -> usize {
         return self.overflow_bin_index;
     }
 
@@ -268,7 +270,7 @@ impl OpenTelemetryExponentialBucketsLayout {
         }
     }
 
-    pub fn get_bin_lower_bound_approximation(&self, bin_index: usize) -> f64 {
+    fn get_bin_lower_bound_approximation(&self, bin_index: usize) -> f64 {
         if bin_index == 0 {
             return -0.0;
         } else if bin_index > 0 {
@@ -280,7 +282,7 @@ impl OpenTelemetryExponentialBucketsLayout {
         }
     }
 
-    pub fn to_string(&self) -> String {
+    fn to_string(&self) -> String {
         return format!(
             "OpenTelemetryExponentialBucketsLayout [precision={}]",
             self.precision
@@ -288,12 +290,12 @@ impl OpenTelemetryExponentialBucketsLayout {
     }
 
     // Upstream (Java) implements an exlicit equality logic
-    // pub fn equals(&self,  o: &Self) -> bool {
+    // fn equals(&self,  o: &Self) -> bool {
     //     if self == o {
     //         return true;
     //     }
 
-    //     if o == null || get_class() != o.get_class() {
+    //     if o == null || self.histogram_type != o.histogram_type {
     //         return false;
     //     }
 
@@ -301,19 +303,19 @@ impl OpenTelemetryExponentialBucketsLayout {
     //     return self.precision == that.precision;
     // }
 
-    // pub fn hash_code(&self) -> i32 {
+    // fn hash_code(&self) -> i32 {
     //     return 31 * self.precision;
     // }
 
-    pub fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
         data_output.write_byte(Self::SERIAL_VERSION_V0);
         data_output.write_byte(self.precision);
     }
 
-    pub fn read(data_input: &DataInput) -> Result<Self, std::rc::Rc<DynaHistError>> {
+    fn read(data_input: &DataInput) -> Result<Self, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
-        let tmp_precision: i32 = data_input.read_unsigned_byte();
-        return Ok(OpenTelemetryExponentialBucketsLayout::create(tmp_precision));
+        let precision: i32 = data_input.read_unsigned_byte();
+        return Ok(OpenTelemetryExponentialBucketsLayout::create(precision));
     }
 
     const BOUNDARY_CONSTANTS: Vec<i64> = vec![

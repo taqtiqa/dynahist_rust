@@ -12,13 +12,13 @@ pub struct TestLayout {
 
 impl Layout for TestLayout {
 
-    pub fn new( underflow_index: usize,  overflow_index: usize) -> TestLayout {
-        check_argument(underflow_index < overflow_index);
+    fn new( underflow_index: usize,  overflow_index: usize) -> TestLayout {
+        Self::check_argument(underflow_index < overflow_index);
         let .underflowIndex = underflow_index;
         let .overflowIndex = overflow_index;
     }
 
-    pub fn map_to_bin_index(&self,  value: f64) -> usize {
+    fn map_to_bin_index(&self,  value: f64) -> usize {
         if value.is_nan() {
             return i32::MAX;
         }
@@ -29,19 +29,19 @@ impl Layout for TestLayout {
         }
     }
 
-    pub fn get_underflow_bin_index(&self) -> usize {
+    fn get_underflow_bin_index(&self) -> usize {
         return self.underflow_index;
     }
 
-    pub fn get_overflow_bin_index(&self) -> usize {
+    fn get_overflow_bin_index(&self) -> usize {
         return self.overflow_index;
     }
 
-    pub fn to_string(&self) -> String {
-        return format!("{} [underflowIndex={}, overflowIndex={}]", get_class().get_simple_name(), self.underflow_index, self.overflow_index);
+    fn to_string(&self) -> String {
+        return format!("{} [underflowIndex={}, overflowIndex={}]", self.histogram_type.get_simple_name(), self.underflow_index, self.overflow_index);
     }
 
-    pub fn hash_code(&self) -> i32 {
+    fn hash_code(&self) -> i32 {
          let prime: i32 = 31;
          let mut result: i32 = 1;
         result = prime * result + self.overflow_index;
@@ -49,14 +49,14 @@ impl Layout for TestLayout {
         return result;
     }
 
-    pub fn equals(&self,  obj: &Object) -> bool {
+    fn equals(&self,  obj: &Object) -> bool {
         if self == obj {
             return true;
         }
         if obj == null {
             return false;
         }
-        if get_class() != obj.get_class() {
+        if self.histogram_type != obj.histogram_type {
             return false;
         }
          let other: TestLayout = obj as TestLayout;

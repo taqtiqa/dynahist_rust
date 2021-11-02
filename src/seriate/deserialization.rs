@@ -3,11 +3,15 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::utilities::data::DataInput;
+use crate::errors::DynaHistError;
+use crate::layouts::layout::Layout;
+
 /// A deserializer for a given histogram layout.
 ///
 /// # Arguments
 ///
-/// - [`T`]: The histogram layout type to be deserialized. Available layouts are
+/// - [`L`]: The histogram layout type to be deserialized. Available layouts are
 ///
 ///     - [`CustomLayout`]
 ///     - [`LogLinearLayout`]
@@ -15,23 +19,36 @@
 ///     - [`LogQuadraticLayout`]
 ///     - [`OpenTelemetryLayout`]
 ///
-pub trait SerializationReader<T> {
-    
-    /// Deserializes an object by reading from a given [`DataInput`].
+pub struct SerializationReader {}
+
+impl SeriateRead for SerializationReader {}
+
+pub trait SeriateRead {
+    type L: Layout;
+
+    /// Return a deserialized histogram by reading from a given [`DataInput`].
     ///
-    /// Implementations should never return {@code null} except for the case {@code null} was really
-    /// the serialized value. Returning {@code null} in all other cases like for deprecated
-    /// serialization formats is very dangerous, especially if not all serialized bytes are consumed
-    /// within the {@link #read} method. If the caller chooses to continue with deserialization from
-    /// the same [`DataInput`], wrong data may be deserialized due to the resulting misalignment.
-    /// This may lead to severe problems like huge unwanted allocations, if for example the wrong array
-    /// length was read first. Consider throwing an {@link IOException} instead, which must be handled
-    /// by the caller anyway, and which effectively prevents callers from continuing with
+    /// We return a [`DynaHistError::IOError`] instead, which must be handled
+    /// by the caller, and effectively prevents callers from continuing with
     /// deserialization.
     ///
-    /// @param dataInput the data input
-    /// @return the deserialized object
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs.
+    /// # Port
     ///
-    fn read(&self, data_input: impl DataInput) -> Result<T, std::rc::Rc<DynaHistError>>;
+    /// Upstream (Java) suggests:
+    ///
+    /// > "Implementations should never return `null` except for the case
+    /// `null` was really the serialized value."
+    ///
+    /// However, Rust does not contain a `null` type. Rather the Rust port
+    /// never serializes `None`, `()` nor any `&str` or `String`.
+    ///
+    /// # Errors
+    ///
+    /// Return [`DynaHistError::IOError`] if an I/O error occurs.
+    ///
+    /// # Arguments
+    ///
+    /// - [`data_input`] the data input
+    ///
+    fn read(&self, data_input: &DataInput) -> Result<Self::L, std::rc::Rc<DynaHistError>>;
 }

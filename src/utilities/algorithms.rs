@@ -119,10 +119,10 @@ pub trait Algorithms: Preconditions {
 
     /// Bidirectional mapping of a {@code double} value to a [`u64`] value.
     ///
-    /// Except for {@link Double#NaN} values, the natural ordering of double values as defined by
-    /// {@link Double#compare(double, double)} will be maintained.
+    /// Except for [`Double::NaN`] values, the natural ordering of double values as defined by
+    /// [`Double::compare(double, double)`] will be maintained.
     ///
-    /// Inverse mapping can be performed using {@link #mapLongToDouble(long)}.
+    /// Inverse mapping can be performed using [`#mapLongToDouble(long)`].
     ///
     /// @param x the value
     /// @return the corresponding long value
@@ -134,7 +134,7 @@ pub trait Algorithms: Preconditions {
 
     /// Bidirectional mapping of a [`u64`] value to a {@code double} value.
     ///
-    /// Inverse mapping can be performed using {@link #mapDoubleToLong(double)}.
+    /// Inverse mapping can be performed using [`#mapDoubleToLong(double)`].
     ///
     /// @param l long value
     /// @return the corresponding double value

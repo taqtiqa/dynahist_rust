@@ -15,7 +15,7 @@ impl Preconditions for PreconditionsTest {
     #[test]
     #[should_panic(expected = "msg")]
     fn test_check_argument_false(&self) {
-        check_argument(false).unwrap();
+        Self::check_argument(false).unwrap();
     }
 
     #[test]

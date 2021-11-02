@@ -14,7 +14,7 @@ pub struct TestLayoutTest {}
 
 impl TestLayoutTest {
     #[test]
-    pub fn test_consistency(&self) {
+    fn test_consistency(&self) {
         let min: i32 = -10;
         let max: i32 = 10;
         {

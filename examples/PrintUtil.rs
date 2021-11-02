@@ -8,7 +8,7 @@ pub struct PrintUtil {}
 impl PrintUtil {
     fn new() -> PrintUtil {}
 
-    pub fn print(histogram: impl Histogram) -> String {
+    fn print(histogram: impl Histogram) -> String {
         Preconditions::check_argument(histogram != null);
         Preconditions::check_argument(histogram.get_total_count() != 0);
         let iterator: BinIterator = histogram.get_first_non_empty_bin();
@@ -32,7 +32,7 @@ impl PrintUtil {
         return result.to_string();
     }
 
-    pub fn pretty_print(histogram: impl Histogram) -> String {
+    fn pretty_print(histogram: impl Histogram) -> String {
         Preconditions::check_argument(histogram != null);
         Preconditions::check_argument(histogram.get_total_count() != 0);
         let iterator: BinIterator = histogram.get_first_non_empty_bin();

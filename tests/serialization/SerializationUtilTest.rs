@@ -9,21 +9,21 @@ pub struct SerializationUtilTest {
 impl SerializationUtilTest {
 
     #[test]
-    pub fn test_read_unsigned_var_int(&self) {
+    fn test_read_unsigned_var_int(&self) {
          let array : vec![i8; 9] = vec![-1, -2, -3, -4, -5, -6, -7, -8, -9, ]
         ;
-        assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_int(DataInputStream::new(ByteArrayInputStream::new(&array))));
+        assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_int(DataInput::new(ByteArrayInput::new(&array))));
     }
 
     #[test]
-    pub fn test_read_unsigned_var_long(&self) {
+    fn test_read_unsigned_var_long(&self) {
          let array : vec![i8; 10] = vec![-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, ]
         ;
-        assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_long(DataInputStream::new(ByteArrayInputStream::new(&array))));
+        assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_long(DataInput::new(ByteArrayInput::new(&array))));
     }
 
     #[test]
-    pub fn test_serialization(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn test_serialization(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram_dynamic: Histogram = Histogram::create_dynamic(layout);
          let histogram_static: Histogram = Histogram::create_dynamic(layout);
@@ -90,7 +90,7 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn test_write_and_write_compressed(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn test_write_and_write_compressed(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let expected_serialized_histogram_hex_string: String = "00393FF00000000000004049000000000000BC0EF413800000000008000000080000100000800040010010010040100808082041082108221108912249249494A528";
@@ -103,15 +103,15 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn test_from_byte_array(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn test_from_byte_array(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let serialization_reader: SerializationReader<Histogram> =  data_input: & -> impl Histogram::read_as_dynamic(layout, data_input);
          let serialized_histogram: Vec<i8> = null;
         let tryResult1 = 0;
         'try1: loop {
-        ( let byte_array_output_stream: ByteArrayOutputStream = ByteArrayOutputStream::new();
-             let data_output_stream: DataOutputStream = DataOutputStream::new(&byte_array_output_stream)) {
+        ( let byte_array_output_stream: ByteArrayOutput = ByteArrayOutput::new();
+             let data_output_stream: DataOutput = DataOutput::new(&byte_array_output_stream)) {
             histogram.write(&data_output_stream);
             serialized_histogram = byte_array_output_stream.to_byte_array();
         }
@@ -127,15 +127,15 @@ impl SerializationUtilTest {
     }
 
     #[test]
-    pub fn test_to_byte_array(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn test_to_byte_array(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
          let serialization_writer: SerializationWriter<Histogram> = ( data: &,  data_output: &) -> histogram.write(data_output);
          let serialized_histogram: Vec<i8> = null;
         let tryResult1 = 0;
         'try1: loop {
-        ( let byte_array_output_stream: ByteArrayOutputStream = ByteArrayOutputStream::new();
-             let data_output_stream: DataOutputStream = DataOutputStream::new(&byte_array_output_stream)) {
+        ( let byte_array_output_stream: ByteArrayOutput = ByteArrayOutput::new();
+             let data_output_stream: DataOutput = DataOutput::new(&byte_array_output_stream)) {
             histogram.write(&data_output_stream);
             serialized_histogram = byte_array_output_stream.to_byte_array();
         }

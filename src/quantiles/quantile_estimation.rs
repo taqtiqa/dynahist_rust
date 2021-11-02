@@ -75,7 +75,7 @@ pub trait QuantileEstimation<QEstimator = Self>:
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
     /// function is called many times, it is recommended to transform the histogram using {@link
-    /// #getPreprocessedCopy()} into a @link {@link PreprocessedHistogram} first (which is an O(N)
+    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
     /// @param p the p-value in range [0,1]
@@ -89,7 +89,7 @@ pub trait QuantileEstimation<QEstimator = Self>:
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
     /// function is called many times, it is recommended to transform the histogram using {@link
-    /// #getPreprocessedCopy()} into a @link {@link PreprocessedHistogram} first (which is an O(N)
+    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
     /// @param p the p-value in range [0,1]
@@ -104,7 +104,7 @@ pub trait QuantileEstimation<QEstimator = Self>:
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
     /// function is called many times, it is recommended to transform the histogram using {@link
-    /// #getPreprocessedCopy()} into a @link {@link PreprocessedHistogram} first (which is an O(N)
+    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
     /// @param p the p-value in range [0,1]
@@ -118,7 +118,7 @@ pub trait QuantileEstimation<QEstimator = Self>:
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
     /// function is called many times, it is recommended to transform the histogram using {@link
-    /// #getPreprocessedCopy()} into a @link {@link PreprocessedHistogram} first (which is an O(N)
+    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
     /// @param p the p-value in range [0,1]
@@ -132,7 +132,7 @@ pub trait QuantileEstimation<QEstimator = Self>:
     ///  accessed through the given function.
     ///
     /// If `num_values` is equal to `0`, the return value will always be
-    /// {@link Double#isNaN()}.
+    /// [`Double::isNaN()`].
     ///
     /// The behavior is undefined, if the given function is not monotonic increasing.
     ///
@@ -147,7 +147,7 @@ pub trait QuantileEstimation<QEstimator = Self>:
 
     /// Return the p-quantile estimate from a sorted double array.
     ///
-    /// If `num_values` is equal to 0 the return value will always be {@link Double#isNaN()}.
+    /// If `num_values` is equal to 0 the return value will always be [`Double::isNaN()`].
     ///
     /// The behavior is undefined, if the array is not sorted in ascending order.
     ///
