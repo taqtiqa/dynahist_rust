@@ -42,8 +42,8 @@ impl AbstractHistogramTest {
         break 'try1
         }
         match tryResult1 {
-             catch ( e: &IOException) {
-                throw UncheckedIOException::new(&e);
+             catch ( e: &IOError) {
+                throw UncheckedIOError::new(&e);
             }  0 => break
         }
 
@@ -56,8 +56,8 @@ impl AbstractHistogramTest {
         break 'try1
         }
         match tryResult1 {
-             catch ( e: &IOException) {
-                throw UncheckedIOException::new(&e);
+             catch ( e: &IOError) {
+                throw UncheckedIOError::new(&e);
             }  0 => break
         }
 
@@ -70,8 +70,8 @@ impl AbstractHistogramTest {
         break 'try1
         }
         match tryResult1 {
-             catch ( e: &IOException) {
-                throw UncheckedIOException::new(&e);
+             catch ( e: &IOError) {
+                throw UncheckedIOError::new(&e);
             }  0 => break
         }
 
@@ -322,7 +322,7 @@ impl AbstractHistogramTest {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, 5);
          let iterator: BinIterator = histogram.get_last_non_empty_bin();
-        assert_throws(NoSuchElementException.class, iterator::next);
+        assert_throws(NoSuchElementError.class, iterator::next);
     }
 
     #[test]
@@ -330,13 +330,13 @@ impl AbstractHistogramTest {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, 5);
          let iterator: BinIterator = histogram.get_first_non_empty_bin();
-        assert_throws(NoSuchElementException.class, iterator::previous);
+        assert_throws(NoSuchElementError.class, iterator::previous);
     }
 
     #[test]
     fn test_get_bin_iterator_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
-        assert_throws(NoSuchElementException.class, histogram::getFirstNonEmptyBin);
-        assert_throws(NoSuchElementException.class, histogram::getLastNonEmptyBin);
+        assert_throws(NoSuchElementError.class, histogram::getFirstNonEmptyBin);
+        assert_throws(NoSuchElementError.class, histogram::getLastNonEmptyBin);
     }
 }

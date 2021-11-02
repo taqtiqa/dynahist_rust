@@ -20,7 +20,7 @@ impl SeriateTest for SerializationTestUtil {
         reader: &SerializationReader<T>,
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
         let bytes: Vec<i8> = ::to_byte_array(writer, data);
-        return Ok(::from_byte_array(reader, &bytes));
+        return Ok(::from_byte_array(reader, bytes));
     }
 
     fn test_serialization(
@@ -33,7 +33,7 @@ impl SeriateTest for SerializationTestUtil {
         assert_that(&hex_serialization).is_equal_to(&expected_hex_serialization);
         return Ok(::from_byte_array(
             reader,
-            &::hex_string_to_byte_array(&hex_serialization),
+            ::hex_string_to_byte_array(&hex_serialization),
         ));
     }
 
@@ -43,7 +43,7 @@ impl SeriateTest for SerializationTestUtil {
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
         return Ok(::from_byte_array(
             reader,
-            &::hex_string_to_byte_array(&hex_serialization),
+            ::hex_string_to_byte_array(&hex_serialization),
         ));
     }
 
@@ -84,7 +84,7 @@ impl SeriateTest for SerializationTestUtil {
         let bis: ByteArrayInput = ByteArrayInput::new(&bytes);
         let dis: DataInput = DataInput::new(&bis);
         let deserialized_data: T = reader.read(&dis);
-        assert_throws(EOFException.class, dis::readByte);
+        assert_throws(EOFError.class, dis::readByte);
         return Ok(deserialized_data);
     }
 

@@ -12,14 +12,14 @@ impl SerializationUtilTest {
     fn test_read_unsigned_var_int(&self) {
          let array : vec![i8; 9] = vec![-1, -2, -3, -4, -5, -6, -7, -8, -9, ]
         ;
-        assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_int(DataInput::new(ByteArrayInput::new(&array))));
+        assert_throws(IOError.class, () -> SerializationUtil::read_unsigned_var_int(DataInput::new(ByteArrayInput::new(&array))));
     }
 
     #[test]
     fn test_read_unsigned_var_long(&self) {
          let array : vec![i8; 10] = vec![-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, ]
         ;
-        assert_throws(IOException.class, () -> SerializationUtil::read_unsigned_var_long(DataInput::new(ByteArrayInput::new(&array))));
+        assert_throws(IOError.class, () -> SerializationUtil::read_unsigned_var_long(DataInput::new(ByteArrayInput::new(&array))));
     }
 
     #[test]
@@ -118,12 +118,12 @@ impl SerializationUtilTest {
         break 'try1
         }
         match tryResult1 {
-             catch ( e: &IOException) {
+             catch ( e: &IOError) {
                 e.print_stack_trace();
             }  0 => break
         }
 
-        assert_eq!(histogram, &SerializationUtil::from_byte_array(serialization_reader, &serialized_histogram));
+        assert_eq!(histogram, &SerializationUtil::from_byte_array(serialization_reader, serialized_histogram));
     }
 
     #[test]
@@ -142,7 +142,7 @@ impl SerializationUtilTest {
         break 'try1
         }
         match tryResult1 {
-             catch ( e: &IOException) {
+             catch ( e: &IOError) {
                 e.print_stack_trace();
             }  0 => break
         }

@@ -50,15 +50,15 @@ impl LayoutSerializationTest {
     impl BaseTestLayout {
 
         fn map_to_bin_index(&self,  value: f64) -> usize {
-            throw UnsupportedOperationException::new();
+            throw UnsupportedOperationError::new();
         }
 
         fn get_underflow_bin_index(&self) -> usize {
-            throw UnsupportedOperationException::new();
+            throw UnsupportedOperationError::new();
         }
 
         fn get_overflow_bin_index(&self) -> usize {
-            throw UnsupportedOperationException::new();
+            throw UnsupportedOperationError::new();
         }
     }
 
@@ -225,12 +225,12 @@ impl LayoutSerializationTest {
         }
 
          let layout: Layout = TestLayout::new();
-        assert_throws(IOException.class, () -> SerializationTestUtil::to_byte_array(Layout::writeWithTypeInfo, layout));
+        assert_throws(IOError.class, () -> SerializationTestUtil::to_byte_array(Layout::writeWithTypeInfo, layout));
     }
 
     #[test]
     fn test_read_with_type_info_for_unregistered_layout(&self) {
          let data: Vec<i8> = SerializationTestUtil::hex_string_to_byte_array("3ECCC0D9B0D7A08B");
-        assert_throws(IOException.class, () -> SerializationTestUtil::from_byte_array(Layout::readWithTypeInfo, &data));
+        assert_throws(IOError.class, () -> SerializationTestUtil::from_byte_array(Layout::readWithTypeInfo, data));
     }
 }

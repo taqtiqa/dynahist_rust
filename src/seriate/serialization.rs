@@ -3,23 +3,43 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::utilities::data::DataOutput;
 use crate::errors::DynaHistError;
+use crate::layouts::layout::Layout;
+use crate::utilities::data::DataOutput;
 
-/// A serialization writer for a given type `T`, the type to be serialized.
+/// A serializer for a given histogram layout.
 ///
-pub trait SerializationWriter<T> {
+/// # Arguments
+///
+/// - [`L`]: The histogram layout type to be serialized. Available layouts are
+///
+///     - [`CustomLayout`]
+///     - [`LogLinearLayout`]
+///     - [`LogOptimalLayout`]
+///     - [`LogQuadraticLayout`]
+///     - [`OpenTelemetryLayout`]
+///
+pub struct SerializationWriter {}
+
+impl SeriateWrite for SerializationWriter {}
+
+pub trait SeriateWrite {
+    type L: Layout;
 
     /// Serializes a given object by writing to a given [`DataOutput`].
     ///
     /// # Errors
     ///
-    /// Return [`DynaHistError::IOException`] if an I/O error occurs.
+    /// Return [`DynaHistError::IOError`] if an I/O error occurs.
     ///
     /// # Arguments
     ///
     /// - `data`: The object to be serialized
     /// - `data_output`: The data output
     ///
-    fn write(&self, data: &T, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError::IOException>>;
+    fn write(
+        &self,
+        data: &Self::L,
+        data_output: &DataOutput,
+    ) -> Result<(), std::rc::Rc<DynaHistError::IOError>>;
 }

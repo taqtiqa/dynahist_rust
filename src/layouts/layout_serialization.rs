@@ -100,7 +100,18 @@ impl LayoutSerialization {
         }
     }
 
-    // Use a buffer store (memory) such that write operations are infallible
+    /// Infallible write to a buffer store (memory).
+    ///
+    /// # Errors
+    ///
+    /// Return [`DynaHistError::IOError`] if the serialization layout
+    /// definition cannot be found.
+    ///
+    /// # Panics
+    ///
+    /// Write operations are infallible.  Hence, if a write fails, something has
+    /// gone seriously wrong in memory and the write will panic at this point.
+    ///
     fn write(
         layout: impl Layout,
         data_output: impl bytes::BufMut,
@@ -118,7 +129,18 @@ impl LayoutSerialization {
         definition.writer.write(layout, &data_output);
     }
 
-    // Use a buffer store (memory) such that read operations are infallible
+    /// Infallible read from a buffer store (memory).
+    ///
+    /// # Errors
+    ///
+    /// Return [`DynaHistError::IOError`] if the serialization layout
+    /// definition cannot be found.
+    ///
+    /// # Panics
+    ///
+    /// Read operations are infallible.  Hence, if a read fails, something has
+    /// gone seriously wrong in memory and the read will panic at this point.
+    ///
     fn read(data_input: impl bytes::Buf) -> Result<impl Layout, std::rc::Rc<DynaHistError>> {
         let serialization_version: i64 = data_input.read_i64();
         let definition: LayoutSerializationDefinition;

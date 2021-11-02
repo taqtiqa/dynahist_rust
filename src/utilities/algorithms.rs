@@ -33,12 +33,13 @@ pub trait Algorithms: Preconditions {
     /// always in the range [min(y1,y2),max(y1,y2)]. In addition, this interpolation function is
     /// monotonic in x.
     ///
-    /// @param x the x-value
+    /// - `x`: the x-value
     /// @param x1 the x-value of point 1
     /// @param y1 the y-value of point 1
     /// @param x2 the x-value of point 2
     /// @param y2 the y-value of point 2
-    /// @return the interpolated y-value
+    ///
+   /// the interpolated y-value
     ///
     fn interpolate(x: f64, x1: f64, y1: f64, x2: f64, y2: f64) -> f64 {
         // Java implementation uses java.lang.Double.doubleToLongBits().
@@ -107,9 +108,10 @@ pub trait Algorithms: Preconditions {
     /// calculating the midpoint using (a + b) / 2 directly. Furthermore, this implementation is
     /// branch-free.
     ///
-    /// @param a the first value
-    /// @param b the second value
-    /// @return the midpoint
+    /// - `a`: the first value
+    /// - `b`: the second value
+    ///
+   /// the midpoint
     ///
     fn calculate_midpoint(a: i64, b: i64) -> i64 {
         let a2: i64 = (a ^ 0x8000000000000000) >> /* >>> */ 1;
@@ -124,8 +126,9 @@ pub trait Algorithms: Preconditions {
     ///
     /// Inverse mapping can be performed using [`#mapLongToDouble(long)`].
     ///
-    /// @param x the value
-    /// @return the corresponding long value
+    /// - `x`: the value
+    ///
+   /// the corresponding long value
     ///
     fn map_double_to_long(x: f64) -> i64 {
         let l: i64 = x.to_bits();
@@ -136,8 +139,9 @@ pub trait Algorithms: Preconditions {
     ///
     /// Inverse mapping can be performed using [`#mapDoubleToLong(double)`].
     ///
-    /// @param l long value
-    /// @return the corresponding double value
+    /// - `l`: long value
+    ///
+   /// the corresponding double value
     ///
     fn map_long_to_double(l: i64) -> f64 {
         // Java implementation uses Double::long_bits_to_double
@@ -153,10 +157,11 @@ pub trait Algorithms: Preconditions {
     ///
     /// The time complexity is logarithmic in terms of the interval length max - min.
     ///
-    /// @param predicate the predicate
-    /// @param min the lower bound of the search interval
-    /// @param max the upper bound of the search interval
-    /// @return the smallest value for which the predicate evaluates to {@code true}
+    /// - `predicate`: the predicate
+    /// - `min`: the lower bound of the search interval
+    /// - `max`: the upper bound of the search interval
+    ///
+   /// the smallest value for which the predicate evaluates to {@code true}
     ///
     fn find_first(predicate: &i64, min: i64, max: i64) -> i64 {
         Self::check_argument(min <= max);
@@ -193,11 +198,12 @@ pub trait Algorithms: Preconditions {
     /// This function allows to give an initial guess which might speed up finding X, if the initial
     /// guess is already close to X.
     ///
-    /// @param predicate the predicate
-    /// @param min the lower bound of the search interval
-    /// @param max the upper bound of the search interval
-    /// @param initialGuess an initial guess
-    /// @return the smallest value for which the predicate evaluates to {@code true}
+    /// - `predicate`: the predicate
+    /// - `min`: the lower bound of the search interval
+    /// - `max`: the upper bound of the search interval
+    /// - `initialGuess`: an initial guess
+    ///
+   /// the smallest value for which the predicate evaluates to {@code true}
     ///
     fn find_first_guess<P>(predicate: P, min: i64, max: i64, initial_guess: i64) -> i64
     where
@@ -260,10 +266,11 @@ pub trait Algorithms: Preconditions {
 
     /// Clips a given value to a given interval.
     ///
-    /// @param value the value
-    /// @param min the minimum value of the interval (inclusive)
-    /// @param max the maximum value of the interval (inclusive)
-    /// @return the clipped value
+    /// - `value`: the value
+    /// - `min`: the minimum value of the interval (inclusive)
+    /// - `max`: the maximum value of the interval (inclusive)
+    ///
+   /// the clipped value
     ///
     fn clip(value: i32, min: i32, max: i32) -> Result<i32, DynaHistError> {
         if value >= min && value <= max {

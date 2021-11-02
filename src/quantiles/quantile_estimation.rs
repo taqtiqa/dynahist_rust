@@ -56,9 +56,10 @@ pub trait QuantileEstimation<QEstimator = Self>:
     /// Return a implementation of the [`QuantileEstimation`] trait quantile
     /// definition with given plotting positions parameters.
     ///
-    /// @param alphap plotting positions parameter
-    /// @param betap plotting positions parameter
-    /// @return a [`QuantileEstimation`] instance
+    /// - `alphap`: plotting positions parameter
+    /// - `betap`: plotting positions parameter
+    ///
+    /// a [`QuantileEstimation`] instance
     ///
     fn create(alphap: f64, betap: f64) -> Self;
 
@@ -78,8 +79,9 @@ pub trait QuantileEstimation<QEstimator = Self>:
     /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
-    /// @param p the p-value in range [0,1]
-    /// @return an estimate for the p-quantile
+    /// - `p`: the p-value in range [0,1]
+    ///
+    /// an estimate for the p-quantile
     ///
     fn get_quantile(&self, p: f64) -> f64;
 
@@ -92,9 +94,10 @@ pub trait QuantileEstimation<QEstimator = Self>:
     /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
-    /// @param p the p-value in range [0,1]
-    /// @param quantileEstimator the quantile estimator
-    /// @return an estimate for the p-quantile
+    /// - `p`: the p-value in range [0,1]
+    /// - `quantileEstimator`: the quantile estimator
+    ///
+    /// an estimate for the p-quantile
     ///
     //fn get_quantile(&self, p: f64, quantile_estimator: &Self::Q) -> f64;
 
@@ -107,9 +110,10 @@ pub trait QuantileEstimation<QEstimator = Self>:
     /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
-    /// @param p the p-value in range [0,1]
-    /// @param valueEstimator the value estimator
-    /// @return an estimate for the p-quantile
+    /// - `p`: the p-value in range [0,1]
+    /// - `valueEstimator`: the value estimator
+    ///
+    /// an estimate for the p-quantile
     ///
     //fn get_quantile(&self, p: f64, value_estimator: &Self::V) -> f64;
 
@@ -121,10 +125,11 @@ pub trait QuantileEstimation<QEstimator = Self>:
     /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
-    /// @param p the p-value in range [0,1]
-    /// @param quantileEstimator the quantile estimator
-    /// @param valueEstimator the value estimator
-    /// @return an estimate for the p-quantile
+    /// - `p`: the p-value in range [0,1]
+    /// - `quantileEstimator`: the quantile estimator
+    /// - `valueEstimator`: the value estimator
+    ///
+    /// an estimate for the p-quantile
     ///
     fn get_quantile_from_estimator(&self, quantile_estimator: impl QuantileEstimation) -> f64;
 

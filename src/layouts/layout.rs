@@ -4,10 +4,10 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::errors::DynaHistError;
+use crate::layouts::layout_serialization::LayoutSerialization;
 use crate::utilities::data::{DataInput, DataOutput};
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
-use crate::layouts::layout_serialization::LayoutSerialization;
 
 /// A histogram bin layout, which defines the bins for a [`Histogram`].
 ///
@@ -88,7 +88,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// For all indices smaller than or equal to [`get_underflow_bin_index`],
     /// the same value is returned. (clarify)
     ///
-    /// @param bin_index the bin index
+    /// - `bin_index`: the bin index
     ///
     fn get_bin_upper_bound(&self, bin_index: usize) -> f64 {
         if bin_index >= self.get_overflow_bin_index() {
@@ -116,7 +116,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     /// [`DynaHistError::IOError`] if an I/O error occurs.
     /// If any byte cannot be read for any reason other than end of file,
-    /// an [`DynaHistError::IOError`] other than EOFException is returned.
+    /// an [`DynaHistError::IOError`] other than EOFError is returned.
     /// In particular, an [`DynaHistError::IOError`] may result if the input
     /// stream has been closed, e.g. a network outage.
     ///
@@ -136,7 +136,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     /// [`DynaHistError::IOError`] if an I/O error occurs.
     /// If any byte cannot be read for any reason other than end of file,
-    /// an [`DynaHistError::IOError`] other than EOFException is returned.
+    /// an [`DynaHistError::IOError`] other than EOFError is returned.
     /// In particular, an [`DynaHistError::IOError`] may result if the input
     /// stream has been closed, e.g. a network outage.
     ///

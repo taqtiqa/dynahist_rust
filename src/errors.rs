@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use thiserror::Error;
-// was Exception
+// was Error
 #[derive(Debug, Error)]
 pub enum DynaHistError {
     #[error("{0}")]

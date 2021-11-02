@@ -127,7 +127,7 @@ impl HistogramUsage {
         break 'try1
         }
         match tryResult1 {
-             catch ( e: &IOException) {
+             catch ( e: &IOError) {
                 e.print_stack_trace();
             }  0 => break
         }
@@ -143,7 +143,7 @@ impl HistogramUsage {
         break 'try1
         }
         match tryResult1 {
-             catch ( e: &IOException) {
+             catch ( e: &IOError) {
                 e.print_stack_trace();
             }  0 => break
         }

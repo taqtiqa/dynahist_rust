@@ -6,6 +6,7 @@
 extern crate approx;
 extern crate static_assertions;
 extern crate tracing;
+extern crate flate2;
 
 // Enumerated errors
 mod errors;

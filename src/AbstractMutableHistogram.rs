@@ -198,7 +198,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
 
         fn next(&self) {
             if self.greater_count <= 0 {
-                throw NoSuchElementException::new();
+                throw NoSuchElementError::new();
             }
             self.less_count += self.count;
             if self.greater_count != self.get_overflow_count() {
@@ -219,7 +219,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
 
         fn previous(&self) {
             if self.less_count <= 0 {
-                throw NoSuchElementException::new();
+                throw NoSuchElementError::new();
             }
             self.greater_count += self.count;
             if self.less_count != self.get_underflow_count() {
@@ -534,7 +534,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
 
     fn get_first_non_empty_bin(&self) -> BinIterator {
         if is_empty() {
-            throw NoSuchElementException::new();
+            throw NoSuchElementError::new();
         }
          let absolute_index: i32;
          let less_count: i64 = 0;
@@ -564,7 +564,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
 
     fn get_last_non_empty_bin(&self) -> BinIterator {
         if is_empty() {
-            throw NoSuchElementException::new();
+            throw NoSuchElementError::new();
         }
          let absolute_index: i32;
          let less_count: i64;

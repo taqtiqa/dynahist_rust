@@ -101,10 +101,14 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     /// If rank == 0, [`Histogram::getMin()`] is returned. If rank == {@link
     /// Histogram#getTotalCount()} - 1, [`Histogram::getMax()`] is returned.
     ///
-    /// @param histogram the histogram
-    /// @param rank the zero-based rank
-    /// @return the estimated value
-    /// @throws DynaHist::IllegalArgumentError if 0 &le; rank &lt; [`Histogram::getTotalCount()`] does not
+    /// - `histogram`: the histogram
+    /// - `rank`: the zero-based rank
+    ///
+   /// the estimated value
+    ///
+    /// # Errors
+    ///
+    /// DynaHist::IllegalArgumentError if 0 &le; rank &lt; [`Histogram::getTotalCount()`] does not
     ///     hold
     ///
     fn get_value_estimate(&self, histogram: impl Histogram, rank: i64) -> f64 {

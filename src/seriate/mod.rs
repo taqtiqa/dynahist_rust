@@ -20,7 +20,7 @@ use crate::Histogram;
 
 const CONST: usize = 0;
 
-trait Seriate: bytes::Buf {
+trait Seriate: bytes::Buf + bytes::BufMut {
     type H: Histogram; // TODO: rename Histogram trait to Sketch
 
     const ENCOUNTERED_UNEXPECTED_DATA_MSG: &'static str = "Encountered unexpected data!";
@@ -59,9 +59,10 @@ trait Seriate: bytes::Buf {
     /// Write an [`i32`] to the given [`DataOutput`] using variable-length and zigzag
     /// encoding.
     ///
-    /// @param value the [`i32`] value
-    /// @param dataOutput the [`DataOutput`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `value`: the [`i32`] value
+    /// - `dataOutput`: the [`DataOutput`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn write_signed_var_int(
         value: i32,
@@ -72,9 +73,10 @@ trait Seriate: bytes::Buf {
 
     /// Write an [`i32`] to the given [`DataOutput`] using variable-length encoding.
     ///
-    /// @param value the [`i32`] value
-    /// @param dataOutput the [`DataOutput`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `value`: the [`i32`] value
+    /// - `dataOutput`: the [`DataOutput`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn write_unsigned_var_int(
         value: i32,
@@ -90,8 +92,10 @@ trait Seriate: bytes::Buf {
     /// Read a variable-length encoded [`u64`] from the given [`DataInput`].
     ///
     /// @param [`data_input`] the [`DataInput`]
-    /// @return the read [`u64`] value
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    ///
+    /// the read [`u64`] value
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn read_unsigned_var_long(data_input: &DataInput) -> Result<i64, std::rc::Rc<DynaHistError>> {
         let mut value: i64 = 0;
@@ -110,8 +114,10 @@ trait Seriate: bytes::Buf {
     /// Read a variable-length and zigzag encoded [`u64`] from the given [`DataInput`].
     ///
     /// @param [`data_input`] the [`DataInput`]
-    /// @return the read [`u64`] value
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    ///
+    /// the read [`u64`] value
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn read_signed_var_int(data_input: &DataInput) -> Result<i32, std::rc::Rc<DynaHistError>> {
         let raw: i32 = Self::read_unsigned_var_int(&data_input);
@@ -122,8 +128,10 @@ trait Seriate: bytes::Buf {
     /// Read a variable-length encoded [`i32`] from the given [`DataInput`].
     ///
     /// @param [`data_input`] the [`DataInput`]
-    /// @return the read [`i32`] value
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    ///
+    /// the read [`i32`] value
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn read_unsigned_var_int(data_input: &DataInput) -> Result<i32, std::rc::Rc<DynaHistError>> {
         let mut value: i32 = 0;
@@ -145,9 +153,11 @@ trait Seriate: bytes::Buf {
     /// the layout when reading using [`#readAsDynamic(Layout, byte[])`], {@link
     /// #readAsStatic(Layout, byte[])} or [`#readAsPreprocessed(Layout, byte[])`].
     ///
-    /// @param histogram the [`Histogram`]
-    /// @return the [`[u8]`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `histogram`: the [`Histogram`]
+    ///
+    /// the [`[u8]`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn write(histogram: impl Histogram) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         return Ok(Self::to_byte_array(Histogram::write, histogram));
@@ -159,18 +169,21 @@ trait Seriate: bytes::Buf {
     /// is undefined if the given layout does not match the layout before serialization.
     ///
     /// @param `layout`: Any type which implements the [`Layout`] trait
-    /// @param serializedHistogram the [`[u8]`]
-    /// @return the [`Histogram`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `serializedHistogram`: the [`[u8]`]
+    ///
+    /// the [`Histogram`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn read_as_static(
         layout: impl Layout,
-        serialized_histogram: &Vec<i8>,
+        serialized_histogram: Vec<i8>,
     ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
-        let serialization_reader = |data_input| Self::H::read_as_static(layout, data_input);
+        let serialization_reader =
+            |data_input: SerializationReader<Self::H>| Self::H::read_as_static(layout, data_input);
         return Ok(Self::from_byte_array(
             serialization_reader,
-            &serialized_histogram,
+            serialized_histogram,
         ));
     }
 
@@ -179,17 +192,23 @@ trait Seriate: bytes::Buf {
     /// The returned histogram will allocate internal arrays for bin counts dynamically. The
     /// behavior is undefined if the given layout does not match the layout before serialization.
     ///
-    /// @param layout the [`Layout`]
-    /// @param serializedHistogram the [`[u8]`]
-    /// @return the [`Histogram`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `layout`: the [`Layout`]
+    /// - `serializedHistogram`: the [`[u8]`]
+    ///
+    /// the [`Histogram`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn read_as_dynamic(
         layout: impl Layout,
-        serialized_histogram: &Vec<i8>,
+        serialized_histogram: Vec<i8>,
     ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
-        let data_input: SerializationReader<Self::H> = Self::H::read_as_dynamic(layout, data_input);
-        return Ok(Self::from_byte_array(data_input, &serialized_histogram));
+        let serialization_reader =
+            |data_input: SerializationReader<Self::H>| Self::H::read_as_dynamic(layout, data_input);
+        return Ok(Self::from_byte_array(
+            serialization_reader,
+            serialized_histogram,
+        ));
     }
 
     /// Read a preprocessed histogram from a given [`[u8]`].
@@ -197,17 +216,24 @@ trait Seriate: bytes::Buf {
     /// The returned histogram will be immutable and preprocessed in order to support fast queries.
     /// The behavior is undefined if the given layout does not match the layout before serialization.
     ///
-    /// @param layout the [`Layout`]
-    /// @param serializedHistogram the [`[u8]`]
-    /// @return the [`Histogram`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `layout`: the [`Layout`]
+    /// - `serializedHistogram`: the [`[u8]`]
+    ///
+    /// the [`Histogram`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn read_as_preprocessed(
         layout: impl Layout,
-        serialized_histogram: &Vec<i8>,
+        serialized_histogram: Vec<i8>,
     ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
-        let data_input = Self::H::read_as_preprocessed(layout, data_input);
-        return Ok(Self::from_byte_array(data_input, &serialized_histogram));
+        let serialization_reader = |data_input: SerializationReader<Self::H>| {
+            Self::H::read_as_preprocessed(layout, data_input)
+        };
+        return Ok(Self::from_byte_array(
+            serialization_reader,
+            serialized_histogram,
+        ));
     }
 
     /// Write this histogram compressed to a given [`[u8]`].
@@ -217,9 +243,11 @@ trait Seriate: bytes::Buf {
     /// #readCompressedAsStatic(Layout, byte[])} or {@link #readCompressedAsPreprocessed(Layout,
     /// byte[])}.
     ///
-    /// @param histogram the [`Histogram`]
-    /// @return the [`[u8]`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `histogram`: the [`Histogram`]
+    ///
+    /// the [`[u8]`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
     ///
     fn write_compressed(histogram: Self::H) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         return Ok(Self::compress(&Self::L::write(histogram)));
@@ -230,11 +258,16 @@ trait Seriate: bytes::Buf {
     /// The returned histogram will allocate internal arrays for bin counts statically. The behavior
     /// is undefined if the given layout does not match the layout before serialization.
     ///
-    /// @param layout the [`Layout`]
-    /// @param serializedHistogram the [`[u8]`]
-    /// @return the [`Histogram`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
-    /// @throws DataFormatException if a data format error occurs
+    /// - `layout`: the [`Layout`]
+    /// - `serializedHistogram`: the [`[u8]`]
+    ///
+    /// the [`Histogram`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    ///
+    /// # Errors
+    ///
+    /// DataFormatError if a data format error occurs
     ///
     fn read_compressed_as_static(
         layout: impl Layout,
@@ -251,11 +284,16 @@ trait Seriate: bytes::Buf {
     /// The returned histogram will allocate internal arrays for bin counts dynamically. The
     /// behavior is undefined if the given layout does not match the layout before serialization.
     ///
-    /// @param layout the [`Layout`]
-    /// @param serializedHistogram the [`[u8]`]
-    /// @return the [`Histogram`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
-    /// @throws DataFormatException if a data format error occurs
+    /// - `layout`: the [`Layout`]
+    /// - `serializedHistogram`: the [`[u8]`]
+    ///
+    /// the [`Histogram`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    ///
+    /// # Errors
+    ///
+    /// DataFormatError if a data format error occurs
     ///
     fn read_compressed_as_dynamic(
         layout: impl Layout,
@@ -272,11 +310,16 @@ trait Seriate: bytes::Buf {
     /// The returned histogram will be immutable and preprocessed in order to support fast queries.
     /// The behavior is undefined if the given layout does not match the layout before serialization.
     ///
-    /// @param layout the [`Layout`]
-    /// @param serializedHistogram the [`Histogram`]
-    /// @return the [`Histogram`]
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
-    /// @throws DataFormatException if a data format error occurs
+    /// - `layout`: the [`Layout`]
+    /// - `serializedHistogram`: the [`Histogram`]
+    ///
+    /// the [`Histogram`]
+    ///
+    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    ///
+    /// # Errors
+    ///
+    /// DataFormatError if a data format error occurs
     ///
     fn read_compressed_as_preprocessed(
         layout: impl Layout,
@@ -289,86 +332,69 @@ trait Seriate: bytes::Buf {
     }
 
     fn compress(data: &Vec<i8>) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
-        match ByteArrayOutput::new() {
-            Ok(output_stream) => {
-                let deflater: Deflater = Deflater::new();
-                deflater.set_input(&data);
-                deflater.finish();
-                let buffer: [i8; 1024] = [0; 1024];
-                while !deflater.finished() {
-                    output_stream.write(&buffer, 0, &deflater.deflate(&buffer));
-                }
-                return Ok(output_stream.to_byte_array());
+        match bytes::BytesMut::with_capacity(1024) {
+            Ok(buffer) => {
+                let deflater: flate2::write::DeflateEncoder =
+                    flate2::write::DeflateEncoder::new(data, flate2::Compression::default());
+                let count = deflater.read(&buffer)?;
+                let bytes = bytes::Bytes::from(buffer);
+                let v: Vec<i8> = bytes.into();
+                return Ok(v);
             }
             Err(e1) => return Err(e1),
         }
-        // let tryResult1 = 0;
-        // 'try1: loop {
-        // ( let output_stream: ByteArrayOutput = ByteArrayOutput::new()) {
-        //      let deflater: Deflater = Deflater::new();
-        //     deflater.set_input(&data);
-        //     deflater.finish();
-        //      let buffer: [i8; 1024] = [0; 1024];
-        //     while !deflater.finished() {
-        //         output_stream.write(&buffer, 0, &deflater.deflate(&buffer));
-        //     }
-        //     return Ok(output_stream.to_byte_array());
-        // }
-        // break 'try1
-        // }
-        // match tryResult1 {
-        //       0 => break
-        // }
     }
 
     /// # Errors
     ///
     /// Return [`DynaHistError::DataFormatError`]
-    fn decompress(data: &Vec<i8>) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
-        match std::io::BufferReader::new(data.len()) {
-            Ok(output_stream) => {
-                let inflater: Inflater = Inflater::new();
-                inflater.set_input(&data);
-                let buffer: [i8; 1024] = [0; 1024];
-                while !inflater.finished() {
-                    output_stream.write(&buffer, 0, &inflater.inflate(&buffer));
+    /// 
+    fn decompress(data: Vec<i8>) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
+        match bytes::Bytes::from(data) {
+            Ok(bytes) => match bytes.as_ref() {
+                Ok(buffer) => {
+                    let mut v: Vec<i8> = Vec::new();
+                    let mut inflater = flate2::read::DeflateDecoder::new(v);
+                    inflater.write_all(buffer)?;
+                    v = inflater.finish()?;
+                    return Ok(v);
                 }
-                return Ok(output_stream.to_byte_array());
-            }
+                Err(e1) => return Err(e1),
+            },
             Err(e1) => return Err(e1),
         }
-        // let tryResult1 = 0;
-        // 'try1: loop {
-        // ( let output_stream: ByteArrayOutput = ByteArrayOutput::new(data.len())) {
-        //      let inflater: Inflater = Inflater::new();
-        //     inflater.set_input(&data);
-        //      let buffer: [i8; 1024] = [0; 1024];
-        //     while !inflater.finished() {
-        //         output_stream.write(&buffer, 0, &inflater.inflate(&buffer));
-        //     }
-        //     return Ok(output_stream.to_byte_array());
-        // }
-        // break 'try1
-        // }
-        // match tryResult1 {
-        //       0 => break
-        // }
     }
 
-    /// Deserialize a histogram from a given byte array.
+    /// Deserialize, and return, a histogram from a given byte array.
     ///
-    /// @param <T> the type to be deserialized
-    /// @param byteArray the byte array
-    /// @param serializationReader the serialization reader
-    /// @return the deserialized data as a Histogram
-    /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Port
+    ///
+    /// Upstream (Java) passes the byte arrays by reference.  However, all
+    /// current use of this function is part part of a return.  Consequently,
+    /// we can pass ownership of the byte array for the benefit of
+    /// subsequently having infallible read and write operations.
+    ///
+    /// # Errors
+    ///
+    /// With infallible reads the only errors should be related to setting
+    /// up the bytes data structures and the buffer slices.
+    ///
+    /// # Port
+    ///
+    /// Use the `bytes` crate for infallible read and write.
+    ///
+    /// # Arguments
+    ///
+    /// - `<H>`: The type of histogram to be deserialized
+    /// - `byte_array`: The byte array
+    /// - `serialization_reader`: The serialization reader
     ///
     fn from_byte_array(
         serialization_reader: impl SeriateRead,
-        byte_array: &Vec<i8>,
+        byte_array: Vec<i8>,
     ) -> Result<Self::H, std::rc::Rc<DynaHistError>> {
         // Efficient byte buffer structure
-        match bytes::Bytes::from(*byte_array) {
+        match bytes::Bytes::from(byte_array) {
             Ok(bytes) => match bytes.as_ref() {
                 Ok(buffer) => return Ok(serialization_reader.read(buffer)),
                 Err(e2) => return Err(e2),
@@ -391,37 +417,14 @@ trait Seriate: bytes::Buf {
         serialization_writer: SerializationWriter<Self::H>,
         data: &Self::H,
     ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
-        match ByteArrayOutput::new() {
-            Ok(byte_array_output_stream) => match DataOutput::new(&byte_array_output_stream) {
-                Ok(data_output_stream) => {
-                    serialization_writer.write(data, &data_output_stream);
-                    return Ok(byte_array_output_stream.to_byte_array());
-                }
-                Err(e2) => return Err(e2),
-            },
+        match bytes::BytesMut::with_capacity(1024) {
+            Ok(buffer) => {
+                serialization_writer.write(data, &buffer);
+                let bytes = bytes::Bytes::from(buffer);
+                let v: Vec<i8> = bytes.into();
+                return Ok(v);
+            }
             Err(e1) => return Err(e1),
         }
-
-        // let tryResult1 = 0;
-        // 'try1: loop {
-        // ( let byte_array_output_stream: ByteArrayOutput = ByteArrayOutput::new()) {
-        //     let tryResult2 = 0;
-        //     'try2: loop {
-        //     ( let data_output_stream: DataOutput = DataOutput::new(&byte_array_output_stream)) {
-        //         serialization_writer.write(data, &data_output_stream);
-        //         return Ok(byte_array_output_stream.to_byte_array());
-        //     }
-        //     break 'try2
-        //     }
-        //     match tryResult2 {
-        //           0 => break
-        //     }
-
-        // }
-        // break 'try1
-        // }
-        // match tryResult1 {
-        //       0 => break
-        // }
     }
 }

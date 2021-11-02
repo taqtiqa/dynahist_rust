@@ -73,8 +73,9 @@ pub struct OpenTelemetryExponentialBucketsLayout {
 impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
     /// Create a histogram bin layout with exponential buckets with given precision.
     ///
-    /// @param precision the precision
-    /// @return a new [`OpenTelemetryExponentialBucketsLayout`] instance
+    /// - `precision`: the precision
+    ///
+   /// a new [`OpenTelemetryExponentialBucketsLayout`] instance
     ///
     fn new(precision: i32) -> Self {
         Self::check_argument(precision >= 0);

@@ -25,7 +25,7 @@ impl AbstractMutableHistogramTest {
         histogram.add_value(10.0, i64::MAX);
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
-        assert_throws(ArithmeticException.class, () -> histogram.add_value(90.0));
+        assert_throws(ArithmeticError.class, () -> histogram.add_value(90.0));
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }
@@ -291,7 +291,7 @@ impl AbstractMutableHistogramTest {
         assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.add_ascending_sequence( j: & -> values[j as i32], -1));
         histogram.add_value(1, i64::MAX);
     // assertThrows(
-    //     ArithmeticException.class,
+    //     ArithmeticError.class,
     //     () -> histogram.addAscendingSequence(j -> values[(int) j], Long.MAX_VALUE));
     }
 
@@ -697,7 +697,7 @@ impl AbstractMutableHistogramTest {
          let histogram2: Histogram = create(layout);
         histogram1.add_value(5, 1000000);
         histogram2.add_value(5, i64::MAX);
-        assert_throws(ArithmeticException.class, () -> histogram1.add_histogram(histogram2));
+        assert_throws(ArithmeticError.class, () -> histogram1.add_histogram(histogram2));
     }
 
     #[test]
@@ -705,7 +705,7 @@ impl AbstractMutableHistogramTest {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let data_input_stream: DataInput = DataInput::new(ByteArrayInput::new( : vec![i8; 1] = vec![1, ]
         ));
-        assert_throws(IOException.class, () -> impl Histogram::read_as_dynamic(layout, data_input_stream));
+        assert_throws(IOError.class, () -> impl Histogram::read_as_dynamic(layout, data_input_stream));
     }
 
     #[test]
@@ -761,7 +761,7 @@ impl AbstractMutableHistogramTest {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = create(layout);
         histogram.add_value(1, i64::MAX);
-        assert_throws(ArithmeticException.class, () -> histogram.add_value(2));
+        assert_throws(ArithmeticError.class, () -> histogram.add_value(2));
     }
 
     fn test_add_histogram_helper( histogram_factory1: &Function<Layout, Histogram>,  histogram_factory2: &Function<Layout, Histogram>) {

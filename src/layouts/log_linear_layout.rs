@@ -29,11 +29,12 @@ impl GuessLayout for LogLinearLayout {
    ///
    /// The maximum bin width is either bounded by an absolute or a relative bin width limit.
    ///
-   /// @param absoluteBinWidthLimit the absolute bin width limit
-   /// @param relativeBinWidthLimit the relative bin width limit
-   /// @param valueRangeLowerBound the range lower bound
-   /// @param valueRangeUpperBound the range upper bound
-   /// @return a new [`LogLinearLayout`] instance
+   /// - `absoluteBinWidthLimit`: the absolute bin width limit
+   /// - `relativeBinWidthLimit`: the relative bin width limit
+   /// - `valueRangeLowerBound`: the range lower bound
+   /// - `valueRangeUpperBound`: the range upper bound
+   ///
+   /// a new [`LogLinearLayout`] instance
    ///
     fn create( absolute_bin_width_limit: f64,  relative_bin_width_limit: f64,  value_range_lower_bound: f64,  value_range_upper_bound: f64) -> LogLinearLayout {
         Self::check_argument(value_range_upper_bound.is_finite());

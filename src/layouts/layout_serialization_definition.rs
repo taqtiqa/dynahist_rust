@@ -7,20 +7,28 @@ use crate::seriate::{deserialization::SerializationReader, serialization::Serial
 use crate::layouts::layout::Layout;
 
 // Represents the serialization definition for some [`Layout`].
-pub struct LayoutSerializationDefinition {
+pub struct LayoutSerializationDefinition<L>
+where
+    L: Layout
+{
     serial_version: i64,
     layout: L,
-    writer: SerializationWriter<L>,
+    writer: dyn SerializationWriter<L>,
     reader: SerializationReader<L>,
 }
+impl<L> Layout for LayoutSerializationDefinition<L>
+where
+    L: Layout
+{}
 
-impl Layout for LayoutSerializationDefinition {
-    type L: Layout;
-
+impl<L> LayoutSerializationDefinition<L>
+where
+    L: Layout
+{
     fn new( serial_version: i64,  layout: &L,  writer: &SerializationWriter<L>,  reader: &SerializationReader<L>) -> LayoutSerializationDefinition {
         serial_version;
         layout;
-        writer as SerializationWriter<L>;
+        writer as dyn SerializationWriter<L>;
         reader as SerializationReader<L>;
     }
 }

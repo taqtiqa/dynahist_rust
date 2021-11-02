@@ -27,8 +27,12 @@ pub trait Histogram {
    ///
    /// Must not be called if the histogram is empty.
    ///
-   /// @return a [`BinIterator`] representing the first non-empty bin.
-   /// @throws NoSuchElementException if the histogram is empty
+   ///
+   /// a [`BinIterator`] representing the first non-empty bin.
+   ///
+    /// # Errors
+    ///
+    /// NoSuchElementError if the histogram is empty
    ///
     fn get_first_non_empty_bin(&self) -> &Self::B ;
 
@@ -36,8 +40,12 @@ pub trait Histogram {
    ///
    /// Must not be called if the histogram is empty.
    ///
-   /// @return a [`BinIterator`] representing last non-empty bin.
-   /// @throws NoSuchElementException if the histogram is empty
+   ///
+   /// a [`BinIterator`] representing last non-empty bin.
+   ///
+    /// # Errors
+    ///
+    /// NoSuchElementError if the histogram is empty
    ///
     fn get_last_non_empty_bin(&self) -> &Self::B ;
 
@@ -50,14 +58,16 @@ pub trait Histogram {
    /// operation), whose implementation has a worst case complexity of O(log N).
    ///
    /// @param rank, must be greater than or equal to 0 and smaller than [`#getTotalCount()`]
-   /// @return bin iterator, representing the bin containing the value with given order (0-based)
+   ///
+   /// bin iterator, representing the bin containing the value with given order (0-based)
    ///
     fn get_bin_by_rank(&self,  rank: i64) -> &Self::B ;
 
 
    /// Return the number of added values greater than [`Layout::getNormalRangeUpperBound()`].
    ///
-   /// @return the number of added values greater than [`Layout::getNormalRangeUpperBound()`]
+   ///
+   /// the number of added values greater than [`Layout::getNormalRangeUpperBound()`]
    ///
     fn get_overflow_count(&self) -> i64 {
         if !self.is_empty() {
@@ -72,7 +82,8 @@ pub trait Histogram {
 
    /// Return the number of added values less than [`Layout::getNormalRangeLowerBound()`].
    ///
-   /// @return the number of added values less than [`Layout::getNormalRangeLowerBound()`]
+   ///
+   /// the number of added values less than [`Layout::getNormalRangeLowerBound()`]
    ///
     fn get_underflow_count(&self) -> i64 {
         if !self.is_empty() {
@@ -87,7 +98,8 @@ pub trait Histogram {
 
    /// Return the total number of added values.
    ///
-   /// @return the total number of added values
+   ///
+   /// the total number of added values
    ///
     fn get_total_count(&self) -> i64 ;
 
@@ -108,7 +120,7 @@ pub trait Histogram {
 
    /// Return the number of values added to histogram bin with given index.
    ///
-   /// @param bin_index the histogram bin index
+   /// - `bin_index`: the histogram bin index
     fn get_count(&self,  bin_index: i32) -> i64 ;
 
 
@@ -134,8 +146,9 @@ pub trait Histogram {
    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
    /// operation), whose implementation has a worst case complexity of O(log N).
    ///
-   /// @param rank the zero-based rank, must be nonnegative and less than [`#getTotalCount()`]
-   /// @return an approximation for the value with given rank
+   /// - `rank`: the zero-based rank, must be nonnegative and less than [`#getTotalCount()`]
+   ///
+   /// an approximation for the value with given rank
    ///
     fn get_value(&self,  rank: i64) -> f64 ;
 
@@ -157,9 +170,10 @@ pub trait Histogram {
    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
    /// operation), whose implementation has a worst case complexity of O(log N).
    ///
-   /// @param rank the zero-based rank, must be nonnegative and less than [`#getTotalCount()`]
-   /// @param valueEstimator the value estimator
-   /// @return an approximation for the value with given rank
+   /// - `rank`: the zero-based rank, must be nonnegative and less than [`#getTotalCount()`]
+   /// - `valueEstimator`: the value estimator
+   ///
+   /// an approximation for the value with given rank
    ///
     fn get_value_from_estimator(&self,   rank: i64,   value_estimator: &Self::V) -> f64 ;
 
@@ -169,20 +183,31 @@ pub trait Histogram {
    /// Preprocessing is recommended, if many calls of [`#getBinByRank(long)`] or {@link
    /// #getValue(long)} are expected.
    ///
-   /// @return an immutable pre-processed copy of this histogram
+   ///
+   /// an immutable pre-processed copy of this histogram
    ///
     fn get_preprocessed_copy(&self) -> Self ;
 
    /// Adds a given value to the histogram.
    ///
-   /// Return an [`UnsupportedOperationException`], if the implementation is not mutable and
+   /// Return an [`UnsupportedOperationError`], if the implementation is not mutable and
    /// [`#isMutable()} returns {@code false`].
    ///
-   /// @param value the value to be added to the histogram
-   /// @return a reference to this
-   /// @throws DynaHist::IllegalArgumentError if value is equal to [`Double::NaN`]
-   /// @throws ArithmeticException if the total count of the histogram would overflow
-   /// @throws UnsupportedOperationException if modifications are not supported
+   /// - `value`: the value to be added to the histogram
+   ///
+   /// a reference to this
+   ///
+    /// # Errors
+    ///
+    /// DynaHist::IllegalArgumentError if value is equal to [`Double::NaN`]
+   ///
+    /// # Errors
+    ///
+    /// ArithmeticError if the total count of the histogram would overflow
+   ///
+    /// # Errors
+    ///
+    /// UnsupportedOperationError if modifications are not supported
    ///
     fn add_value(&self,  value: f64) -> Self {
         return self.add_value(value, 1);
@@ -190,15 +215,25 @@ pub trait Histogram {
 
    /// Adds a given value to the histogram with a given multiplicity.
    ///
-   /// Return an [`UnsupportedOperationException`], if the implementation is not mutable and
+   /// Return an [`UnsupportedOperationError`], if the implementation is not mutable and
    /// [`#isMutable()} returns {@code false`].
    ///
-   /// @param value the value to be added to the histogram
-   /// @param count defines the multiplicity
-   /// @return a reference to this
-   /// @throws DynaHist::IllegalArgumentError if value is equal to [`Double::NaN`] or count is negative
-   /// @throws ArithmeticException if the total count of the histogram would overflow
-   /// @throws UnsupportedOperationException if modifications are not supported
+   /// - `value`: the value to be added to the histogram
+   /// - `count`: defines the multiplicity
+   ///
+   /// a reference to this
+   ///
+    /// # Errors
+    ///
+    /// DynaHist::IllegalArgumentError if value is equal to [`Double::NaN`] or count is negative
+   ///
+    /// # Errors
+    ///
+    /// ArithmeticError if the total count of the histogram would overflow
+   ///
+    /// # Errors
+    ///
+    /// UnsupportedOperationError if modifications are not supported
    ///
     fn add_value(&self,  value: f64,  count: i64) -> Self ;
 
@@ -209,13 +244,20 @@ pub trait Histogram {
    /// to unwanted loss of precision. In this case the operation is equivalent to adding all estimated
    /// values as obtained by [`#getValue(long)`].
    ///
-   /// Return an [`UnsupportedOperationException`], if the implementation is not mutable and
+   /// Return an [`UnsupportedOperationError`], if the implementation is not mutable and
    /// [`#isMutable()} returns {@code false`].
    ///
-   /// @param histogram the histogram to be added
-   /// @return a reference to this
-   /// @throws ArithmeticException if the total count of the histogram would overflow
-   /// @throws UnsupportedOperationException if modifications are not supported
+   /// - `histogram`: the histogram to be added
+   ///
+   /// a reference to this
+   ///
+    /// # Errors
+    ///
+    /// ArithmeticError if the total count of the histogram would overflow
+   ///
+    /// # Errors
+    ///
+    /// UnsupportedOperationError if modifications are not supported
    ///
     fn add_histogram(&self,  histogram: &Self) -> Self ;
 
@@ -226,14 +268,21 @@ pub trait Histogram {
    /// to unwanted loss of precision. In this case the operation is equivalent to adding all estimated
    /// values as obtained by [`#getValue(long)`].
    ///
-   /// Return an [`UnsupportedOperationException`], if the implementation is not mutable and
+   /// Return an [`UnsupportedOperationError`], if the implementation is not mutable and
    /// [`#isMutable()} returns {@code false`].
    ///
-   /// @param histogram the histogram to be added
-   /// @param valueEstimator the value estimator
-   /// @return a reference to this
-   /// @throws ArithmeticException if the total count of the histogram would overflow
-   /// @throws UnsupportedOperationException if modifications are not supported
+   /// - `histogram`: the histogram to be added
+   /// - `valueEstimator`: the value estimator
+   ///
+   /// a reference to this
+   ///
+    /// # Errors
+    ///
+    /// ArithmeticError if the total count of the histogram would overflow
+   ///
+    /// # Errors
+    ///
+    /// UnsupportedOperationError if modifications are not supported
    ///
     fn add_histogram(&self,  histogram: &Self,  value_estimator: &Self::V) -> Self ;
 
@@ -248,15 +297,22 @@ pub trait Histogram {
    /// the entire sequence with a time complexity that increases with the number of bins rather than
    /// with the sequence length.
    ///
-   /// Return an [`UnsupportedOperationException`], if the implementation is not mutable and
+   /// Return an [`UnsupportedOperationError`], if the implementation is not mutable and
    /// [`#isMutable()} returns {@code false`].
    ///
-   /// @param ascendingSequence a [`LongToDoubleFunction`] defining the values of the ascending
+   /// - `ascendingSequence`: a [`LongToDoubleFunction`] defining the values of the ascending
    ///     sequence
-   /// @param length the sequence length
-   /// @return a reference to this
-   /// @throws ArithmeticException if the total count of the histogram would overflow
-   /// @throws UnsupportedOperationException if modifications are not supported
+   /// - `length`: the sequence length
+   ///
+   /// a reference to this
+   ///
+    /// # Errors
+    ///
+    /// ArithmeticError if the total count of the histogram would overflow
+   ///
+    /// # Errors
+    ///
+    /// UnsupportedOperationError if modifications are not supported
    ///
     fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Self ;
 
@@ -267,22 +323,25 @@ pub trait Histogram {
    /// the layout when reading using [`#readAsDynamic(Layout, DataInput)`], {@link
    /// #readAsStatic(Layout, DataInput)} or [`#readAsPreprocessed(Layout, DataInput)`].
    ///
-   /// @param dataOutput the [`DataOutput`]
-   /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+   /// - `dataOutput`: the [`DataOutput`]
+   ///
+   /// Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
     fn write(&self,  data_output: &DataOutput)  -> Result<(), std::rc::Rc<DynaHistError>>  ;
 
 
    /// Provide an estimate of the histogram's total footprint in bytes
    ///
-   /// @return estimate of the histogram's total footprint in bytes
+   ///
+   /// estimate of the histogram's total footprint in bytes
    ///
     fn get_estimated_footprint_in_bytes(&self) -> i64 ;
 
 
    /// Return {@code true} if the implementation supports add operations.
    ///
-   /// @return {@code true} if add operations are supported
+   ///
+   /// {@code true} if add operations are supported
    ///
     fn is_mutable(&self) -> bool ;
 
@@ -290,8 +349,9 @@ pub trait Histogram {
    ///
    /// Choose this, if memory efficiency is more important than speed.
    ///
-   /// @param layout the [`Layout`] of the histogram
-   /// @return an empty [`Histogram`]
+   /// - `layout`: the [`Layout`] of the histogram
+   ///
+   /// an empty [`Histogram`]
    ///
     fn create_dynamic( layout: impl Layout) -> Self {
         return DynamicHistogram::new(layout);
@@ -301,8 +361,9 @@ pub trait Histogram {
    ///
    /// Choose this, if speed is more efficient than memory efficiency.
    ///
-   /// @param layout the [`Layout`] of the histogram
-   /// @return an empty [`Histogram`]
+   /// - `layout`: the [`Layout`] of the histogram
+   ///
+   /// an empty [`Histogram`]
    ///
     fn create_static( layout: impl Layout) -> Self {
         return StaticHistogram::new(layout);
@@ -313,10 +374,12 @@ pub trait Histogram {
    /// The returned histogram will allocate internal arrays for bin counts dynamically. The
    /// behavior is undefined if the given layout does not match the layout before serialization.
    ///
-   /// @param layout the [`Layout`]
+   /// - `layout`: the [`Layout`]
    /// @param [`data_input`] the [`DataInput`]
-   /// @return the deserialized histogram
-   /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+   ///
+   /// the deserialized histogram
+   ///
+   /// Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
     fn read_as_dynamic( layout: impl Layout,  data_input: &DataInput) -> Result<Self, std::rc::Rc<DynaHistError>> {
         return Ok(DynamicHistogram::read(layout, &data_input));
@@ -327,10 +390,12 @@ pub trait Histogram {
    /// The returned histogram will allocate internal arrays for bin counts statically. The behavior
    /// is undefined if the given layout does not match the layout before serialization.
    ///
-   /// @param layout the [`Layout`]
+   /// - `layout`: the [`Layout`]
    /// @param [`data_input`] the [`DataInput`]
-   /// @return the deserialized histogram
-   /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+   ///
+   /// the deserialized histogram
+   ///
+   /// Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
     fn read_as_static( layout: impl Layout,  data_input: &DataInput) -> Result<Self, std::rc::Rc<DynaHistError>> {
         return Ok(StaticHistogram::read(layout, &data_input));
@@ -342,10 +407,12 @@ pub trait Histogram {
    /// The returned histogram will be immutable and preprocessed in order to support fast queries.
    /// The behavior is undefined if the given layout does not match the layout before serialization.
    ///
-   /// @param layout the [`Layout`]
+   /// - `layout`: the [`Layout`]
    /// @param [`data_input`] the [`DataInput`]
-   /// @return the deserialized histogram
-   /// @return Err(DynaHist::Error::IOError) if an I/O error occurs
+   ///
+   /// the deserialized histogram
+   ///
+   /// Err(DynaHist::Error::IOError) if an I/O error occurs
    ///
     fn read_as_preprocessed( layout: impl Layout,  data_input: &DataInput) -> Result<Self, std::rc::Rc<DynaHistError>> {
         return Ok(DynamicHistogram::read(layout, &data_input)::get_preprocessed_copy());

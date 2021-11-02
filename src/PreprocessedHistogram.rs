@@ -79,7 +79,7 @@ impl PreprocessedHistogram {
 
     fn check_if_element_exists(&self) {
         if is_empty() {
-            throw NoSuchElementException::new();
+            throw NoSuchElementError::new();
         }
     }
 
@@ -181,14 +181,14 @@ impl PreprocessedHistogram {
 
         fn next(&self) {
             if self.non_empty_bin_index + 1 >= self.accumulated_counts.len() {
-                throw NoSuchElementException::new();
+                throw NoSuchElementError::new();
             }
             self.non_empty_bin_index += 1;
         }
 
         fn previous(&self) {
             if self.non_empty_bin_index <= 0 {
-                throw NoSuchElementException::new();
+                throw NoSuchElementError::new();
             }
             self.non_empty_bin_index -= 1;
         }
@@ -200,19 +200,19 @@ impl PreprocessedHistogram {
 
 
     fn add_value(&self,  value: f64,  count: i64) -> impl Histogram {
-        throw UnsupportedOperationException::new();
+        throw UnsupportedOperationError::new();
     }
 
     fn add_value(&self,  value: f64) -> impl Histogram {
-        throw UnsupportedOperationException::new();
+        throw UnsupportedOperationError::new();
     }
 
     fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram {
-        throw UnsupportedOperationException::new();
+        throw UnsupportedOperationError::new();
     }
 
     fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> impl Histogram {
-        throw UnsupportedOperationException::new();
+        throw UnsupportedOperationError::new();
     }
 
     fn write(&self,  data_output: &DataOutput)  -> Result<(), std::rc::Rc<DynaHistError>> {
