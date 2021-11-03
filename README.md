@@ -16,6 +16,7 @@ All upstream base implementations are ported:
 
 The crate contains all upstream bin layout implementations:
 
+- CustomLayout
 - LogOptimalLayout
 - LogLinearLayout (approximates log-optimal)
 - LogQuadraticLayout (approximates log-optimal)
@@ -27,7 +28,52 @@ The crate contains all upstream bin layout implementations:
   - [Data Model](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/datamodel.md)
   - [Transport Protocol](https://github.com/open-telemetry/opentelemetry-proto/blob/main/opentelemetry/proto/metrics/v1/metrics.proto)
     - Idea convert OTLP ProtoBuf schema to Cap'nProto Schema
-- CustomLayout
+
+## Usage
+
+```Rust
+// Histogram builder:
+let bin = Bin::new()
+          .data_type(f8)
+          .max(1e12)
+          .min(-1e9)
+          .abs_error(10)
+          .rel_error(1e5)
+          ;
+
+let layout = Layout::new()
+             .type(LogOptimal) // LogQuardatic, LogLinear, OTExponential, and Custom
+             .bin(bin)
+             .hilo_ratio(1e9)
+             .sig_digits(2)
+             ;
+
+let histogram = Histogram::new()
+           .layout(layout)
+           .state(Dynamic) //Static, Preprocessed
+           .co_hack(10) // Coordinated omission "correction"
+           ;
+```
+
+## Iterators
+
+-
+
+## Traits
+
+https://www.philipdaniels.com/blog/2019/rust-equality-and-ordering/
+
+The following standard Rust traits are implemented for each Histogram layout:
+
+- Clone (derive)
+- Debug
+- Default
+- Display
+- Eq (derive)
+- Hash
+- Ord
+- PartialEq
+- PartialOrd
 
 ## CLI Examples
 
@@ -45,26 +91,29 @@ dmesg --show-delta --notime |\
       dynahist --log-quadratic --dynamic --output "dmesg-dynahist-${$(date --iso-8601=date)}.dth"
 ```
 
-### Porting HDR Histograms
-
-Note there maybe some further precision loss if you do not choose
-appropriate parameters.  What is appropriate depends on the parameters
-used to record input data-sketch.
+### Converting HDR Historgrams to DynaHist Histograms
 
 ```bash
 dynahist --hdr mydata.hdr --log-optimal --output "mydata-${$(date --iso-8601=date)}.dth"
 ```
 
-### Porting OpenTelemetry
+Note:
+If you do not choose appropriate parameters, there maybe some precision
+loss when converting from HDR to DynaTrace.
+What is appropriate depends on the data and the parameters used to record input
+data-sketch.
 
-Note there maybe some further precision loss if you do not choose
-appropriate parameters.  What is appropriate depends on the parameters
-used to record input data-sketch.
+### Converting OpenTelemetry Historgrams to DynaHist Histograms
 
 ```bash
 dynahist --otlp mydata.oth --log-optimal --output "mydata-${$(date --iso-8601=date)}.dth"
 ```
 
+Note:
+If you do not choose appropriate parameters, there maybe some precision
+loss when converting from HDR to DynaTrace.
+What is appropriate depends on the data and the parameters used to record input
+data-sketch.
 
 https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/http.md
 https://docs.rs/tracing-error/0.2.0/tracing_error/

@@ -18,15 +18,15 @@ impl AbstractHistogramTest {
     fn test_to_string(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let mut histogram: Histogram = self.create(layout);
-        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=0, min=Infinity, max=-Infinity, counts={}]", histogram.histogram_type.get_simple_name(), layout), &histogram.to_string());
+        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=0, min=Infinity, max=-Infinity, counts={}]", histogram.histogram_type, layout), &histogram.to_string());
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
         histogram = self.add_values(histogram, 0);
-        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=1, min=0.0, max=0.0, counts={0: 1}]", histogram.histogram_type.get_simple_name(), layout), &histogram.to_string());
+        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=1, min=0.0, max=0.0, counts={0: 1}]", histogram.histogram_type, layout), &histogram.to_string());
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
         histogram = self.add_values(histogram, 1);
-        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=2, min=0.0, max=1.0, counts={0: 1, 1: 1}]", histogram.histogram_type.get_simple_name(), layout), &histogram.to_string());
+        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=2, min=0.0, max=1.0, counts={0: 1, 1: 1}]", histogram.histogram_type, layout), &histogram.to_string());
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
     }

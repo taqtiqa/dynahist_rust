@@ -4,9 +4,12 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::errors::DynaHistError;
+use crate::layouts::layout_serialization_definition::LayoutSerializationDefinition;
 use crate::layouts::layout_serialization::LayoutSerialization;
-use crate::utilities::data::{DataInput, DataOutput};
+use crate::seriate::deserialization::SerializationReader;
+use crate::seriate::serialization::SerializationWriter;
 use crate::utilities::Algorithms;
+use crate::utilities::data::{DataInput, DataOutput};
 use crate::utilities::Preconditions;
 
 /// A histogram bin layout, which defines the bins for a [`Histogram`].
@@ -164,20 +167,20 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     /// # Arguments
     ///
-    /// - `T` a [`Layout`] type
+    /// - `L` a type implementing the [`Layout`] trait
     /// - `serial_version` a unique serial version (choose some long constant
     /// that has been generated randomly)
-    /// - `class` the type of the layout (links+more detail)
+    /// - `layout` the type of the layout (links+more detail)
     /// - `writer` defines the serialization of the layout (links+more detail)
     /// - `reader` defines the deserialization of the layout (links+more detail)
     ///
     fn define_serialization(
         serial_version: i64,
-        class: &T,
-        writer: &SerializationWriter<Self>,
-        reader: &SerializationReader<Self>,
+        layout: &Self::L,
+        writer: &SerializationWriter<Self::L>,
+        reader: &SerializationReader<Self::L>,
     ) -> LayoutSerializationDefinition {
-        return LayoutSerializationDefinition::new(serial_version, &class, writer, reader);
+        return LayoutSerializationDefinition::new(serial_version, &layout, writer, reader);
     }
 
     /// Register the given layout serialization definitions such that they are

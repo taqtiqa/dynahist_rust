@@ -41,5 +41,5 @@ pub trait SeriateWrite {
         &self,
         data: &Self::L,
         data_output: &DataOutput,
-    ) -> Result<(), std::rc::Rc<DynaHistError::IOError>>;
+    ) -> Result<(), std::rc::Rc<DynaHistError>>;
 }

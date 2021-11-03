@@ -73,7 +73,9 @@ impl LayoutSerializationTest {
         }
 
         struct TestLayout2 {
-            super: BaseTestLayout;
+        }
+
+        impl BaseTestLayout for TestLayout2 {
         }
 
         impl TestLayout2 {

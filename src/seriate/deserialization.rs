@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::utilities::data::DataInput;
 use crate::errors::DynaHistError;
 use crate::layouts::layout::Layout;
+use crate::utilities::data::DataInput;
 
 /// A deserializer for a given histogram layout.
 ///

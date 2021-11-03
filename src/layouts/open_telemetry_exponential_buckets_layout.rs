@@ -59,15 +59,40 @@ pub(crate) trait OpenTelemetryLayout: Layout {
 // 2. symmetry: if x == y then y == x
 // 3. reflexivity: x == x is always true
 //
-#[derive(Eq, Debug)]
+#[derive(Eq, Debug, Clone)]
 pub struct OpenTelemetryExponentialBucketsLayout {
+    boundaries: Vec<i64>,
+    first_normal_value_bits: i64,
+    histogram_type: &str,
+    index_offset: i32,
+    indices: Vec<i32>,
+    overflow_bin_index: i32,
     precision: i32,
     underflow_bin_index: i32,
-    overflow_bin_index: i32,
-    boundaries: Vec<i64>,
-    indices: Vec<i32>,
-    first_normal_value_bits: i64,
-    index_offset: i32,
+}
+
+impl PartialEq for OpenTelemetryExponentialBucketsLayout {
+    fn eq(&self, other: &Self) -> bool {
+        self.precision == other.precision
+    }
+}
+
+impl std::hash::Hash for OpenTelemetryExponentialBucketsLayout {
+    fn hash<H: std::hash::Hasher>(&self, hasher: &mut H) {
+        self.precision.hash(hasher);
+    }
+}
+
+impl PartialOrd for OpenTelemetryExponentialBucketsLayout {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.precision.partial_cmp(&other.precision)
+    }
+}
+
+impl Ord for OpenTelemetryExponentialBucketsLayout {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.precision.cmp(&other.precision)
+    }
 }
 
 impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
@@ -141,6 +166,7 @@ impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
     }
 
     fn new(precision: i32) -> Self {
+        let histogram_type = "";
         let boundaries = Self::calculate_boundaries(precision);
         let indices = Self::calculate_indices(&boundaries, precision);
         let value_bits: i32 = 0;
@@ -166,38 +192,15 @@ impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
         let overflow_bin_index = Self::map_to_bin_index(f64::MAX) + 1;
         let underflow_bin_index = -overflow_bin_index;
         Self {
+            boundaries,
+            first_normal_value_bits,
+            histogram_type,
+            index_offset,
+            indices,
+            overflow_bin_index,
             precision,
             underflow_bin_index,
-            overflow_bin_index,
-            boundaries,
-            indices,
-            first_normal_value_bits,
-            index_offset,
         }
-    }
-}
-
-impl PartialEq for OpenTelemetryExponentialBucketsLayout {
-    fn eq(&self, other: &Self) -> bool {
-        self.precision == other.precision
-    }
-}
-
-impl std::hash::Hash for OpenTelemetryExponentialBucketsLayout {
-    fn hash<H: std::hash::Hasher>(&self, hasher: &mut H) {
-        self.precision.hash(hasher);
-    }
-}
-
-impl PartialOrd for OpenTelemetryExponentialBucketsLayout {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.precision.partial_cmp(&other.precision)
-    }
-}
-
-impl Ord for OpenTelemetryExponentialBucketsLayout {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.precision.cmp(&other.precision)
     }
 }
 

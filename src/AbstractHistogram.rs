@@ -52,7 +52,7 @@ trait AbstractHistogram {
     }
 
     fn to_string(&self) -> String {
-        return format!("{} [layout={}, underFlowCount={}, overFlowCount={}, totalCount={}, min={}, max={}, counts={}]", self.histogram_type.get_simple_name(), self.get_layout(), get_underflow_count(), get_overflow_count(), get_total_count(), get_min(), get_max(), self.format_counts());
+        return format!("{} [layout={}, underFlowCount={}, overFlowCount={}, totalCount={}, min={}, max={}, counts={}]", self.histogram_type, self.get_layout(), get_underflow_count(), get_overflow_count(), get_total_count(), get_min(), get_max(), self.format_counts());
     }
 
     fn hash_code(&self) -> i32 {
@@ -183,7 +183,7 @@ trait AbstractHistogram {
         return self.add_histogram(histogram, DEFAULT_VALUE_ESTIMATOR);
     }
 
-    #[derive(Iterable<Bin>)]
+    // #[derive(Iterable<Bin>)]
     struct AbstractNonEmptyBinsIterable {
     }
 

@@ -20,6 +20,10 @@ use crate::Histogram;
 
 const CONST: usize = 0;
 
+pub struct SeriateUtil {}
+
+impl Seriate for SeriateUtil {}
+
 trait Seriate: bytes::Buf + bytes::BufMut {
     type H: Histogram; // TODO: rename Histogram trait to Sketch
 
@@ -348,7 +352,7 @@ trait Seriate: bytes::Buf + bytes::BufMut {
     /// # Errors
     ///
     /// Return [`DynaHistError::DataFormatError`]
-    /// 
+    ///
     fn decompress(data: Vec<i8>) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         match bytes::Bytes::from(data) {
             Ok(bytes) => match bytes.as_ref() {

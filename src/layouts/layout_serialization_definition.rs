@@ -12,8 +12,8 @@ where
     L: Layout
 {
     serial_version: i64,
-    layout: L,
-    writer: dyn SerializationWriter<L>,
+    layout: &str,
+    writer: SerializationWriter<L>,
     reader: SerializationReader<L>,
 }
 impl<L> Layout for LayoutSerializationDefinition<L>
@@ -28,7 +28,7 @@ where
     fn new( serial_version: i64,  layout: &L,  writer: &SerializationWriter<L>,  reader: &SerializationReader<L>) -> LayoutSerializationDefinition {
         serial_version;
         layout;
-        writer as dyn SerializationWriter<L>;
+        writer as SerializationWriter<L>;
         reader as SerializationReader<L>;
     }
 }

@@ -12,12 +12,13 @@
 ///
 pub struct LogLinearLayout {
     absolute_bin_width_limit: f64,
-    relative_bin_width_limit: f64,
-    underflow_bin_index: i32,
-    overflow_bin_index: i32,
     factor_normal: f64,
     factor_subnormal: f64,
+    histogram_type: &str,
     offset: f64,
+    overflow_bin_index: i32,
+    relative_bin_width_limit: f64,
+    underflow_bin_index: i32,
     unsigned_value_bits_normal_limit: i64,
 }
 
@@ -233,6 +234,6 @@ impl GuessLayout for LogLinearLayout {
     }
 
     fn to_string(&self) -> String {
-        return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", self.histogram_type.get_simple_name(), self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);
+        return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", self.histogram_type, self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);
     }
 }

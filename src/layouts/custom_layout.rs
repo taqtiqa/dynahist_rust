@@ -7,6 +7,7 @@ use crate::layouts::layout::Layout;
 
 /// A custom histogram bin layout.
 pub struct CustomLayout {
+    histogram_type: &str,
     sorted_bin_boundaries: Vec<f64>,
 }
 
@@ -117,6 +118,6 @@ impl Layout for CustomLayout {
     }
 
     fn to_string(&self) -> String {
-        return format!("{} [sortedBinBoundaries={}]", self.histogram_type.get_simple_name(), Arrays::to_string(&self.sorted_bin_boundaries));
+        return format!("{} [sortedBinBoundaries={}]", self.histogram_type, Arrays::to_string(&self.sorted_bin_boundaries));
     }
 }

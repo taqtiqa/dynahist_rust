@@ -25,7 +25,7 @@ impl HistogramUsage {
     fn create_histogram(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
-        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=0, min=Infinity, max=-Infinity, counts={}]", histogram.histogram_type.get_simple_name(), layout), &histogram.to_string());
+        assert_eq!(format!("{} [layout={}, underFlowCount=0, overFlowCount=0, totalCount=0, min=Infinity, max=-Infinity, counts={}]", histogram.histogram_type, layout), &histogram.to_string());
     }
 
     // Add values using [`Histogram::add_value(double)`].

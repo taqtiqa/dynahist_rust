@@ -38,7 +38,7 @@ impl Layout for TestLayout {
     }
 
     fn to_string(&self) -> String {
-        return format!("{} [underflowIndex={}, overflowIndex={}]", self.histogram_type.get_simple_name(), self.underflow_index, self.overflow_index);
+        return format!("{} [underflowIndex={}, overflowIndex={}]", self.histogram_type, self.underflow_index, self.overflow_index);
     }
 
     fn hash_code(&self) -> i32 {

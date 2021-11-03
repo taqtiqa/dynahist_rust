@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::layouts::guess_layout::GuessLayout;
+use crate::seriate::SeriateUtil;
 use crate::utilities::data::DataInput;
 use crate::utilities::data::DataOutput;
 use crate::{errors::DynaHistError, layouts::layout::Layout};
@@ -18,6 +19,7 @@ use crate::{errors::DynaHistError, layouts::layout::Layout};
 ///
 /// This class is immutable.
 ///
+#[derive(Eq, Debug, Clone)]
 pub struct LogOptimalLayout {
     absolute_bin_width_limit: f64,
     factor_normal: f64,
@@ -28,10 +30,6 @@ pub struct LogOptimalLayout {
     relative_bin_width_limit: f64,
     underflow_bin_index: i32,
     unsigned_value_bits_normal_limit: i64,
-}
-
-impl GuessLayout for LogOptimalLayout {
-    const LOG_MIN_VALUE: f64 = f64::MIN.ln();
 }
 
 impl LogOptimalLayout {
@@ -292,8 +290,8 @@ impl LogOptimalLayout {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let absolute_bin_width_limit_tmp: f64 = data_input.read_double();
         let relative_bin_width_limit_tmp: f64 = data_input.read_double();
-        let underflow_bin_index_tmp: i32 = SerializationUtil::read_signed_var_int(&data_input);
-        let overflow_bin_index_tmp: i32 = SerializationUtil::read_signed_var_int(&data_input);
+        let underflow_bin_index_tmp: i32 = SeriateUtil::read_signed_var_int(&data_input);
+        let overflow_bin_index_tmp: i32 = SeriateUtil::read_signed_var_int(&data_input);
         let first_normal_idx_tmp: i32 =
             Self::calculate_first_normal_index(relative_bin_width_limit_tmp);
         let factor_normal_tmp: f64 = Self::calculate_factor_normal(relative_bin_width_limit_tmp);
@@ -322,6 +320,8 @@ impl LogOptimalLayout {
         return Ok(layer);
     }
 
+    // This will be covered by DRY implementation of std traits via phantom types
+    //
     fn hash_code(&self) -> i32 {
         let prime: i32 = 31;
         let mut result: i32 = 1;
@@ -335,32 +335,34 @@ impl LogOptimalLayout {
         return result;
     }
 
-    fn equals(&self, obj: &Object) -> bool {
-        if self == obj {
-            return true;
-        }
-        if self.histogram_type != obj.histogram_type {
-            return false;
-        }
-        let other: LogOptimalLayout = obj as LogOptimalLayout;
-        if Self::to_bits_nan_collapse(self.absolute_bin_width_limit)
-            != other.absolute_bin_width_limit.try_into()
-        {
-            return false;
-        }
-        if self.overflow_bin_index != other.overflow_bin_index {
-            return false;
-        }
-        if Self::to_bits_nan_collapse(self.relative_bin_width_limit)
-            != other.relative_bin_width_limit.try_into()
-        {
-            return false;
-        }
-        if self.underflow_bin_index != other.underflow_bin_index {
-            return false;
-        }
-        return true;
-    }
+    // This will be covered by DRY implementation of std traits via phantom types
+    //
+    // fn equals(&self, obj: &Object) -> bool {
+    //     if self == obj {
+    //         return true;
+    //     }
+    //     if self.histogram_type != obj.histogram_type {
+    //         return false;
+    //     }
+    //     let other: LogOptimalLayout = obj as LogOptimalLayout;
+    //     if Self::to_bits_nan_collapse(self.absolute_bin_width_limit)
+    //         != other.absolute_bin_width_limit.try_into()
+    //     {
+    //         return false;
+    //     }
+    //     if self.overflow_bin_index != other.overflow_bin_index {
+    //         return false;
+    //     }
+    //     if Self::to_bits_nan_collapse(self.relative_bin_width_limit)
+    //         != other.relative_bin_width_limit.try_into()
+    //     {
+    //         return false;
+    //     }
+    //     if self.underflow_bin_index != other.underflow_bin_index {
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
         if bin_index >= 0 {
@@ -376,11 +378,13 @@ impl LogOptimalLayout {
             return x;
         } else {
             let s: f64 = (idx - self.offset) / self.factor_normal + Self::LOG_MIN_VALUE;
-            return Math::exp(s);
+            return f64::exp(s);
         }
     }
 
-    fn to_string(&self) -> String {
-        return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", self.histogram_type.get_simple_name(), self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);
-    }
+    // // This will be covered by DRY implementation of std traits via phantom types
+    // //
+    // fn to_string(&self) -> String {
+    //     return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", self.histogram_type, self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);
+    // }
 }
