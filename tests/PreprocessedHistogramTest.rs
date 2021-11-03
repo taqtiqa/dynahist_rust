@@ -48,7 +48,7 @@ impl PreprocessedHistogramTest {
         assert_throws(UnsupportedOperationError.class, () -> preprocessed_histogram.add_value(-5.5));
         assert_throws(UnsupportedOperationError.class, () -> preprocessed_histogram.add_value(-5.5, 5));
         assert_throws(UnsupportedOperationError.class, () -> preprocessed_histogram.add_histogram(histogram));
-        assert_throws(UnsupportedOperationError.class, () -> preprocessed_histogram.add_ascending_sequence( j: & -> 100, 10));
+        assert_throws(UnsupportedOperationError.class, () -> preprocessed_histogram.add_ascending_sequence( |_| {100}, 10));
         assert_throws(DynaHist::IllegalArgumentError.class, () -> preprocessed_histogram.get_bin_by_rank(-1));
         assert_throws(DynaHist::IllegalArgumentError.class, () -> preprocessed_histogram.get_bin_by_rank(1));
     }

@@ -284,14 +284,14 @@ impl Algorithms for AlgorithmsTest {
     #[test]
     fn test_find_first_with_initial_guess(&self) {
          let max_num_evaluations: i32 = 128;
-        ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MIN, max_num_evaluations);
-        ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MAX, max_num_evaluations);
-        ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MIN + 1, max_num_evaluations);
-        ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MAX - 1, max_num_evaluations);
-        ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MAX, max_num_evaluations);
-        ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MIN, max_num_evaluations);
-        ::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MAX - 1, max_num_evaluations);
-        ::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MIN + 1, max_num_evaluations);
+        Self::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MIN, max_num_evaluations);
+        Self::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MAX, max_num_evaluations);
+        Self::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MIN + 1, max_num_evaluations);
+        Self::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MAX - 1, max_num_evaluations);
+        Self::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MAX, max_num_evaluations);
+        Self::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MIN, max_num_evaluations);
+        Self::test_find_first_with_initial_guess(i64::MAX, i64::MIN, i64::MAX, i64::MAX - 1, max_num_evaluations);
+        Self::test_find_first_with_initial_guess(i64::MIN, i64::MIN, i64::MAX, i64::MIN + 1, max_num_evaluations);
         assert_throws(DynaHist::IllegalArgumentError.class, () -> Algorithms::find_first_guess( l: & -> false, i64::MIN, i64::MAX, 0));
     }
 
@@ -308,10 +308,10 @@ impl Algorithms for AlgorithmsTest {
                          let mut i: i32 = 0;
                         while i < 100 {
                            {
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
                             }
                             i += 1;
                          }
@@ -332,10 +332,10 @@ impl Algorithms for AlgorithmsTest {
                          let mut i: i32 = 0;
                         while i < 100 {
                            {
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
                             }
                             i += 1;
                          }
@@ -356,10 +356,10 @@ impl Algorithms for AlgorithmsTest {
                          let mut i: i32 = 0;
                         while i < 100 {
                            {
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
                             }
                             i += 1;
                          }
@@ -380,10 +380,10 @@ impl Algorithms for AlgorithmsTest {
                          let mut i: i32 = 0;
                         while i < 100 {
                            {
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
-                                ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MAX - i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, -1 - i, max_num_evaluations_with_initial_guess);
+                                Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MAX, i64::MIN + i, max_num_evaluations_with_initial_guess);
                             }
                             i += 1;
                          }
@@ -408,7 +408,7 @@ impl Algorithms for AlgorithmsTest {
                                      let mut k: i32 = 0;
                                     while k <= j {
                                        {
-                                            ::test_find_first_with_initial_guess(first_true_index, i64::MAX - j, i64::MAX, i64::MAX - k, max_num_evaluations_with_initial_guess);
+                                            Self::test_find_first_with_initial_guess(first_true_index, i64::MAX - j, i64::MAX, i64::MAX - k, max_num_evaluations_with_initial_guess);
                                         }
                                         k += 1;
                                      }
@@ -437,7 +437,7 @@ impl Algorithms for AlgorithmsTest {
                                      let mut k: i32 = 0;
                                     while k <= j {
                                        {
-                                            ::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MIN + j, i64::MIN + k, max_num_evaluations_with_initial_guess);
+                                            Self::test_find_first_with_initial_guess(first_true_index, i64::MIN, i64::MIN + j, i64::MIN + k, max_num_evaluations_with_initial_guess);
                                         }
                                         k += 1;
                                      }
@@ -457,12 +457,12 @@ impl Algorithms for AlgorithmsTest {
 
     #[test]
     fn test_find_first_with_initial_guess3(&self) {
-        ::test_find_first_with_initial_guess(1, i64::MIN, i64::MAX, 0, 2);
-        ::test_find_first_with_initial_guess(134325, i64::MIN, i64::MAX, 134324, 2);
-        ::test_find_first_with_initial_guess(0, i64::MIN, i64::MAX, 1, 4);
-        ::test_find_first_with_initial_guess(134324, i64::MIN, i64::MAX, 134325, 4);
-        ::test_find_first_with_initial_guess(2, i64::MIN, i64::MAX, 0, 4);
-        ::test_find_first_with_initial_guess(3, i64::MIN, i64::MAX, 0, 4);
+        Self::test_find_first_with_initial_guess(1, i64::MIN, i64::MAX, 0, 2);
+        Self::test_find_first_with_initial_guess(134325, i64::MIN, i64::MAX, 134324, 2);
+        Self::test_find_first_with_initial_guess(0, i64::MIN, i64::MAX, 1, 4);
+        Self::test_find_first_with_initial_guess(134324, i64::MIN, i64::MAX, 134325, 4);
+        Self::test_find_first_with_initial_guess(2, i64::MIN, i64::MAX, 0, 4);
+        Self::test_find_first_with_initial_guess(3, i64::MIN, i64::MAX, 0, 4);
     }
 
     #[test]

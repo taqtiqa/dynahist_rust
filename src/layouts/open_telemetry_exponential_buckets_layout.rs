@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::data::DataInput;
-use crate::data::DataOutput;
+use crate::utilities::data::DataInput;
+use crate::utilities::data::DataOutput;
 use crate::{errors::DynaHistError, layouts::layout::Layout};
 
 /// A tentative histogram bin layout that implements the proposal as discussed

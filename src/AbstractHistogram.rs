@@ -60,9 +60,9 @@ trait AbstractHistogram {
          let mut result: i32 = 1;
         result = prime * result + self.get_layout().hash_code();
          let mut temp: i64;
-        temp = to_bits_nan_collapse(get_max());
+        temp = Self::to_bits_nan_collapse(get_max());
         result = prime * result + (temp ^ (temp >> /* >>> */ 32)) as i32;
-        temp = to_bits_nan_collapse(get_min());
+        temp = Self::to_bits_nan_collapse(get_min());
         result = prime * result + (temp ^ (temp >> /* >>> */ 32)) as i32;
         // hash only count values together with bin indices that are larger than 0
         if get_total_count() > 0 {

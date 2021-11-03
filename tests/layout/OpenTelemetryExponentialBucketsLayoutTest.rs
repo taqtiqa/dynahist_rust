@@ -40,7 +40,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(11)));
         assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(12)));
         assert_eq!(4, &layout.map_to_bin_index(&f64::from_bits(13)));
-        assert_eq!(53, &layout.map_to_bin_index(self.min_normal_f64()));
+        assert_eq!(53, &layout.map_to_bin_index(Self::min_normal_f64()));
         assert_eq!(1074, &layout.map_to_bin_index(0.5));
         assert_eq!(1075, &layout.map_to_bin_index(1));
         assert_eq!(2097, &layout.map_to_bin_index(f64::MAX / 2.0));
@@ -66,7 +66,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(11)));
         assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(12)));
         assert_eq!(-4, &layout.map_to_bin_index(-f64::from_bits(13)));
-        assert_eq!(-53, &layout.map_to_bin_index(-self.min_normal_f64()));
+        assert_eq!(-53, &layout.map_to_bin_index(-Self::min_normal_f64()));
         assert_eq!(-1074, &layout.map_to_bin_index(-0.5));
         assert_eq!(-1075, &layout.map_to_bin_index(-1));
         assert_eq!(-2097, &layout.map_to_bin_index(-f64::MAX / 2.0));
@@ -94,7 +94,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(6, &layout.map_to_bin_index(&f64::from_bits(11)));
         assert_eq!(7, &layout.map_to_bin_index(&f64::from_bits(12)));
         assert_eq!(7, &layout.map_to_bin_index(&f64::from_bits(13)));
-        assert_eq!(104, &layout.map_to_bin_index(self.min_normal_f64()));
+        assert_eq!(104, &layout.map_to_bin_index(Self::min_normal_f64()));
         assert_eq!(2146, &layout.map_to_bin_index(0.5));
         assert_eq!(2148, &layout.map_to_bin_index(1));
         assert_eq!(4193, &layout.map_to_bin_index(f64::MAX / 2.0));
@@ -120,7 +120,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(-6, &layout.map_to_bin_index(-f64::from_bits(11)));
         assert_eq!(-7, &layout.map_to_bin_index(-f64::from_bits(12)));
         assert_eq!(-7, &layout.map_to_bin_index(-f64::from_bits(13)));
-        assert_eq!(-104, &layout.map_to_bin_index(-self.min_normal_f64()));
+        assert_eq!(-104, &layout.map_to_bin_index(-Self::min_normal_f64()));
         assert_eq!(-2146, &layout.map_to_bin_index(-0.5));
         assert_eq!(-2148, &layout.map_to_bin_index(-1));
         assert_eq!(-4193, &layout.map_to_bin_index(-f64::MAX / 2.0));
@@ -155,7 +155,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(12, &layout.map_to_bin_index(&f64::from_bits(18)));
         assert_eq!(12, &layout.map_to_bin_index(&f64::from_bits(19)));
         assert_eq!(13, &layout.map_to_bin_index(&f64::from_bits(20)));
-        assert_eq!(204, &layout.map_to_bin_index(self.min_normal_f64()));
+        assert_eq!(204, &layout.map_to_bin_index(Self::min_normal_f64()));
         assert_eq!(4288, &layout.map_to_bin_index(0.5));
         assert_eq!(4292, &layout.map_to_bin_index(1));
         assert_eq!(8383, &layout.map_to_bin_index(f64::MAX / 2.0));
@@ -188,7 +188,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
         assert_eq!(-12, &layout.map_to_bin_index(-f64::from_bits(18)));
         assert_eq!(-12, &layout.map_to_bin_index(-f64::from_bits(19)));
         assert_eq!(-13, &layout.map_to_bin_index(-f64::from_bits(20)));
-        assert_eq!(-204, &layout.map_to_bin_index(-self.min_normal_f64()));
+        assert_eq!(-204, &layout.map_to_bin_index(-Self::min_normal_f64()));
         assert_eq!(-4288, &layout.map_to_bin_index(-0.5));
         assert_eq!(-4292, &layout.map_to_bin_index(-1));
         assert_eq!(-8383, &layout.map_to_bin_index(-f64::MAX / 2.0));
@@ -367,7 +367,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
 
     #[test]
     fn test_sqrt2(&self) {
-         let sqrt2_lower_bound: f64 = Math::next_down(&StrictMath::sqrt(2.0));
+         let sqrt2_lower_bound: f64 = Math::next_down(&Strictnum::integer::sqrt(2.0));
          let sqrt2_upper_bound: f64 = Math::next_up(sqrt2_lower_bound);
         assert_that(&Math::pow(sqrt2_lower_bound, 2.0)).is_less_than(2.0);
         assert_that(&Math::pow(sqrt2_upper_bound, 2.0)).is_greater_than(2.0);
@@ -431,7 +431,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
              let mut i: i32 = 0;
             while i < len {
                {
-                    boundaries[i] = ::calculate_boundary_exact(len, i);
+                    boundaries[i] = Self::calculate_boundary_exact(len, i);
                 }
                 i += 1;
              }
@@ -447,7 +447,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
             while precision <= MAX_PRECISION {
                {
                      let len: i32 = 1 << precision;
-                     let expected_boundaries: Vec<i64> = ::calculate_expected_boundaries(precision);
+                     let expected_boundaries: Vec<i64> = Self::calculate_expected_boundaries(precision);
                      let actual_boundaries: [i64; len] = [0; len];
                      let layout: OpenTelemetryExponentialBucketsLayout = OpenTelemetryExponentialBucketsLayout::create(precision);
                      let start_index: i32 = layout.map_to_bin_index(1.0);
@@ -455,7 +455,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
                          let mut idx: i32 = 0;
                         while idx < len {
                            {
-                                actual_boundaries[idx] = Double::double_to_raw_long_bits(&layout.get_bin_lower_bound(start_index + idx)) & 0xfffffffffffff;
+                                actual_boundaries[idx] = Self::double_to_raw_long_bits(&layout.get_bin_lower_bound(start_index + idx)) & 0xfffffffffffff;
                             }
                             idx += 1;
                          }
@@ -470,7 +470,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
     }
 
     fn calculate_boundary_approximate( len: i32,  i: i32) -> i64 {
-        return 0x000fffffffffffff & Double::double_to_raw_long_bits(&Math::pow(2.0, i / len as f64));
+        return 0x000fffffffffffff & Self::double_to_raw_long_bits(&Math::pow(2.0, i / len as f64));
     }
 
     // This function calculates the mantissa representation m
@@ -487,7 +487,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
              let actual: BigInteger = BigInteger::value_of(m)::add(&BigInteger::value_of(1 << 52))::pow(len);
             return actual.compare_to(&expected) >= 0;
         };
-         let initial_guess: i64 = ::calculate_boundary_approximate(len, i);
+         let initial_guess: i64 = Self::calculate_boundary_approximate(len, i);
         return Algorithms::find_first_guess(&predicate, 0x0000000000000000, 0x0010000000000000, initial_guess);
     }
 
@@ -499,7 +499,7 @@ impl OpenTelemetryExponentialBucketsLayoutTest {
              let mut i: i32 = 0;
             while i < 1 << MAX_PRECISION {
                {
-                    expected[i] = ::calculate_boundary_exact(1 << MAX_PRECISION, i);
+                    expected[i] = Self::calculate_boundary_exact(1 << MAX_PRECISION, i);
                     actual[i] = get_boundary_constant(i);
                 }
                 i += 1;

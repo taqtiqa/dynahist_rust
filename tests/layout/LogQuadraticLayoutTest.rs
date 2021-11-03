@@ -20,7 +20,7 @@ impl LogQuadraticLayoutTest {
         assert_eq!(6144.0, &LogQuadraticLayout::map_to_bin_index_helper(0x7fffffffffffffff), 0.0);
         assert_eq!(6142.75, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(f64::NAN)), 0.0);
         assert_eq!(6141.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(f64::INFINITY)), 0.0);
-        assert_eq!(3.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(self.min_normal_f64())), 0.0);
+        assert_eq!(3.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(Self::min_normal_f64())), 0.0);
         assert_eq!(0.0, &LogQuadraticLayout::map_to_bin_index_helper(0), 0.0);
         assert_eq!(3063.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.25)), 0.0);
         assert_eq!(3066.0, &LogQuadraticLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.5)), 0.0);

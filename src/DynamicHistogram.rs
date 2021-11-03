@@ -28,18 +28,18 @@ impl AbstractMutableHistogram for DynamicHistogram {
     }
 
     fn get_count( counts: &Vec<i64>,  relative_idx: i32,  mode: i8) -> i64 {
-         let array_idx: i32 = ::get_array_index(relative_idx, mode);
+         let array_idx: i32 = Self::get_array_index(relative_idx, mode);
          let value: i64 = counts[array_idx];
-        return (value >> /* >>> */ ::get_bit_offset(relative_idx, mode)) & ::get_count_mask(mode);
+        return (value >> /* >>> */ Self::get_bit_offset(relative_idx, mode)) & Self::get_count_mask(mode);
     }
 
     fn set_count( counts: &Vec<i64>,  relative_idx: i32,  mode: i8,  new_value: i64) {
         // here newValue must be smaller than (1 << (mode+1))
-         let bit_offset: i32 = ::get_bit_offset(relative_idx, mode);
-         let mask: i64 = ::get_count_mask(mode) << bit_offset;
+         let bit_offset: i32 = Self::get_bit_offset(relative_idx, mode);
+         let mask: i64 = Self::get_count_mask(mode) << bit_offset;
          let delete_mask: i64 = ~mask;
          let set_mask: i64 = new_value << bit_offset;
-         let array_idx: i32 = ::get_array_index(relative_idx, mode);
+         let array_idx: i32 = Self::get_array_index(relative_idx, mode);
         counts[array_idx] = (counts[array_idx] & delete_mask) | set_mask;
     }
 
@@ -73,9 +73,9 @@ impl AbstractMutableHistogram for DynamicHistogram {
     fn add_value(&self,  value: f64,  count: i64) -> DynamicHistogram {
          let absolute_index: i32 = get_layout().map_to_bin_index(value);
          let relative_index: i32 = absolute_index - self.index_offset;
-         let array_idx: i32 = ::get_array_index(relative_index, self.mode);
-         let bit_offset: i32 = ::get_bit_offset(relative_index, self.mode);
-         let mask: i64 = ::get_count_mask(self.mode);
+         let array_idx: i32 = Self::get_array_index(relative_index, self.mode);
+         let bit_offset: i32 = Self::get_bit_offset(relative_index, self.mode);
+         let mask: i64 = Self::get_count_mask(self.mode);
         if count > 0 {
             if total_count + count >= 0 {
                 total_count += count;
@@ -117,13 +117,13 @@ impl AbstractMutableHistogram for DynamicHistogram {
         } else {
              let relative_index: i32 = absolute_index - self.index_offset;
              let new_count: i64;
-            if relative_index >= 0 && relative_index < ::get_num_counters(&self.counts, self.number_of_unused_counts, self.mode) {
-                new_count = ::get_count(&self.counts, relative_index, self.mode) + count;
+            if relative_index >= 0 && relative_index < Self::get_num_counters(&self.counts, self.number_of_unused_counts, self.mode) {
+                new_count = Self::get_count(&self.counts, relative_index, self.mode) + count;
             } else {
                 new_count = count;
             }
             self.ensure_count_array(absolute_index, absolute_index, &determine_required_mode(new_count));
-            ::set_count(&self.counts, absolute_index - self.index_offset, self.mode, new_count);
+            Self::set_count(&self.counts, absolute_index - self.index_offset, self.mode, new_count);
         }
     }
 
@@ -133,7 +133,7 @@ impl AbstractMutableHistogram for DynamicHistogram {
         Self::check_argument(max_absolute_index < get_layout().get_overflow_bin_index());
          let new_min_absolute_index: i32;
          let new_max_absolute_index: i32;
-         let current_num_counters: i32 = ::get_num_counters(&self.counts, self.number_of_unused_counts, self.mode);
+         let current_num_counters: i32 = Self::get_num_counters(&self.counts, self.number_of_unused_counts, self.mode);
          let current_min_absolute_index: i32 = self.index_offset;
          let current_max_absolute_index: i32 = self.index_offset + current_num_counters - 1;
          let is_expansion_necessary: bool = false;
@@ -166,12 +166,12 @@ impl AbstractMutableHistogram for DynamicHistogram {
              let new_num_counters: i32 = new_max_absolute_index - new_min_absolute_index + 1;
              let new_from: i32 = current_min_absolute_index - new_min_absolute_index;
              let old_counts: Vec<i64> = self.counts;
-            self.counts = : [i64; ::get_long_array_size(new_num_counters, new_mode)] = [0; ::get_long_array_size(new_num_counters, new_mode)];
+            self.counts = : [i64; Self::get_long_array_size(new_num_counters, new_mode)] = [0; Self::get_long_array_size(new_num_counters, new_mode)];
             {
                  let mut i: i32 = 0;
                 while i < current_num_counters {
                    {
-                        ::set_count(&self.counts, i + new_from, new_mode, &::get_count(&old_counts, i, self.mode));
+                        Self::set_count(&self.counts, i + new_from, new_mode, &Self::get_count(&old_counts, i, self.mode));
                     }
                     i += 1;
                  }
@@ -218,15 +218,15 @@ impl AbstractMutableHistogram for DynamicHistogram {
                     }
                     self.ensure_count_array(&first_bin.get_bin_index(), &last_bin.get_bin_index(), desired_mode);
                 }
-                 let mut limit: i64 = ::get_count_mask(self.mode);
+                 let mut limit: i64 = Self::get_count_mask(self.mode);
                 while true {
                      let relative_index: i32 = first_bin.get_bin_index() - self.index_offset;
-                     let merged_count: i64 = ::get_count(&self.counts, relative_index, self.mode) + first_bin.get_bin_count();
+                     let merged_count: i64 = Self::get_count(&self.counts, relative_index, self.mode) + first_bin.get_bin_count();
                     if merged_count > limit {
                         self.ensure_count_array(&first_bin.get_bin_index(), &first_bin.get_bin_index(), &determine_required_mode(merged_count));
-                        limit = ::get_count_mask(self.mode);
+                        limit = Self::get_count_mask(self.mode);
                     }
-                    ::set_count(&self.counts, relative_index, self.mode, merged_count);
+                    Self::set_count(&self.counts, relative_index, self.mode, merged_count);
                     if first_bin.get_bin_index() == last_bin.get_bin_index() {
                         break;
                     }
@@ -252,10 +252,10 @@ impl AbstractMutableHistogram for DynamicHistogram {
     }
 
     fn max_allocated_bin_index_exclusive(&self) -> i32 {
-        return self.index_offset + ::get_num_counters(&self.counts, self.number_of_unused_counts, self.mode);
+        return self.index_offset + Self::get_num_counters(&self.counts, self.number_of_unused_counts, self.mode);
     }
 
     fn get_allocated_bin_count(&self,  bin_index: i32) -> i64 {
-        return ::get_count(&self.counts, bin_index - self.index_offset, self.mode);
+        return Self::get_count(&self.counts, bin_index - self.index_offset, self.mode);
     }
 }

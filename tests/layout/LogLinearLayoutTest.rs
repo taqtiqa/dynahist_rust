@@ -20,7 +20,7 @@ impl LogLinearLayoutTest {
         assert_eq!(2049.0, &LogLinearLayout::map_to_bin_index_helper(0x7fffffffffffffff), 0.0);
         assert_eq!(2048.5, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(f64::NAN)), 0.0);
         assert_eq!(2048.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(f64::INFINITY)), 0.0);
-        assert_eq!(2.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(self.min_normal_f64())), 0.0);
+        assert_eq!(2.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(Self::min_normal_f64())), 0.0);
         assert_eq!(1.0, &LogLinearLayout::map_to_bin_index_helper(0), 0.0);
         assert_eq!(1022.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.25)), 0.0);
         assert_eq!(1023.0, &LogLinearLayout::map_to_bin_index_helper(&to_bits_nan_collapse(0.5)), 0.0);

@@ -300,7 +300,7 @@ pub trait Histogram {
    /// Return an [`UnsupportedOperationError`], if the implementation is not mutable and
    /// [`#isMutable()} returns {@code false`].
    ///
-   /// - `ascendingSequence`: a [`LongToDoubleFunction`] defining the values of the ascending
+   /// - `ascendingSequence`: a [`Closure`] (`|x| {2*x}`) defining the values of the ascending
    ///     sequence
    /// - `length`: the sequence length
    ///
@@ -314,7 +314,7 @@ pub trait Histogram {
     ///
     /// UnsupportedOperationError if modifications are not supported
    ///
-    fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> Self ;
+    fn add_ascending_sequence<F: Fn(i64) -> f64>(&self,  ascending_sequence: &F,  length: i64) -> Self ;
 
 
    /// Write this histogram to a given [`DataOutput`].

@@ -79,7 +79,7 @@ impl PreprocessedHistogram {
 
     fn check_if_element_exists(&self) {
         if is_empty() {
-            throw NoSuchElementError::new();
+            return Err(DynaHistError::NoSuchElementError::new());
         }
     }
 
@@ -181,14 +181,14 @@ impl PreprocessedHistogram {
 
         fn next(&self) {
             if self.non_empty_bin_index + 1 >= self.accumulated_counts.len() {
-                throw NoSuchElementError::new();
+                return Err(DynaHistError::NoSuchElementError::new());
             }
             self.non_empty_bin_index += 1;
         }
 
         fn previous(&self) {
             if self.non_empty_bin_index <= 0 {
-                throw NoSuchElementError::new();
+                return Err(DynaHistError::NoSuchElementError::new());
             }
             self.non_empty_bin_index -= 1;
         }
@@ -200,23 +200,23 @@ impl PreprocessedHistogram {
 
 
     fn add_value(&self,  value: f64,  count: i64) -> impl Histogram {
-        throw UnsupportedOperationError::new();
+        return Err(DynaHistError::UnsupportedOperationError::new());
     }
 
     fn add_value(&self,  value: f64) -> impl Histogram {
-        throw UnsupportedOperationError::new();
+        return Err(DynaHistError::UnsupportedOperationError::new());
     }
 
     fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram {
-        throw UnsupportedOperationError::new();
+        return Err(DynaHistError::UnsupportedOperationError::new());
     }
 
-    fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> impl Histogram {
-        throw UnsupportedOperationError::new();
+    fn add_ascending_sequence<F: Fn(i64) -> f64>(&self,  ascending_sequence: &F,  length: i64) -> impl Histogram {
+        return Err(DynaHistError::UnsupportedOperationError::new());
     }
 
     fn write(&self,  data_output: &DataOutput)  -> Result<(), std::rc::Rc<DynaHistError>> {
-        Histogram::create_dynamic(&get_layout())::add_histogram(self)::write(&data_output);
+        Histogram::create_dynamic(&get_layout()).add_histogram().write(&data_output);
     }
 
     fn get_estimated_footprint_in_bytes(&self) -> i64 {

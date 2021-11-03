@@ -3,7 +3,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::layouts::layout::Layout;
+use crate::layouts::guess_layout::GuessLayout;
+use crate::seriate::SeriateUtil;
+use crate::utilities::data::DataInput;
+use crate::utilities::data::DataOutput;
+use crate::{errors::DynaHistError, layouts::layout::Layout};
 
 /// A custom histogram bin layout.
 pub struct CustomLayout {
@@ -12,45 +16,72 @@ pub struct CustomLayout {
 }
 
 impl CustomLayout {
-        fn new( sorted_bin_boundaries: &Vec<f64>) -> CustomLayout {
+    fn new(sorted_bin_boundaries: &[f64]) -> Self {
         sorted_bin_boundaries;
     }
 }
 
-impl Layout for CustomLayout {
+impl Layout for CustomLayout {}
 
-    fn create( sorted_bin_boundaries: f64) -> CustomLayout {
+impl CustomLayout {
+    fn create(sorted_bin_boundaries: f64) -> CustomLayout {
         Self::check_argument(sorted_bin_boundaries.len() > 0);
         Self::check_argument(sorted_bin_boundaries[0] > f64::NEG_INFINITY);
         {
-             let mut i: i32 = 1;
+            let mut i: i32 = 1;
             while i < sorted_bin_boundaries.len() {
-               {
-                    Self::check_argument(Self::map_double_to_long(sorted_bin_boundaries[i - 1]) < Self::map_double_to_long(sorted_bin_boundaries[i]));
+                {
+                    Self::check_argument(
+                        Self::map_double_to_long(sorted_bin_boundaries[i - 1])
+                            < Self::map_double_to_long(sorted_bin_boundaries[i]),
+                    );
                 }
                 i += 1;
-             }
-         }
-
-        return CustomLayout::new(&Arrays::copy_of(sorted_bin_boundaries, sorted_bin_boundaries.len()));
+            }
+        }
+        // To obtain &mut [T] from Vec<T>:
+        // - the slicing notation (&mut vec[..]),
+        // - the deref conversion (&mut *vec)
+        return CustomLayout::new(Self::vec_to_array(sorted_bin_boundaries));
     }
 
-    fn map_to_bin_index(&self,  value: f64) -> usize {
-         let mapped_value: i64 = Self::map_double_to_long(value);
-        return Self::find_first( l: & -> l == self.sorted_bin_boundaries.len() || Self::map_double_to_long(self.sorted_bin_boundaries[l as i32]) > mapped_value, 0, self.sorted_bin_boundaries.len()) as i32;
+    // Used to convert Vec<u8> into [u8] primarily for use with `bytes` crate.
+    // Primary benefit is that `bytes::Buf` operations are infallible, i.e.
+    // none of the [`Read`] functions will return with [`Err`].
+    //
+    // # Errors
+    //
+    // This function will panic if it turns out the
+    fn vec_to_array<T, const N: usize>(v: Vec<T>) -> [T; N] {
+        v.try_into().unwrap_or_else(|v: Vec<T>| {
+            panic!("Expected a Vec of length {} but it was {}", N, v.len())
+        })
     }
 
-    fn get_bin_lower_bound(&self,  bin_index: usize) -> f64 {
+    fn map_to_bin_index(&self, value: f64) -> usize {
+        let mapped_value: i64 = Self::map_double_to_long(value);
+        let predicate = |&x| {
+            x == self.sorted_bin_boundaries.len()
+                || Self::map_double_to_long(self.sorted_bin_boundaries[x as i32]) > mapped_value
+        };
+        return Self::find_first(predicate, 0, self.sorted_bin_boundaries.len()) as i32;
+    }
+
+    fn get_bin_lower_bound(&self, bin_index: usize) -> f64 {
         if bin_index > 0 {
-            return self.sorted_bin_boundaries[std::cmp::min(bin_index, self.sorted_bin_boundaries.len()) - 1];
+            return self.sorted_bin_boundaries
+                [std::cmp::min(bin_index, self.sorted_bin_boundaries.len()) - 1];
         } else {
             return f64::NEG_INFINITY;
         }
     }
 
-    fn get_bin_upper_bound(&self,  bin_index: usize) -> f64 {
+    fn get_bin_upper_bound(&self, bin_index: usize) -> f64 {
         if bin_index < self.sorted_bin_boundaries.len() {
-            return Self::map_long_to_double(Self::map_double_to_long(self.sorted_bin_boundaries[std::cmp::max(0, bin_index)]) - 1);
+            return Self::map_long_to_double(
+                Self::map_double_to_long(self.sorted_bin_boundaries[std::cmp::max(0, bin_index)])
+                    - 1,
+            );
         } else {
             return f64::INFINITY;
         }
@@ -64,60 +95,57 @@ impl Layout for CustomLayout {
         return self.sorted_bin_boundaries.len();
     }
 
-    fn write(&self,  data_output: &DataOutput)  -> Result<(), std::rc::Rc<DynaHistError>> {
+    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
         data_output.write_byte(Self::SERIAL_VERSION_V0);
         Self::write_unsigned_var_int(self.sorted_bin_boundaries.len(), &data_output);
         for boundary in self.sorted_bin_boundaries {
             data_output.write_double(boundary);
         }
+        Ok(())
     }
 
-    fn read( data_input: &DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
+    fn read(data_input: &DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
-         let len: i32 = read_unsigned_var_int(&data_input);
-         let sorted_bin_boundaries: [f64; len] = [0.0; len];
+        let len: i32 = Self::read_unsigned_var_int(&data_input);
+        let sorted_bin_boundaries = vec![0.0; len];
         {
-             let mut i: i32 = 0;
+            let mut i: i32 = 0;
             while i < len {
-               {
+                {
                     sorted_bin_boundaries[i] = data_input.read_double();
                 }
                 i += 1;
-             }
-         }
+            }
+        }
 
         return Ok(CustomLayout::new(&sorted_bin_boundaries));
     }
 
     fn hash_code(&self) -> i32 {
-         let prime: i32 = 31;
-         let mut result: i32 = 1;
+        let prime: i32 = 31;
+        let mut result: i32 = 1;
         result = prime * result + Arrays::hash_code(&self.sorted_bin_boundaries);
         return result;
     }
 
-    fn equals(&self,  obj: &Object) -> bool {
-        if self == obj {
-            return true;
-        }
+    // fn equals(&self,  obj: &Object) -> bool {
+    //     if self == obj {
+    //         return true;
+    //     }
+    //     if obj == null {
+    //         return false;
+    //     }
+    //     if self.histogram_type != obj.histogram_type {
+    //         return false;
+    //     }
+    //      let other: CustomLayout = obj as CustomLayout;
+    //     if !Arrays::equals(&self.sorted_bin_boundaries, other.sortedBinBoundaries) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
-        if obj == null {
-            return false;
-        }
-
-        if self.histogram_type != obj.histogram_type {
-            return false;
-        }
-
-         let other: CustomLayout = obj as CustomLayout;
-        if !Arrays::equals(&self.sorted_bin_boundaries, other.sortedBinBoundaries) {
-            return false;
-        }
-
-        return true;
-    }
-
-    fn to_string(&self) -> String {
-        return format!("{} [sortedBinBoundaries={}]", self.histogram_type, Arrays::to_string(&self.sorted_bin_boundaries));
-    }
+    // fn to_string(&self) -> String {
+    //     return format!("{} [sortedBinBoundaries={}]", self.histogram_type, Arrays::to_string(&self.sorted_bin_boundaries));
+    // }
 }

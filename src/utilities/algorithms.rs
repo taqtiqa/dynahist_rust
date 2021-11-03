@@ -3,27 +3,23 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use float_next_after::NextAfter;
-
 use crate::errors::DynaHistError;
 use crate::utilities::Preconditions;
 
-const INVALID_PREDICATE_MSG_FORMAT_STRING: &'static str =
-    "It is expected that the predicate evaluated at the maximum (%s) evaluates to true!";
-
-//let ininf =  f64::NEG_INFINITY as isize;
-//
-const NEGATIVE_INFINITY_MAPPED_TO_LONG: isize = f64::NEG_INFINITY as isize;
-
-assert_eq!(NEGATIVE_INFINITY_MAPPED_TO_LONG, isize::MIN);
-
-const POSITIVE_INFINITY_MAPPED_TO_LONG: isize = f64::INFINITY as isize;
-
-assert_eq!(POSITIVE_INFINITY_MAPPED_TO_LONG, isize::MAX);
-
-// pub struct Algorithms {}
-
 pub trait Algorithms: Preconditions {
+    const INVALID_PREDICATE_MSG_FORMAT_STRING: &'static str =
+        "It is expected that the predicate evaluated at the maximum (%s) evaluates to true!";
+
+    //let ininf =  f64::NEG_INFINITY as isize;
+    //
+    const NEGATIVE_INFINITY_MAPPED_TO_LONG: isize = f64::NEG_INFINITY as isize;
+
+    assert_eq!(NEGATIVE_INFINITY_MAPPED_TO_LONG, isize::MIN);
+
+    const POSITIVE_INFINITY_MAPPED_TO_LONG: isize = f64::INFINITY as isize;
+
+    assert_eq!(POSITIVE_INFINITY_MAPPED_TO_LONG, isize::MAX);
+
     //fn new() -> Box<dyn Algorithms> {}
 
     /// Interpolates the y-value at given x-value from two given points (x1, y1) and (x2, y2).
@@ -39,7 +35,7 @@ pub trait Algorithms: Preconditions {
     /// @param x2 the x-value of point 2
     /// @param y2 the y-value of point 2
     ///
-   /// the interpolated y-value
+    /// the interpolated y-value
     ///
     fn interpolate(x: f64, x1: f64, y1: f64, x2: f64, y2: f64) -> f64 {
         // Java implementation uses java.lang.Double.doubleToLongBits().
@@ -111,7 +107,7 @@ pub trait Algorithms: Preconditions {
     /// - `a`: the first value
     /// - `b`: the second value
     ///
-   /// the midpoint
+    /// the midpoint
     ///
     fn calculate_midpoint(a: i64, b: i64) -> i64 {
         let a2: i64 = (a ^ 0x8000000000000000) >> /* >>> */ 1;
@@ -128,7 +124,7 @@ pub trait Algorithms: Preconditions {
     ///
     /// - `x`: the value
     ///
-   /// the corresponding long value
+    /// the corresponding long value
     ///
     fn map_double_to_long(x: f64) -> i64 {
         let l: i64 = x.to_bits();
@@ -141,7 +137,7 @@ pub trait Algorithms: Preconditions {
     ///
     /// - `l`: long value
     ///
-   /// the corresponding double value
+    /// the corresponding double value
     ///
     fn map_long_to_double(l: i64) -> f64 {
         // Java implementation uses Double::long_bits_to_double
@@ -161,7 +157,7 @@ pub trait Algorithms: Preconditions {
     /// - `min`: the lower bound of the search interval
     /// - `max`: the upper bound of the search interval
     ///
-   /// the smallest value for which the predicate evaluates to {@code true}
+    /// the smallest value for which the predicate evaluates to {@code true}
     ///
     fn find_first(predicate: &i64, min: i64, max: i64) -> i64 {
         Self::check_argument(min <= max);
@@ -177,7 +173,7 @@ pub trait Algorithms: Preconditions {
         }
         Self::check_argument(
             high != max || predicate.eval(high),
-            &INVALID_PREDICATE_MSG_FORMAT_STRING,
+            &Self::INVALID_PREDICATE_MSG_FORMAT_STRING,
             max,
         );
         if low == min && low != high && predicate.eval(min) {
@@ -203,7 +199,7 @@ pub trait Algorithms: Preconditions {
     /// - `max`: the upper bound of the search interval
     /// - `initialGuess`: an initial guess
     ///
-   /// the smallest value for which the predicate evaluates to {@code true}
+    /// the smallest value for which the predicate evaluates to {@code true}
     ///
     fn find_first_guess<P>(predicate: P, min: i64, max: i64, initial_guess: i64) -> i64
     where
@@ -239,7 +235,7 @@ pub trait Algorithms: Preconditions {
                     low = high;
                     Self::check_argument_value(
                         low != max,
-                        &INVALID_PREDICATE_MSG_FORMAT_STRING,
+                        &Self::INVALID_PREDICATE_MSG_FORMAT_STRING,
                         max,
                     );
                     high = low + increment;
@@ -270,20 +266,18 @@ pub trait Algorithms: Preconditions {
     /// - `min`: the minimum value of the interval (inclusive)
     /// - `max`: the maximum value of the interval (inclusive)
     ///
-   /// the clipped value
+    /// the clipped value
     ///
     fn clip(value: i32, min: i32, max: i32) -> Result<i32, DynaHistError> {
         if value >= min && value <= max {
             return value;
+        } else if min > max {
+            let source = format!("Illegal argument error - min > max: {} > {}", min, max);
+            return Err(DynaHistError::IllegalArgumentError { source });
+        } else if value >= min {
+            return max;
         } else {
-            if min > max {
-                let source = format!("Illegal argument error - min > max: {} > {}", min, max);
-                return Err(DynaHistError::IllegalArgumentError { source });
-            } else if value >= min {
-                return max;
-            } else {
-                return min;
-            }
+            return min;
         }
     }
 }

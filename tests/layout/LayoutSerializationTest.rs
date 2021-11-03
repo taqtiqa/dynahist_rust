@@ -50,15 +50,15 @@ impl LayoutSerializationTest {
     impl BaseTestLayout {
 
         fn map_to_bin_index(&self,  value: f64) -> usize {
-            throw UnsupportedOperationError::new();
+            return Err(DynaHistError::UnsupportedOperationError::new());
         }
 
         fn get_underflow_bin_index(&self) -> usize {
-            throw UnsupportedOperationError::new();
+            return Err(DynaHistError::UnsupportedOperationError::new());
         }
 
         fn get_overflow_bin_index(&self) -> usize {
-            throw UnsupportedOperationError::new();
+            return Err(DynaHistError::UnsupportedOperationError::new());
         }
     }
 

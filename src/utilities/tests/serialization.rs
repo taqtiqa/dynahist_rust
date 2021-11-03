@@ -19,7 +19,7 @@ impl SeriateTest for SerializationTestUtil {
         writer: &SerializationWriter<T>,
         reader: &SerializationReader<T>,
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
-        let bytes: Vec<i8> = ::to_byte_array(writer, data);
+        let bytes: Vec<i8> = Self::to_byte_array(writer, data);
         return Ok(::from_byte_array(reader, bytes));
     }
 
@@ -29,11 +29,12 @@ impl SeriateTest for SerializationTestUtil {
         reader: &SerializationReader<T>,
         expected_hex_serialization: &String,
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
-        let hex_serialization: String = ::byte_array_to_hex_string(&::to_byte_array(writer, data));
+        let hex_serialization: String =
+            Self::byte_array_to_hex_string(&Self::to_byte_array(writer, data));
         assert_that(&hex_serialization).is_equal_to(&expected_hex_serialization);
         return Ok(::from_byte_array(
             reader,
-            ::hex_string_to_byte_array(&hex_serialization),
+            Self::hex_string_to_byte_array(&hex_serialization),
         ));
     }
 
@@ -43,7 +44,7 @@ impl SeriateTest for SerializationTestUtil {
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
         return Ok(::from_byte_array(
             reader,
-            ::hex_string_to_byte_array(&hex_serialization),
+            Self::hex_string_to_byte_array(&hex_serialization),
         ));
     }
 
@@ -51,14 +52,14 @@ impl SeriateTest for SerializationTestUtil {
         writer: &SerializationWriter<T>,
         data: &T,
     ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
-        let bytes: Vec<i8> = ::to_byte_array_helper(writer, data);
+        let bytes: Vec<i8> = Self::to_byte_array_helper(writer, data);
         // repeat serialization multiple times to see if output is the same
         let repetitions: i32 = 5;
         {
             let mut i: i32 = 0;
             while i < repetitions {
                 {
-                    assert_that(&::to_byte_array_helper(writer, data)).is_equal_to(&bytes);
+                    assert_that(&Self::to_byte_array_helper(writer, data)).is_equal_to(&bytes);
                 }
                 i += 1;
             }

@@ -3,13 +3,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-const BIN1: Bin = ::create_bin(10, 5, 20, 3, 8, 77);
+const BIN1: Bin = Self::create_bin(10, 5, 20, 3, 8, 77);
 
-const BIN2: Bin = ::create_bin(0, 5, 30, 3, 8, 77);
+const BIN2: Bin = Self::create_bin(0, 5, 30, 3, 8, 77);
 
-const BIN3: Bin = ::create_bin(30, 5, 0, 3, 8, 77);
+const BIN3: Bin = Self::create_bin(30, 5, 0, 3, 8, 77);
 
-const BIN4: Bin = ::create_bin(0, 5, 0, 3, 8, 77);
+const BIN4: Bin = Self::create_bin(0, 5, 0, 3, 8, 77);
 pub struct ValueEstimatorImplsTest {}
 
 impl ValueEstimatorImplsTest {
@@ -396,12 +396,12 @@ impl ValueEstimatorImplsTest {
     // #[test]
     // fn test_negative_zero(&self) {
     //     for let value_estimator: ValueEstimatorImpls in ValueEstimatorImpls::values() {
-    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 2, 0, -0.0, -0.0, 34), 1)))::is_less_than(0);
-    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 2, 0, -2.0, -0.0, 34), 1)))::is_less_than(0);
-    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 1, 0, -2.0, -0.0, 34), 0)))::is_less_than(0);
-    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 1, 0, -0.0, -0.0, 34), 0)))::is_less_than(0);
-    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, i64::MAX, 0, -3.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
-    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, i64::MAX, 0, -0.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
+    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, 2, 0, -0.0, -0.0, 34), 1)))::is_less_than(0);
+    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, 2, 0, -2.0, -0.0, 34), 1)))::is_less_than(0);
+    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, 1, 0, -2.0, -0.0, 34), 0)))::is_less_than(0);
+    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, 1, 0, -0.0, -0.0, 34), 0)))::is_less_than(0);
+    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, i64::MAX, 0, -3.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
+    //         Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, i64::MAX, 0, -0.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
     //     }
     // }
 
@@ -423,11 +423,11 @@ impl ValueEstimatorImplsTest {
         let value_estimate = &ValueEstimatorUniform::new()
             .get_estimate_from_bin(::create_bin(0, 2, 0, -0.0, -0.0, 34), 1);
         assert!(to_bits_nan_collapse(value_estimate) < 0);
-        // assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 2, 0, -2.0, -0.0, 34), 1)))::is_less_than(0);
-        // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 1, 0, -2.0, -0.0, 34), 0)))::is_less_than(0);
-        // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, 1, 0, -0.0, -0.0, 34), 0)))::is_less_than(0);
-        // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, i64::MAX, 0, -3.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
-        // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&::create_bin(0, i64::MAX, 0, -0.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
+        // assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, 2, 0, -2.0, -0.0, 34), 1)))::is_less_than(0);
+        // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, 1, 0, -2.0, -0.0, 34), 0)))::is_less_than(0);
+        // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, 1, 0, -0.0, -0.0, 34), 0)))::is_less_than(0);
+        // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, i64::MAX, 0, -3.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
+        // Assertions::assert_that(&to_bits_nan_collapse(value_estimator.get_estimate_from_bin(&Self::create_bin(0, i64::MAX, 0, -0.0, -0.0, 34), i64::MAX - 1)))::is_less_than(0);
         // }
     }
 }

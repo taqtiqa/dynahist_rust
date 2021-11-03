@@ -170,7 +170,7 @@ impl LayoutTestUtil {
             layout,
             &layout.map_to_bin_index(f64::INFINITY)
         ));
-        // assert_that(&layout.map_to_bin_index(f64::INFINITY)).is(&::valid_pos_inf_index(layout));
+        // assert_that(&layout.map_to_bin_index(f64::INFINITY)).is(&Self::valid_pos_inf_index(layout));
         assert!(Self::valid_nan_index(
             layout,
             &layout.map_to_bin_index(SMALLEST_POSITIVE_NAN)
@@ -205,9 +205,9 @@ impl LayoutTestUtil {
         let approximate_lower_bound: f64 = layout.get_bin_lower_bound_approximation(bin_idx);
         let exact_lower_bound: f64 = layout.get_bin_lower_bound(bin_idx);
         let approximate_lower_bound_long_representation: i64 =
-            Algorithms::map_double_to_long(approximate_lower_bound);
+            Self::map_double_to_long(approximate_lower_bound);
         let exact_lower_bound_long_representation: i64 =
-            Algorithms::map_double_to_long(exact_lower_bound);
+            Self::map_double_to_long(exact_lower_bound);
         return std::cmp::max(
             num::CheckedSub::checked_sub(
                 approximate_lower_bound_long_representation,

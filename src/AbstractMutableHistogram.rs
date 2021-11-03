@@ -3,23 +3,31 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-// #[derive(Histogram)]
 struct AbstractMutableHistogram {
-     let underflow_count: i64 = 0;
+    underflow_count: i64,
+    overflow_count: i64,
+    total_count: i64,
+    min: f64,
+    max: f64,
+}
 
-     let overflow_count: i64 = 0;
 
-     let total_count: i64 = 0;
-
-     let min: f64 = f64::INFINITY;
-
-     let max: f64 = f64::NEG_INFINITY;
+impl Default for AbstractMutableHistogram {
+    fn default() -> Self {
+        Self {
+    underflow_count: i64 = 0,
+    overflow_count: i64 = 0,
+    total_count: i64 = 0,
+    min: f64 = f64::INFINITY,
+    max: f64 = f64::NEG_INFINITY,
+        }
+    }
 }
 
 impl AbstractHistogram for AbstractMutableHistogram {
 
     fn new( layout: impl Layout) -> AbstractMutableHistogram {
-        super(layout);
+        default();
     }
 
     fn increment_underflow_count(&self,  count: i64) {
@@ -81,7 +89,8 @@ impl AbstractHistogram for AbstractMutableHistogram {
             // preprocess histogram to get a copy that allows faster random access to
             // approximated values
              let preprocessed_histogram: Histogram = histogram.get_preprocessed_copy();
-            return self.add_ascending_sequence( rank: preprocessed_histogram.get_value_from_estimator(rank,  value_estimator),  preprocessed_histogram.get_total_count());
+            let ascending_sequence = |&rank|{ preprocessed_histogram.get_value_from_estimator(rank,  value_estimator)};
+            return self.add_ascending_sequence( ascending_sequence,  preprocessed_histogram.get_total_count());
         }
     }
 
@@ -120,24 +129,21 @@ impl AbstractHistogram for AbstractMutableHistogram {
     }
 
     struct BinCopyImpl {
-        super: AbstractBin;
-
-         let bin_count: i64;
-
-         let less_count: i64;
-
-         let greater_count: i64;
-
-         let bin_index: i32;
+        bin_count: i64,
+        less_count: i64,
+        greater_count: i64,
+        bin_index: i32,
     }
+
+    impl AbstractBin for BinCopyImpl {}
 
     impl BinCopyImpl {
 
         fn new( bin_count: i64,  less_count: i64,  greater_count: i64,  bin_index: i32) -> BinCopyImpl {
-            let .binCount = bin_count;
-            let .lessCount = less_count;
-            let .greaterCount = greater_count;
-            let .bin_index = bin_index;
+            bin_count;
+            less_count;
+            greater_count;
+            bin_index;
         }
 
         fn get_histogram(&self) -> impl Histogram {
@@ -161,27 +167,22 @@ impl AbstractHistogram for AbstractMutableHistogram {
         }
     }
 
-
-    #[derive(BinIterator)]
     pub struct BinIteratorImpl {
-        super: AbstractBin;
-
-         let bin_index: i32;
-
-         let less_count: i64;
-
-         let greater_count: i64;
-
-         let mut count: i64;
+        bin_index: i32,
+        less_count: i64,
+        greater_count: i64,
+        count: i64,
     }
+
+    impl BinIteratorImpl {}
 
     impl BinIteratorImpl {
 
         fn new( bin_index: i32,  less_count: i64,  greater_count: i64,  count: i64) -> BinIteratorImpl {
-            let .bin_index = bin_index;
-            let .lessCount = less_count;
-            let .greaterCount = greater_count;
-            let .count = count;
+            bin_index;
+            less_count;
+            greater_count;
+            count;
         }
 
         fn get_bin_count(&self) -> i64 {
@@ -198,7 +199,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
 
         fn next(&self) {
             if self.greater_count <= 0 {
-                throw NoSuchElementError::new();
+                return Err(DynaHistError::NoSuchElementError::new());
             }
             self.less_count += self.count;
             if self.greater_count != self.get_overflow_count() {
@@ -208,7 +209,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
                 loop { {
                     self.bin_index += 1;
                     self.count = self.get_allocated_bin_count(self.bin_index);
-                }if !(self.count == 0) break;}
+                }if !(self.count == 0) {break}}
                 self.greater_count -= self.count;
             } else {
                 self.bin_index = get_layout().get_overflow_bin_index();
@@ -219,7 +220,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
 
         fn previous(&self) {
             if self.less_count <= 0 {
-                throw NoSuchElementError::new();
+                return Err(DynaHistError::NoSuchElementError::new());
             }
             self.greater_count += self.count;
             if self.less_count != self.get_underflow_count() {
@@ -273,7 +274,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
     fn write(&self,  data_output: &DataOutput)  -> Result<(), std::rc::Rc<DynaHistError>> {
         require_non_null(&data_output);
         // 0. write serial version and mode
-        data_output.write_byte(SERIAL_VERSION_V0);
+        data_output.write_byte(Self::SERIAL_VERSION_V0);
         if self.total_count <= 1 {
             // special mode
             if is_empty() {
@@ -402,7 +403,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
         Self::check_argument(&histogram.is_empty());
          let layout: Layout = histogram.get_layout();
         // 0. write serial version and mode
-        SerializationUtil::check_serial_version(SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
+        SeriateUtil::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         // 1. read info byte
          let info_byte: i32 = data_input.read_unsigned_byte();
         if (info_byte & 0x07) == 0 {
@@ -460,8 +461,8 @@ impl AbstractHistogram for AbstractMutableHistogram {
                 } else {
                     max_allocated_bin_index_unclipped = std::cmp::max(max_bin_index, last_regular_effectively_non_zero_bin_index);
                 }
-                 let min_allocated_bin_index: i32 = Algorithms::clip(min_allocated_bin_index_unclipped, layout.get_underflow_bin_index() + 1, layout.get_overflow_bin_index() - 1);
-                 let max_allocated_bin_index: i32 = Algorithms::clip(max_allocated_bin_index_unclipped, layout.get_underflow_bin_index() + 1, layout.get_overflow_bin_index() - 1);
+                 let min_allocated_bin_index: i32 = Self::clip(min_allocated_bin_index_unclipped, layout.get_underflow_bin_index() + 1, layout.get_overflow_bin_index() - 1);
+                 let max_allocated_bin_index: i32 = Self::clip(max_allocated_bin_index_unclipped, layout.get_underflow_bin_index() + 1, layout.get_overflow_bin_index() - 1);
                 histogram.ensure_count_array(min_allocated_bin_index, max_allocated_bin_index, mode);
             }
             if effective_regular_total_count >= 3 {
@@ -534,7 +535,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
 
     fn get_first_non_empty_bin(&self) -> BinIterator {
         if is_empty() {
-            throw NoSuchElementError::new();
+            return Err(DynaHistError::NoSuchElementError::new());
         }
          let absolute_index: i32;
          let less_count: i64 = 0;
@@ -564,7 +565,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
 
     fn get_last_non_empty_bin(&self) -> BinIterator {
         if is_empty() {
-            throw NoSuchElementError::new();
+            return Err(DynaHistError::NoSuchElementError::new());
         }
          let absolute_index: i32;
          let less_count: i64;
@@ -626,7 +627,7 @@ impl AbstractHistogram for AbstractMutableHistogram {
         return idx;
     }
 
-    fn add_ascending_sequence(&self,  ascending_sequence: &LongToDoubleFunction,  length: i64) -> impl Histogram {
+    fn add_ascending_sequence<F: Fn(i64) -> f64>(&self,  ascending_sequence: &F,  length: i64) -> impl Histogram {
         require_non_null(&ascending_sequence);
         if length == 0 {
             return self;

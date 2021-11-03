@@ -258,7 +258,8 @@ impl AbstractMutableHistogramTest {
                     for v in values {
                         histogram1.add_value(v);
                     }
-                    histogram2.add_ascending_sequence( j: & -> values[j as i32], values.len());
+                    let ascending_sequence = |j| values[j as i32] ;
+                    histogram2.add_ascending_sequence(ascending_sequence, values.len());
                     assert_eq!(histogram1, histogram2);
                     assert_eq!(&histogram1.get_preprocessed_copy(), &histogram2.get_preprocessed_copy());
                 }
@@ -277,7 +278,7 @@ impl AbstractMutableHistogramTest {
              let histogram1: Histogram = create(layout);
              let histogram2: Histogram = create(layout);
             histogram1.add_value(value, i64::MAX);
-            histogram2.add_ascending_sequence( j: & -> value, i64::MAX);
+            histogram2.add_ascending_sequence( |_| {value}, i64::MAX);
             assert_eq!(histogram1, histogram2);
         }
     }
@@ -288,7 +289,7 @@ impl AbstractMutableHistogramTest {
          let histogram: Histogram = create(layout);
          let values: vec![Vec<f64>; 5] = vec![f64::NEG_INFINITY, -5.5, -0.1, 5.3, f64::INFINITY, ]
         ;
-        assert_throws(DynaHist::IllegalArgumentError.class, () -> histogram.add_ascending_sequence( j: & -> values[j as i32], -1));
+        assert_throws(DynaHist::IllegalArgumentError, histogram.add_ascending_sequence( |&j| {values[j as i32]}, -1));
         histogram.add_value(1, i64::MAX);
     // assertThrows(
     //     ArithmeticError.class,
@@ -645,29 +646,29 @@ impl AbstractMutableHistogramTest {
              let histogram: Histogram = create(layout);
             histogram.add_value(0.0);
             histogram.add_value(-0.0);
-            assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
-            assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
+            assert_eq!(&Self::double_to_raw_long_bits(-0.0), &Self::double_to_raw_long_bits(&histogram.get_min()));
+            assert_eq!(&Self::double_to_raw_long_bits(0.0), &Self::double_to_raw_long_bits(&histogram.get_max()));
         }
        {
              let histogram: Histogram = create(layout);
             histogram.add_value(-0.0);
             histogram.add_value(0.0);
-            assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
-            assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
+            assert_eq!(&Self::double_to_raw_long_bits(-0.0), &Self::double_to_raw_long_bits(&histogram.get_min()));
+            assert_eq!(&Self::double_to_raw_long_bits(0.0), &Self::double_to_raw_long_bits(&histogram.get_max()));
         }
        {
              let histogram: Histogram = create(layout);
             histogram.add_value(0.0);
             histogram.add_value(0.0);
-            assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
-            assert_eq!(&Double::double_to_raw_long_bits(0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
+            assert_eq!(&Self::double_to_raw_long_bits(0.0), &Self::double_to_raw_long_bits(&histogram.get_min()));
+            assert_eq!(&Self::double_to_raw_long_bits(0.0), &Self::double_to_raw_long_bits(&histogram.get_max()));
         }
        {
              let histogram: Histogram = create(layout);
             histogram.add_value(-0.0);
             histogram.add_value(-0.0);
-            assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_min()));
-            assert_eq!(&Double::double_to_raw_long_bits(-0.0), &Double::double_to_raw_long_bits(&histogram.get_max()));
+            assert_eq!(&Self::double_to_raw_long_bits(-0.0), &Self::double_to_raw_long_bits(&histogram.get_min()));
+            assert_eq!(&Self::double_to_raw_long_bits(-0.0), &Self::double_to_raw_long_bits(&histogram.get_max()));
         }
     }
 
@@ -789,8 +790,8 @@ impl AbstractMutableHistogramTest {
 
     #[test]
     fn test_add_histogram(&self) {
-        ::test_add_histogram_helper(self::create, Histogram::createDynamic);
-        ::test_add_histogram_helper(self::create, Histogram::createStatic);
+        Self::test_add_histogram_helper(self::create, Histogram::createDynamic);
+        Self::test_add_histogram_helper(self::create, Histogram::createStatic);
     }
 
     #[test]
@@ -897,14 +898,14 @@ impl AbstractMutableHistogramTest {
         // minimum
         sb.append(&byte_array_to_hex_string(&to_byte_array(( v: &,  d: &) -> d.write_double(v), min)));
         // sb.append(byteArrayToHexString(toByteArray((v, d) -> d.writeDouble(v), max))); // maximum
-        sb.append(&byte_array_to_hex_string(&to_byte_array(SerializationUtil::writeUnsignedVarLong, // underflow count
+        sb.append(&byte_array_to_hex_string(&to_byte_array(SeriateUtil::writeUnsignedVarLong, // underflow count
         underflow_count)));
         sb.append(&byte_array_to_hex_string(&// overflow count
-        to_byte_array(SerializationUtil::writeUnsignedVarLong, overflow_count)));
+        to_byte_array(SeriateUtil::writeUnsignedVarLong, overflow_count)));
         sb.append(&byte_array_to_hex_string(&// regular min index
-        to_byte_array(SerializationUtil::writeSignedVarInt, min_regular_idx)));
+        to_byte_array(SeriateUtil::writeSignedVarInt, min_regular_idx)));
         sb.append(&byte_array_to_hex_string(&// regular max index
-        to_byte_array(SerializationUtil::writeSignedVarInt, max_regular_idx)));
+        to_byte_array(SeriateUtil::writeSignedVarInt, max_regular_idx)));
         {
              let mut idx: i32 = min_regular_idx;
             while idx <= max_regular_idx {
