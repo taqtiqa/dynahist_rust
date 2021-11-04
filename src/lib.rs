@@ -4,9 +4,9 @@
 #![deny(unsafe_code)]
 #[macro_use]
 extern crate approx;
+extern crate flate2;
 extern crate static_assertions;
 extern crate tracing;
-extern crate flate2;
 
 // Enumerated errors
 mod errors;
@@ -17,7 +17,7 @@ mod utilities;
 // Histogram bucket traits and structs.
 mod bins;
 
-// Bin value estimators
+// BinSketch value estimators
 mod values;
 
 // Histogram bucket layouts
@@ -29,9 +29,10 @@ mod seriate;
 // Histogram quantiles
 mod quantiles;
 
-// Raw Data input and Histogram data output
-mod data;
+// Sketches
+pub mod sketches;
 
-pub mod histogram;
-pub mod DynamicHistogram;
-pub use crate::histogram::Histogram;
+// Histograms
+pub mod histograms;
+
+pub use crate::histograms::histogram::Histogram;

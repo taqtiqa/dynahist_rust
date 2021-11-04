@@ -3,13 +3,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-const BIN1: Bin = Self::create_bin(10, 5, 20, 3, 8, 77);
+const BIN1: BinSketch = Self::create_bin(10, 5, 20, 3, 8, 77);
 
-const BIN2: Bin = Self::create_bin(0, 5, 30, 3, 8, 77);
+const BIN2: BinSketch = Self::create_bin(0, 5, 30, 3, 8, 77);
 
-const BIN3: Bin = Self::create_bin(30, 5, 0, 3, 8, 77);
+const BIN3: BinSketch = Self::create_bin(30, 5, 0, 3, 8, 77);
 
-const BIN4: Bin = Self::create_bin(0, 5, 0, 3, 8, 77);
+const BIN4: BinSketch = Self::create_bin(0, 5, 0, 3, 8, 77);
 pub struct ValueEstimatorImplsTest {}
 
 impl ValueEstimatorImplsTest {
@@ -20,7 +20,7 @@ impl ValueEstimatorImplsTest {
         lower_bound: f64,
         upper_bound: f64,
         bin_index: i32,
-    ) -> Bin {
+    ) -> BinSketch {
         fn new() {
             fn is_underflow_bin(&self) -> bool {
                 return false;
@@ -408,7 +408,7 @@ impl ValueEstimatorImplsTest {
     // The upstream Java implementation uses:
     // // Assertions.assertThat(
     //           Double.doubleToLongBits(
-    //               valueEstimator.getEstimateFromBin(
+    //               value_estimator.getEstimateFromBin(
     //                   createBin(0, Long.MAX_VALUE, 0, -3., -0., 34), Long.MAX_VALUE - 1)))
     //       .isLessThan(0L)
     //

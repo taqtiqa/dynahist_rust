@@ -15,31 +15,6 @@ mod private {
     impl Sealed for dyn super::QuantileEstimation {}
 }
 
-pub struct QuantileEstimator {
-    p: f64,
-    qestimator: QEstimator,
-    vestimator: VEstimator,
-}
-
-struct QEstimator;
-struct VEstimator;
-
-//         value = ;
-impl Default for QEstimator {
-    fn default() -> Self {
-        // This default is used in SciPy 1.5.2
-        Self::create(0.4, 0.4)
-    }
-}
-
-impl Default for VEstimator {
-    fn default() -> Self {
-        ValueEstimatorUniform::new()
-    }
-}
-
-impl QuantileEstimation for QEstimator {}
-
 /// A quantile estimator.
 pub trait QuantileEstimation<QEstimator = Self>:
     Preconditions + Algorithms + ValueEstimation + private::Sealed
@@ -69,14 +44,14 @@ pub trait QuantileEstimation<QEstimator = Self>:
 
     fn to_string(&self) -> String;
 
-    /// Return an estimate for the quantile value using the estimated values as given by {@link
-    /// #getValue(long)} and the default quantile estimation method. The default behavior might change
+    /// Return an estimate for the quantile value using the estimated values as given by
+    /// [`get_value(i64)`] and the default quantile estimation method. The default behavior might change
     /// in future. Therefore, if well-defined behavior is wanted, use {@link #getQuantile(double,
     /// QuantileEstimation)}.
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
-    /// function is called many times, it is recommended to transform the histogram using {@link
-    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
+    /// function is called many times, it is recommended to transform the histogram using
+    /// [`get_preprocessed_copy()`] into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
     /// - `p`: the p-value in range [0,1]
@@ -86,48 +61,48 @@ pub trait QuantileEstimation<QEstimator = Self>:
     fn get_quantile(&self, p: f64) -> f64;
 
     /// TODO: Deprecate or merge this documentation
-    /// Return an estimate for the p-quantile value using the estimated values as given by {@link
-    /// #getValue(long)} and the given [`QuantileEstimation`].
+    /// Return an estimate for the p-quantile value using the estimated values as given by
+    /// [`get_value(i64)`] and the given [`QuantileEstimation`].
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
-    /// function is called many times, it is recommended to transform the histogram using {@link
-    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
+    /// function is called many times, it is recommended to transform the histogram using
+    /// [`get_preprocessed_copy()`] into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
     /// - `p`: the p-value in range [0,1]
-    /// - `quantileEstimator`: the quantile estimator
+    /// - `quantile_estimator`: the quantile estimator
     ///
     /// an estimate for the p-quantile
     ///
     //fn get_quantile(&self, p: f64, quantile_estimator: &Self::Q) -> f64;
 
     /// TODO: Deprecate or merge this documentation
-    /// Return an estimate for the quantile value using the estimated values as given by {@link
-    /// #getValue(long)} and the given [`QuantileEstimation`].
+    /// Return an estimate for the quantile value using the estimated values as given by
+    /// and the given [`QuantileEstimation`].
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
-    /// function is called many times, it is recommended to transform the histogram using {@link
-    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
+    /// function is called many times, it is recommended to transform the histogram using
+    /// [`get_preprocessed_copy()`] into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
     /// - `p`: the p-value in range [0,1]
-    /// - `valueEstimator`: the value estimator
+    /// - `value_estimator`: the value estimator
     ///
     /// an estimate for the p-quantile
     ///
     //fn get_quantile(&self, p: f64, value_estimator: &Self::V) -> f64;
 
-    /// Return an estimate for the quantile value using the estimated values as given by {@link
-    /// #getValue(long)} and the given [`QuantileEstimation`] implementation.
+    /// Return an estimate for the quantile value using the estimated values as given by
+    /// [`get_value(i64)`] and the given [`QuantileEstimation`] implementation.
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
-    /// function is called many times, it is recommended to transform the histogram using {@link
-    /// #getPreprocessedCopy()} into a @link [`PreprocessedHistogram`] first (which is an O(N)
+    /// function is called many times, it is recommended to transform the histogram using
+    /// [`get_preprocessed_copy()`] into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
     /// - `p`: the p-value in range [0,1]
-    /// - `quantileEstimator`: the quantile estimator
-    /// - `valueEstimator`: the value estimator
+    /// - `quantile_estimator`: the quantile estimator
+    /// - `value_estimator`: the value estimator
     ///
     /// an estimate for the p-quantile
     ///

@@ -5,8 +5,8 @@
 
 use crate::layouts::guess_layout::GuessLayout;
 use crate::seriate::SeriateUtil;
-use crate::utilities::data::DataInput;
-use crate::utilities::data::DataOutput;
+use crate::sketches::data::DataInput;
+use crate::sketches::data::DataOutput;
 use crate::{errors::DynaHistError, layouts::layout::Layout};
 
 /// A histogram bin layout where all bins covering the given range have a width that is either

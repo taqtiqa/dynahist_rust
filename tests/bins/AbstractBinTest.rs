@@ -16,7 +16,7 @@ impl AbstractBinTest {
          let bin_index: i32 = 434;
          let layout: Layout = TestLayout::new(-5, 7);
          let histogram: Histogram = Histogram::create_dynamic(layout);
-         let bin: Bin = AbstractBin::new() {
+         let bin: BinSketch = AbstractBin::new() {
 
             fn get_less_count(&self) -> i64 {
                 return less_count;

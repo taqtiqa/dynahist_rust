@@ -22,7 +22,7 @@ impl AbstractMutableHistogramTest {
     fn test_count_overflow(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
-        histogram.add_value(10.0, i64::MAX);
+        histogram.add_values(10.0,  i64::MAX);
         HistogramTestUtil::check_histogram_data_consistency(histogram);
         HistogramTestUtil::check_histogram_data_consistency(&histogram.get_preprocessed_copy());
         assert_throws(ArithmeticError.class, () -> histogram.add_value(90.0));
@@ -75,7 +75,7 @@ impl AbstractMutableHistogramTest {
              let mut k: i64 = 0;
             while k < K {
                {
-                    histogram.add_value(k, Z);
+                    histogram.add_values(k,  Z);
                 }
                 k += 1;
              }
@@ -151,7 +151,7 @@ impl AbstractMutableHistogramTest {
                            {
                                  let count: i64 = count_base + random.next_int(10);
                                  let value: f64 = random.next_double() * 200.0 - 100.0;
-                                histogram.add_value(value, count);
+                                histogram.add_values(value,  count);
                                 total_count += count;
                                 min = std::cmp::min(min, value);
                                 max = std::cmp::max(max, value);
@@ -181,10 +181,10 @@ impl AbstractMutableHistogramTest {
     #[test]
     fn test_get_preprocessed_data(&self) {
          let histogram: Histogram = create(TestLayout::new(-100, 100));
-        histogram.add_value(-101, 3);
-        histogram.add_value(-53, 2);
-        histogram.add_value(3, 4);
-        histogram.add_value(106, 1);
+        histogram.add_values(-101,  3);
+        histogram.add_values(-53,  2);
+        histogram.add_values(3,  4);
+        histogram.add_values(106,  1);
          let preprocessed_histogram: Histogram = histogram.get_preprocessed_copy();
         assert_eq!(histogram, preprocessed_histogram);
         HistogramTestUtil::check_histogram_data_consistency(preprocessed_histogram);
@@ -277,7 +277,7 @@ impl AbstractMutableHistogramTest {
         for value in values {
              let histogram1: Histogram = create(layout);
              let histogram2: Histogram = create(layout);
-            histogram1.add_value(value, i64::MAX);
+            histogram1.add_values(value,  i64::MAX);
             histogram2.add_ascending_sequence( |_| {value}, i64::MAX);
             assert_eq!(histogram1, histogram2);
         }
@@ -290,7 +290,7 @@ impl AbstractMutableHistogramTest {
          let values: vec![Vec<f64>; 5] = vec![f64::NEG_INFINITY, -5.5, -0.1, 5.3, f64::INFINITY, ]
         ;
         assert_throws(DynaHist::IllegalArgumentError, histogram.add_ascending_sequence( |&j| {values[j as i32]}, -1));
-        histogram.add_value(1, i64::MAX);
+        histogram.add_values(1,  i64::MAX);
     // assertThrows(
     //     ArithmeticError.class,
     //     () -> histogram.addAscendingSequence(j -> values[(int) j], Long.MAX_VALUE));
@@ -301,11 +301,11 @@ impl AbstractMutableHistogramTest {
          let layout: TestLayout = TestLayout::new(-2, 2);
          let histogram: Histogram = create(layout);
         histogram.add_value(f64::NEG_INFINITY);
-        histogram.add_value(-2, 3);
-        histogram.add_value(-1, 4);
-        histogram.add_value(0, 1);
-        histogram.add_value(1, 3);
-        histogram.add_value(2, 2);
+        histogram.add_values(-2,  3);
+        histogram.add_values(-1,  4);
+        histogram.add_values(0,  1);
+        histogram.add_values(1,  3);
+        histogram.add_values(2,  2);
         assert_eq!(14, &histogram.get_total_count());
         assert_eq!(f64::NEG_INFINITY, &histogram.get_value(0), 0.0);
         assert_eq!(f64::NEG_INFINITY, &histogram.get_value(1), 0.0);
@@ -460,7 +460,7 @@ impl AbstractMutableHistogramTest {
     fn test_add_negative_count(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
-         let test_result = histogram.add_value(2.4, -1);
+         let test_result = histogram.add_values(2.4,  -1);
          let test_error = test_result.unwrap_err().downcast_ref::<DynaHist::IllegalArgumentError>();
         assert!(test_error.is_some() );
     }
@@ -469,7 +469,7 @@ impl AbstractMutableHistogramTest {
     fn test_add_zero_count(&self) {
          let layout: Layout = TestLayout::new(-100, 100);
          let histogram: Histogram = create(layout);
-        histogram.add_value(2.4, 0);
+        histogram.add_values(2.4,  0);
         assert_true(&histogram.is_empty());
         test_serialization(layout, histogram);
     }
@@ -509,7 +509,7 @@ impl AbstractMutableHistogramTest {
                                      let n: i32 = random.next_int(1_000_000);
                                     non_empty_bins_count += 1;
                                     count += n;
-                                    histogram.add_value(k, n);
+                                    histogram.add_values(k,  n);
                                 }
                             }
                             k += 1;
@@ -578,7 +578,7 @@ impl AbstractMutableHistogramTest {
                          let mut i: i32 = 0;
                         while i < num_values {
                            {
-                                histogram.add_value(-11 + rnd.next_int(24), 1 << rnd.next_int(34));
+                                histogram.add_values(-11 + rnd.next_int(24),  1 << rnd.next_int(34));
                             }
                             i += 1;
                          }
@@ -618,8 +618,8 @@ impl AbstractMutableHistogramTest {
         for min in x_values {
              let max: f64 = Math::next_up(min);
              let histogram: Histogram = create(layout);
-            histogram.add_value(min, c1);
-            histogram.add_value(max, c2);
+            histogram.add_values(min,  c1);
+            histogram.add_values(max,  c2);
             assert_eq!(c1 + c2, &histogram.get_total_count());
              let mut previous: f64 = histogram.get_value(0);
             assert_that(previous).is_greater_than_or_equal_to(min);
@@ -685,9 +685,9 @@ impl AbstractMutableHistogramTest {
         histogram1.add_value(5);
         total_histogram.add_value(5);
         total_histogram.add_value(-5);
-        total_histogram.add_value(5.5, 5);
+        total_histogram.add_values(5.5,  5);
         histogram1.add_value(-5);
-        histogram2.add_value(5.5, 5);
+        histogram2.add_values(5.5,  5);
         assert_eq!(total_histogram, &histogram1.add_histogram(histogram2));
     }
 
@@ -696,8 +696,8 @@ impl AbstractMutableHistogramTest {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram1: Histogram = create(layout);
          let histogram2: Histogram = create(layout);
-        histogram1.add_value(5, 1000000);
-        histogram2.add_value(5, i64::MAX);
+        histogram1.add_values(5,  1000000);
+        histogram2.add_values(5,  i64::MAX);
         assert_throws(ArithmeticError.class, () -> histogram1.add_histogram(histogram2));
     }
 
@@ -761,7 +761,7 @@ impl AbstractMutableHistogramTest {
     fn test_total_count_overflow(&self) {
          let layout: Layout = LogLinearLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = create(layout);
-        histogram.add_value(1, i64::MAX);
+        histogram.add_values(1,  i64::MAX);
         assert_throws(ArithmeticError.class, () -> histogram.add_value(2));
     }
 
@@ -824,14 +824,14 @@ impl AbstractMutableHistogramTest {
          let histogram1: Histogram = create(layout);
          let histogram2: Histogram = Histogram::create_dynamic(layout);
          let histogram_total: Histogram = create(layout);
-        histogram1.add_value(-2, 1000);
-        histogram_total.add_value(-2, 1000);
-        histogram1.add_value(2, 2000);
-        histogram_total.add_value(2, 2000);
-        histogram2.add_value(-2, 4000);
-        histogram_total.add_value(-2, 4000);
-        histogram2.add_value(2, 8000);
-        histogram_total.add_value(2, 8000);
+        histogram1.add_values(-2,  1000);
+        histogram_total.add_values(-2,  1000);
+        histogram1.add_values(2,  2000);
+        histogram_total.add_values(2,  2000);
+        histogram2.add_values(-2,  4000);
+        histogram_total.add_values(-2,  4000);
+        histogram2.add_values(2,  8000);
+        histogram_total.add_values(2,  8000);
         histogram1.add_histogram(histogram2);
         assert_eq!(histogram_total, histogram1);
     }
@@ -860,7 +860,7 @@ impl AbstractMutableHistogramTest {
                                  let mut j: i64 = 0;
                                 while j < num_values {
                                    {
-                                        histogram.add_value(&random.next_double(-6, 6));
+                                        histogram.add_values(&random.next_double(-6,  6));
                                     }
                                     j += 1;
                                  }

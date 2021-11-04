@@ -41,25 +41,6 @@ trait Seriate: bytes::Buf + bytes::BufMut {
         }
     }
 
-    /// Write a [`u64`] to the given [`DataOutput`] using variable-length
-    /// encoding.
-    ///
-    /// # Errors
-    ///
-    /// Return [`DynaHistError::IOError`] if an I/O error occurs.
-    ///
-    fn write_unsigned_var_long(
-        value: u64,
-        data_output: &DataOutput,
-    ) -> Result<(), std::rc::Rc<DynaHistError>> {
-        while (value & 0xFFFFFFFFFFFFFF80_u64) != 0 {
-            data_output.write_byte((value as i32 & 0x7F) | 0x80);
-            value >>= /* >>>= */ 7;
-        }
-        data_output.write_byte(value as i32 & 0x7F);
-        Ok(())
-    }
-
     /// Write an [`i32`] to the given [`DataOutput`] using variable-length and zigzag
     /// encoding.
     ///

@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 /// A histogram bin.
-pub trait Bin {
+pub trait BinSketch {
     /// Return the number of values belonging to the current bin position.
     ///
     fn get_bin_count(&self) -> i64;

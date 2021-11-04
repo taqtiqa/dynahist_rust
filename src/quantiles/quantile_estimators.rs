@@ -6,14 +6,37 @@
 use crate::quantiles::quantile_estimation::QuantileEstimation;
 use crate::values::value_estimators::ValueEstimatorUniform;
 
-/// A quantile estimator implementation based on the definition used by the {@code
-/// scipy.stats.mstats.mquantiles} method in the SciPy Python library.
+pub struct QuantileEstimator {
+    p: f64,
+    qestimator: QEstimator,
+    vestimator: VEstimator,
+}
+
+struct QEstimator;
+struct VEstimator;
+
+//         value = ;
+impl Default for QEstimator {
+    fn default() -> Self {
+        // This default is used in SciPy 1.5.2
+        SciPyQuantileEstimator::create(0.4, 0.4)
+    }
+}
+
+impl Default for VEstimator {
+    fn default() -> Self {
+        ValueEstimatorUniform::new()
+    }
+}
+
+impl QuantileEstimation for QEstimator {}
+
+/// A quantile estimator implementation based on the definition used by the
+/// [`scipy.stats.mstats.mquantiles`] method in the SciPy Python library.
 ///
 /// This class is immutable.
 ///
-/// @see <a
-///     href="https://docs.scipy.org/doc/scipy-1.5.2/reference/generated/scipy.stats.mstats.mquantiles.html">SciPy
-///     reference for scipy.stats.mstats.mquantiles</a>
+/// See [SciPy reference for scipy.stats.mstats.mquantiles](https://docs.scipy.org/doc/scipy-1.5.2/reference/generated/scipy.stats.mstats.mquantiles.html)
 ///
 
 pub struct SciPyQuantileEstimator {
@@ -31,7 +54,7 @@ impl QuantileEstimation for SciPyQuantileEstimator {
     /// - `alphap`: plotting positions parameter
     /// - `betap`: plotting positions parameter
     ///
-   /// a [`QuantileEstimation`] instance
+    /// a [`QuantileEstimation`] instance
     ///
     fn create(alphap: f64, betap: f64) -> Self {
         return Self::new(alphap, betap);
@@ -41,7 +64,7 @@ impl QuantileEstimation for SciPyQuantileEstimator {
     /// default parameters.
     ///
     ///
-   /// a [`QuantileEstimation`] instance
+    /// a [`QuantileEstimation`] instance
     ///
     // fn create() -> Self {
     //     return Self::new(0.4, 0.4);

@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::bins::bin::Bin;
+use crate::bins::bin::BinSketch;
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 use crate::values::value_estimators::*;
@@ -104,7 +104,7 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     /// - `histogram`: the histogram
     /// - `rank`: the zero-based rank
     ///
-   /// the estimated value
+    /// the estimated value
     ///
     /// # Errors
     ///
@@ -121,7 +121,7 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
         if rank + 1 == total_count {
             return histogram.get_max();
         }
-        let bin: dyn Bin = histogram.get_bin_by_rank(rank);
+        let bin: dyn BinSketch = histogram.get_bin_by_rank(rank);
         return self.get_estimate_from_bin(bin, rank);
     }
 
@@ -193,7 +193,7 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
 
     // The original port implementtaion
     // fn get_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64;
-    fn get_estimate_from_bin<'a, B: Bin, i64>(&self, bin: &B, rank: i64) -> f64 {
+    fn get_estimate_from_bin<'a, B: BinSketch, i64>(&self, bin: &B, rank: i64) -> f64 {
         if let Some(_u) = Self::as_type::<_, ValueEstimatorUniform>(self) {
             tracing::info!("it's a ValueEstimatorUniform");
             Self::get_uniform_estimate_from_bin(&self, bin, rank)

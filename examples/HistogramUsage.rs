@@ -46,7 +46,7 @@ impl HistogramUsage {
     fn add_value_with_multiplicity(&self) {
          let layout: Layout = LogQuadraticLayout::create(1e-5, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
-        histogram.add_value(-5.5, 5);
+        histogram.add_values(-5.5,  5);
         assert_eq!(&PrintUtil::print(histogram), "-5.50000000000000000E+00 - -5.50000000000000000E+00 :                   5\n");
     }
 
@@ -71,7 +71,7 @@ impl HistogramUsage {
              let mut i: i32 = 0;
             while i <= 100 {
                {
-                    histogram.add_value(i, 5);
+                    histogram.add_values(i,  5);
                 }
                 i += 1;
              }

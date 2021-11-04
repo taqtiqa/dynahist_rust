@@ -5,8 +5,8 @@
 
 use crate::layouts::guess_layout::GuessLayout;
 use crate::seriate::SeriateUtil;
-use crate::utilities::data::DataInput;
-use crate::utilities::data::DataOutput;
+use crate::sketches::data::DataInput;
+use crate::sketches::data::DataOutput;
 use crate::{errors::DynaHistError, layouts::layout::Layout};
 
 /// A custom histogram bin layout.
@@ -121,12 +121,12 @@ impl CustomLayout {
         return Ok(CustomLayout::new(&sorted_bin_boundaries));
     }
 
-    fn hash_code(&self) -> i32 {
-        let prime: i32 = 31;
-        let mut result: i32 = 1;
-        result = prime * result + Arrays::hash_code(&self.sorted_bin_boundaries);
-        return result;
-    }
+    // fn hash_code(&self) -> i32 {
+    //     let prime: i32 = 31;
+    //     let mut result: i32 = 1;
+    //     result = prime * result + Arrays::hash_code(&self.sorted_bin_boundaries);
+    //     return result;
+    // }
 
     // fn equals(&self,  obj: &Object) -> bool {
     //     if self == obj {

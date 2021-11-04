@@ -3,12 +3,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::bins::bin::Bin;
+use crate::bins::bin::BinSketch;
 use crate::Histogram;
 
 use num::Float;
 
-trait AbstractBin: Bin {
+pub trait AbstractBin: BinSketch {
     // Self returned is the immediate type the trait is implemented for.
     // This renders the trait no longer object-safe.
     fn get_histogram(&self) -> Self;

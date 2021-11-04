@@ -9,7 +9,7 @@ use crate::layouts::layout_serialization::LayoutSerialization;
 use crate::seriate::deserialization::SerializationReader;
 use crate::seriate::serialization::SerializationWriter;
 use crate::utilities::Algorithms;
-use crate::utilities::data::{DataInput, DataOutput};
+use crate::sketches::data::{DataInput, DataOutput};
 use crate::utilities::Preconditions;
 
 /// A histogram bin layout, which defines the bins for a [`Histogram`].

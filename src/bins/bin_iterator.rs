@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::bins::bin::Bin;
+use crate::bins::bin::BinSketch;
 
 /// A bin iterator over a histogram.
 ///
@@ -12,8 +12,8 @@ use crate::bins::bin::Bin;
 /// The behavior of the iterator is undefined, if the underlying histogram
 /// is modified at the same time.
 ///
-pub trait BinIterator: Bin {
-    type B: Bin;
+pub trait BinIterator: BinSketch {
+    type B: BinSketch;
 
     /// Advance to the next non-empty bin.
     ///

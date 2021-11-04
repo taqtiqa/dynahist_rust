@@ -9,7 +9,7 @@ const EMPTY_BIN_INDICES;
 
 const EMPTY_ACCUMULATED_COUNTS;
 
-struct PreprocessedHistogram {
+pub struct PreprocessedHistogram {
     super: AbstractHistogram;
 
      let mut min: f64;
@@ -78,8 +78,8 @@ impl PreprocessedHistogram {
     }
 
     fn check_if_element_exists(&self) {
-        if is_empty() {
-            return Err(DynaHistError::NoSuchElementError::new());
+        if self.is_empty() {
+            return Err(DynaHistError::NoSuchElementError);
         }
     }
 
@@ -181,25 +181,25 @@ impl PreprocessedHistogram {
 
         fn next(&self) {
             if self.non_empty_bin_index + 1 >= self.accumulated_counts.len() {
-                return Err(DynaHistError::NoSuchElementError::new());
+                return Err(DynaHistError::NoSuchElementError);
             }
             self.non_empty_bin_index += 1;
         }
 
         fn previous(&self) {
             if self.non_empty_bin_index <= 0 {
-                return Err(DynaHistError::NoSuchElementError::new());
+                return Err(DynaHistError::NoSuchElementError);
             }
             self.non_empty_bin_index -= 1;
         }
 
-        fn get_bin_copy(&self) -> Bin {
+        fn get_bin_copy(&self) -> BinSketch {
             return BinCopyImpl::new(self.non_empty_bin_index);
         }
     }
 
 
-    fn add_value(&self,  value: f64,  count: i64) -> impl Histogram {
+    fn add_values(&self,  value: f64,   count: i64) -> impl Histogram {
         return Err(DynaHistError::UnsupportedOperationError::new());
     }
 
@@ -207,7 +207,7 @@ impl PreprocessedHistogram {
         return Err(DynaHistError::UnsupportedOperationError::new());
     }
 
-    fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram {
+    fn add_histogram_from_estimator(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram {
         return Err(DynaHistError::UnsupportedOperationError::new());
     }
 

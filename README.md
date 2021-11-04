@@ -35,8 +35,6 @@ The crate contains all upstream bin layout implementations:
 // Histogram builder:
 let bin = Bin::new()
           .data_type(f8)
-          .max(1e12)
-          .min(-1e9)
           .abs_error(10)
           .rel_error(1e5)
           ;
@@ -44,6 +42,8 @@ let bin = Bin::new()
 let layout = Layout::new()
              .type(LogOptimal) // LogQuardatic, LogLinear, OTExponential, and Custom
              .bin(bin)
+             .max(1e12)
+             .min(-1e9)
              .hilo_ratio(1e9)
              .sig_digits(2)
              ;
@@ -94,7 +94,7 @@ dmesg --show-delta --notime |\
 ### Converting HDR Historgrams to DynaHist Histograms
 
 ```bash
-dynahist --hdr mydata.hdr --log-optimal --output "mydata-${$(date --iso-8601=date)}.dth"
+masts --hdr mydata.hdr --log-optimal --output "mydata-${$(date --iso-8601=date)}.dth"
 ```
 
 Note:
@@ -106,7 +106,7 @@ data-sketch.
 ### Converting OpenTelemetry Historgrams to DynaHist Histograms
 
 ```bash
-dynahist --otlp mydata.oth --log-optimal --output "mydata-${$(date --iso-8601=date)}.dth"
+masts --otlp mydata.oth --log-optimal --output "mydata-${$(date --iso-8601=date)}.dth"
 ```
 
 Note:
@@ -118,6 +118,7 @@ data-sketch.
 https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/http.md
 https://docs.rs/tracing-error/0.2.0/tracing_error/
 
+https://github.com/rust-lang/rustc-hash
 https://docs.rs/approx/0.5.0/approx/
 https://docs.rs/bytestream/0.4.1/bytestream/
   - https://github.com/nickbabcock/bitter
@@ -139,6 +140,11 @@ https://rustrepo.com/repo/japaric-trust-rust-testing
 https://github.com/xd009642/tarpaulin
 
 ## FYI
+
+### Bit hacks
+
+https://graphics.stanford.edu/~seander/bithacks.html
+https://gist.github.com/mfuerstenau/ba870a29e16536fdbaba
 
 ### Python to Rust
 

@@ -174,7 +174,7 @@ impl AbstractHistogramTest {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
          let bins: List<Bin> = ArrayList<>::new();
-        for  let bin: Bin in histogram.non_empty_bins_ascending() {
+        for  let bin: BinSketch in histogram.non_empty_bins_ascending() {
             bins.add(bin);
         }
         assert_eq!(3, &bins.size());
@@ -230,7 +230,7 @@ impl AbstractHistogramTest {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
          let bins: List<Bin> = ArrayList<>::new();
-        for  let bin: Bin in histogram.non_empty_bins_descending() {
+        for  let bin: BinSketch in histogram.non_empty_bins_descending() {
             bins.add(bin);
         }
         assert_eq!(3, &bins.size());
@@ -285,7 +285,7 @@ impl AbstractHistogramTest {
     fn test_non_empty_bins_ascending_iterator_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
          let bins: List<Bin> = ArrayList<>::new();
-        for  let bin: Bin in histogram.non_empty_bins_ascending() {
+        for  let bin: BinSketch in histogram.non_empty_bins_ascending() {
             bins.add(bin);
         }
         assert_true(&bins.is_empty());
@@ -303,7 +303,7 @@ impl AbstractHistogramTest {
     fn test_non_empty_bins_descending_iterator_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
          let bins: List<Bin> = ArrayList<>::new();
-        for  let bin: Bin in histogram.non_empty_bins_descending() {
+        for  let bin: BinSketch in histogram.non_empty_bins_descending() {
             bins.add(bin);
         }
         assert_true(&bins.is_empty());

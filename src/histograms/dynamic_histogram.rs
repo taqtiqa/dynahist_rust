@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-#[derive(Debug)]
-struct DynamicHistogram {
+// #[derive(Debug)]
+pub struct DynamicHistogram {
     counts: Vec<i64>,
     // use 2^mode bits for counting, mode is in the range {0, 1, 2, 3, 4, 5, 6}
     mode: i8,
@@ -16,7 +16,7 @@ struct DynamicHistogram {
 impl AbstractMutableHistogram for DynamicHistogram {
 
     fn get_bit_offset( idx: i32,  mode: i8) -> i32 {
-        return (idx << mode);
+        return idx << mode;
     }
 
     fn get_count_mask( mode: i32) -> i64 {
@@ -63,14 +63,14 @@ impl AbstractMutableHistogram for DynamicHistogram {
     }
 
     fn read( layout: impl Layout,  data_input: &DataInput) -> Result<DynamicHistogram, std::rc::Rc<DynaHistError>> {
-        require_non_null(layout);
-        require_non_null(&data_input);
+
+
          let histogram: DynamicHistogram = DynamicHistogram::new(layout);
         deserialize(histogram, &data_input);
         return Ok(histogram);
     }
 
-    fn add_value(&self,  value: f64,  count: i64) -> DynamicHistogram {
+    fn add_values(&self,  value: f64,   count: i64) -> DynamicHistogram {
          let absolute_index: i32 = get_layout().map_to_bin_index(value);
          let relative_index: i32 = absolute_index - self.index_offset;
          let array_idx: i32 = Self::get_array_index(relative_index, self.mode);
@@ -92,7 +92,7 @@ impl AbstractMutableHistogram for DynamicHistogram {
                     self.try_to_extend_and_increase_count(absolute_index, count, value);
                 }
             } else {
-                ArithmeticError(OVERFLOW_MSG);
+                return Err(DynaHistError::ArithmeticError(OVERFLOW_MSG));;
             }
         } else if count < 0 {
             return Err(DynaHist::IllegalArgumentError::new(&String::format(null as Locale, NEGATIVE_COUNT_MSG, count)));
@@ -185,9 +185,9 @@ impl AbstractMutableHistogram for DynamicHistogram {
         }
     }
 
-    fn add_histogram(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram {
-        require_non_null(histogram);
-        require_non_null(value_estimator);
+    fn add_histogram_from_estimator(&self,  histogram: impl Histogram,  value_estimator: &ValueEstimator) -> impl Histogram {
+
+
         if histogram.is_empty() {
             return self;
         }
@@ -195,9 +195,9 @@ impl AbstractMutableHistogram for DynamicHistogram {
             total_count += histogram.get_total_count();
             if total_count < 0 {
                 total_count -= histogram.get_total_count();
-                ArithmeticError(OVERFLOW_MSG);
+                return Err(DynaHistError::ArithmeticError(OVERFLOW_MSG));;
             }
-            update_min_max(&histogram.get_min(), &histogram.get_max());
+            updates_min_max(&histogram.get_min(), &histogram.get_max());
             increment_underflow_count(&histogram.get_underflow_count());
             increment_overflow_count(&histogram.get_overflow_count());
             if histogram.get_underflow_count() + histogram.get_overflow_count() < histogram.get_total_count() {
@@ -234,7 +234,7 @@ impl AbstractMutableHistogram for DynamicHistogram {
                 }
             }
         } else {
-            super.add_histogram(histogram, value_estimator);
+            super.add_histogram_from_estimator(histogram, value_estimator);
         }
         return self;
     }
