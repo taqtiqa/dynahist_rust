@@ -3,25 +3,21 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-/** A preprocessed and immutable histogram that allows fast order statistic queries. */
 
-const EMPTY_BIN_INDICES;
-
-const EMPTY_ACCUMULATED_COUNTS;
+/// A preprocessed and immutable histogram that allows fast order statistic queries.
 
 pub struct PreprocessedHistogram {
-    super: AbstractHistogram;
-
-     let mut min: f64;
-
-     let mut max: f64;
-
-     let accumulated_counts: Vec<i64>;
-
-     let non_empty_bin_indices: Vec<i32>;
+    min: f64,
+    max: f64,
+    accumulated_counts: Vec<i64>,
+    non_empty_bin_indices: Vec<i32>,
 }
 
 impl PreprocessedHistogram {
+
+    const EMPTY_BIN_INDICES: Vec<usize> = vec![0];
+
+    const EMPTY_ACCUMULATED_COUNTS: usize = 0;
 
     fn of( histogram: impl Histogram) -> impl Histogram {
         if histogram instanceof PreprocessedHistogram {
@@ -229,4 +225,7 @@ impl PreprocessedHistogram {
     fn is_mutable(&self) -> bool {
         return false;
     }
+}
+
+impl AbstractHistogram for PreprocessedHistogram {
 }

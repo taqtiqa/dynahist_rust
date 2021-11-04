@@ -8,6 +8,7 @@ use crate::bins::bin_iterator::BinIterator;
 use crate::errors::DynaHistError;
 // use crate::histograms::dynamic_histogram::DynamicHistogram;
 use crate::histograms::abstract_histogram::AbstractHistogram;
+use crate::histograms::histogram::Histogram;
 use crate::histograms::abstract_mutable_histogram::AbstractMutableHistogram;
 use crate::layouts::layout::Layout;
 use crate::quantiles::quantile_estimation::QuantileEstimation;
@@ -20,62 +21,76 @@ pub struct StaticHistogram {
     counts: Vec<i64>,
 }
 
-impl AbstractMutableHistogram for StaticHistogram {
-    fn new(layout: impl Layout) -> StaticHistogram {
-        let counts_array_size: i32 =
-            layout.get_overflow_bin_index() - layout.get_underflow_bin_index() - 1;
-        Self::check_argument(counts_array_size >= 0);
-        let counts: [i64; counts_array_size] = [0; counts_array_size];
-        self.counts = counts;
-    }
+impl StaticHistogram {
 
-    fn add_values(&self, value: f64, count: i64) -> impl Histogram {
+    fn read(
+        layout: impl Layout,
+        data_input: &DataInput,
+    ) -> Result<Self, std::rc::Rc<DynaHistError>> {
+        let histogram: Self = Self::new(layout);
+        Self::deserialize(histogram, &data_input);
+        return Ok(histogram);
+    }
+}
+
+impl Histogram for StaticHistogram {
+    fn add_values(&self, value: f64, count: i64) -> Self {
         if count > 0 {
-            if total_count + count >= 0 {
-                total_count += count;
-                update_min_max(value);
-                let array_idx: i32 = get_layout().map_to_bin_index(value)
-                    - get_layout().get_underflow_bin_index()
+            if self.total_count + count >= 0 {
+                self.total_count += count;
+                Self::update_min_max(value);
+                let array_idx: i32 = Self::get_layout().map_to_bin_index(value)
+                    - Self::get_layout().get_underflow_bin_index()
                     - 1;
                 if array_idx >= 0 && array_idx < self.counts.len() {
                     self.counts[array_idx] += count;
-                } else {
-                    if !value.is_nan() {
+                } else if !value.is_nan() {
                         if array_idx < 0 {
-                            increment_underflow_count(count);
+                            Self::increment_underflow_count(count);
                         } else {
-                            increment_overflow_count(count);
+                            Self::increment_overflow_count(count);
                         }
                     } else {
-                        total_count -= count;
-                        return Err(DynaHist::IllegalArgumentError::new(NAN_VALUE_MSG));
+                        self.total_count -= count;
+                        return Err(DynaHistError::IllegalArgumentError { source: Self::NAN_VALUE_MSG });
                     }
-                }
+
             } else {
-                return Err(DynaHistError::ArithmeticError(OVERFLOW_MSG));
+                return Err(DynaHistError::ArithmeticError(Self::OVERFLOW_MSG));
             }
         } else if count < 0 {
-            return Err(DynaHist::IllegalArgumentError::new(&String::format(
-                null as Locale,
-                NEGATIVE_COUNT_MSG,
+            let source = format!(
+                "Count must be non-negative, but was {}!",
                 count,
-            )));
+            );
+            return Err(DynaHistError::IllegalArgumentError{ source });
         }
         return self;
     }
+}
+
+impl AbstractMutableHistogram for StaticHistogram {
+    fn new(layout: impl Layout) -> Self {
+        let counts_array_size: usize =
+            layout.get_overflow_bin_index() - layout.get_underflow_bin_index() - 1;
+        Self::check_argument(counts_array_size >= 0);
+        let counts = vec![0; counts_array_size];
+        Self { counts }
+    }
+
 
     fn get_estimated_footprint_in_bytes(&self) -> i64 {
-        return ((self.counts.len() as i64 * Long::BYTES) + ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES + ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES + // counts
-        Integer::BYTES)
-            + super.get_estimated_footprint_in_bytes();
+        return ((self.counts.len() as i64 * i64::BYTES) + Self::ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES + Self::ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES + // counts
+        i32::BYTES)
+            + self.get_estimated_footprint_in_bytes();
     }
 
     fn min_allocated_bin_index_inclusive(&self) -> i32 {
-        return get_layout().get_underflow_bin_index() + 1;
+        return self.get_layout().get_underflow_bin_index() + 1;
     }
 
     fn max_allocated_bin_index_exclusive(&self) -> i32 {
-        return get_layout().get_overflow_bin_index();
+        return self.get_layout().get_overflow_bin_index();
     }
 
     fn get_allocated_bin_count(&self, bin_index: i32) -> i64 {
@@ -94,7 +109,7 @@ impl AbstractMutableHistogram for StaticHistogram {
             }
         }
 
-        return determine_required_mode(c);
+        return self.determine_required_mode(c);
     }
 
     fn ensure_count_array(
@@ -107,21 +122,13 @@ impl AbstractMutableHistogram for StaticHistogram {
     }
 
     fn increase_count(&self, absolute_index: i32, count: i64) {
-        if absolute_index <= get_layout().get_underflow_bin_index() {
-            increment_underflow_count(count);
-        } else if absolute_index >= get_layout().get_overflow_bin_index() {
-            increment_overflow_count(count);
+        if absolute_index <= self.get_layout().get_underflow_bin_index() {
+            self.increment_underflow_count(count);
+        } else if absolute_index >= self.get_layout().get_overflow_bin_index() {
+            self.increment_overflow_count(count);
         } else {
-            self.counts[absolute_index - get_layout().get_underflow_bin_index() - 1] += count;
+            self.counts[absolute_index - self.get_layout().get_underflow_bin_index() - 1] += count;
         }
     }
 
-    fn read(
-        layout: impl Layout,
-        data_input: &DataInput,
-    ) -> Result<StaticHistogram, std::rc::Rc<DynaHistError>> {
-        let histogram: StaticHistogram = StaticHistogram::new(layout);
-        deserialize(histogram, &data_input);
-        return Ok(histogram);
-    }
 }

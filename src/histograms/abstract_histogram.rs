@@ -62,7 +62,7 @@ where
     start: T,
 }
 
-impl<T> Quantiles {
+impl<T> Quantiles<T> {
     fn next_quantile(&self) {
         self.quantiles().next()
     }
@@ -122,9 +122,9 @@ where
     T: Clone,
 {
     type Item = T;
-    type IntoIter = std::iter::IntoIterator::IntoIter<T>;
+    type IntoIter = <T as std::iter::IntoIterator>::IntoIter;
 
-    fn into_iter(mut self) -> std::iter::IntoIterator::IntoIter<T> { /* ... */
+    fn into_iter(mut self) -> <T as std::iter::IntoIterator>::IntoIter { /* ... */
     }
 }
 
@@ -226,7 +226,7 @@ struct MidpointValuesIterator {}
 //     // }
 // }
 
-pub trait AbstractHistogram {
+pub trait AbstractHistogram: Histogram {
     type L: Layout;
     type H: Histogram;
     type B: BinIterator + BinSketch + Iterator;
@@ -249,7 +249,7 @@ pub trait AbstractHistogram {
 
     const NAN_VALUE_MSG: &'static str = "Value was not a number (NaN)!";
 
-    const NEGATIVE_COUNT_MSG: &'static str = "Count must be non-negative, but was %d!";
+    const NEGATIVE_COUNT_MSG: &'static str = "Count must be non-negative, but was {}!";
 
     const INCOMPATIBLE_SERIAL_VERSION_MSG: &'static str = format!(
         "Incompatible serial versions! Expected version {} but was %d.",
@@ -333,11 +333,11 @@ pub trait AbstractHistogram {
     //     return true;
     // }
 
-    fn get_layout(&self) -> Self::L {
+    fn get_layout(&self) -> <Self as AbstractHistogram>::L {
         return self.layout;
     }
 
-    fn get_bin_by_rank(&self, rank: i64) -> Self::B {
+    fn get_bin_by_rank(&self, rank: i64) -> <Self as AbstractHistogram>::B {
         let total_count: i64 = Self::get_total_count();
         Self::check_argument(rank >= 0);
         Self::check_argument(rank < total_count);
@@ -421,7 +421,7 @@ pub trait AbstractHistogram {
         return self.add_histogram_from_estimator(histogram, Self::DEFAULT_VALUE_ESTIMATOR);
     }
 
-    fn non_empty_bins_ascending(&self) -> &Self::B {
+    fn non_empty_bins_ascending(&self) -> &<Self as AbstractHistogram>::B {
         if self.is_empty() {
             return vec![];
         }
@@ -442,7 +442,7 @@ pub trait AbstractHistogram {
         // return NonEmptyBinsIterable {};
     }
 
-    fn non_empty_bins_descending(&self) -> &Vec<Self::B> {
+    fn non_empty_bins_descending(&self) -> &Vec<<Self as AbstractHistogram>::B> {
         if self.is_empty() {
             return &vec![Self::B];
         }

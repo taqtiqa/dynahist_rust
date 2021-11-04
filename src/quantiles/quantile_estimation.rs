@@ -6,7 +6,7 @@
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 use crate::values::value_estimation::ValueEstimation;
-use crate::values::value_estimators::ValueEstimatorUniform;
+// use crate::values::value_estimators::ValueEstimatorUniform;
 
 // Sealing stop crates other than DynaHist from implementing any functions
 // provided by this trait.

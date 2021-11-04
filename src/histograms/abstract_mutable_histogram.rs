@@ -60,8 +60,8 @@ impl BinCopyImpl {
         bin_index;
     }
 
-    fn get_histogram(&self) -> Self::H {
-        return Self;
+    fn get_histogram(&self) -> impl Histogram {
+        return self.histogram;
     }
 
     fn get_bin_count(&self) -> i64 {
@@ -175,16 +175,16 @@ impl BinIteratorImpl {
         return self.bin_index;
     }
 
-    fn get_histogram(&self) -> Self::H {
-        return Self;
+    fn get_histogram(&self) -> impl Histogram {
+        return self.histogram;
     }
 }
 
-pub trait AbstractMutableHistogram: AbstractHistogram {
+pub trait AbstractMutableHistogram: AbstractHistogram + Histogram {
     type BIter: BinIterator + BinSketch + Iterator;
     type VIter: ValueIterator + ValueSketch + Iterator;
 
-    fn new(layout: Self::L) -> Self {
+    fn new(layout: impl Layout) -> Self {
         Default::default();
     }
 
