@@ -3,17 +3,17 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::bins::bin::BinSketch;
-use crate::bins::bin_iterator::BinIterator;
+// use crate::bins::bin::BinSketch;
+// use crate::bins::bin_iterator::BinIterator;
 use crate::errors::DynaHistError;
 // use crate::histograms::dynamic_histogram::DynamicHistogram;
 use crate::histograms::abstract_histogram::AbstractHistogram;
-use crate::histograms::histogram::Histogram;
 use crate::histograms::abstract_mutable_histogram::AbstractMutableHistogram;
+use crate::histograms::histogram::Histogram;
 use crate::layouts::layout::Layout;
 use crate::quantiles::quantile_estimation::QuantileEstimation;
-use crate::sketches::data::{DataInput, DataOutput};
-use crate::utilities::Algorithms;
+use crate::sketches::data::DataInput;
+// use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 use crate::values::value_estimation::ValueEstimation;
 
@@ -22,7 +22,6 @@ pub struct StaticHistogram {
 }
 
 impl StaticHistogram {
-
     fn read(
         layout: impl Layout,
         data_input: &DataInput,
@@ -45,25 +44,23 @@ impl Histogram for StaticHistogram {
                 if array_idx >= 0 && array_idx < self.counts.len() {
                     self.counts[array_idx] += count;
                 } else if !value.is_nan() {
-                        if array_idx < 0 {
-                            Self::increment_underflow_count(count);
-                        } else {
-                            Self::increment_overflow_count(count);
-                        }
+                    if array_idx < 0 {
+                        Self::increment_underflow_count(count);
                     } else {
-                        self.total_count -= count;
-                        return Err(DynaHistError::IllegalArgumentError { source: Self::NAN_VALUE_MSG });
+                        Self::increment_overflow_count(count);
                     }
-
+                } else {
+                    self.total_count -= count;
+                    return Err(DynaHistError::IllegalArgumentError {
+                        source: Self::NAN_VALUE_MSG,
+                    });
+                }
             } else {
                 return Err(DynaHistError::ArithmeticError(Self::OVERFLOW_MSG));
             }
         } else if count < 0 {
-            let source = format!(
-                "Count must be non-negative, but was {}!",
-                count,
-            );
-            return Err(DynaHistError::IllegalArgumentError{ source });
+            let source = format!("Count must be non-negative, but was {}!", count,);
+            return Err(DynaHistError::IllegalArgumentError { source });
         }
         return self;
     }
@@ -77,7 +74,6 @@ impl AbstractMutableHistogram for StaticHistogram {
         let counts = vec![0; counts_array_size];
         Self { counts }
     }
-
 
     fn get_estimated_footprint_in_bytes(&self) -> i64 {
         return ((self.counts.len() as i64 * i64::BYTES) + Self::ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES + Self::ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES + // counts
@@ -130,5 +126,4 @@ impl AbstractMutableHistogram for StaticHistogram {
             self.counts[absolute_index - self.get_layout().get_underflow_bin_index() - 1] += count;
         }
     }
-
 }

@@ -3,13 +3,27 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::bins::bin::BinSketch;
+use crate::bins::bin_iterator::BinIterator;
+use crate::errors::DynaHistError;
+// use crate::histograms::dynamic_histogram::DynamicHistogram;
+use crate::histograms::abstract_histogram::AbstractHistogram;
+use crate::histograms::histogram::Histogram;
+use crate::histograms::abstract_mutable_histogram::AbstractMutableHistogram;
+use crate::layouts::layout::Layout;
+use crate::quantiles::quantile_estimation::QuantileEstimation;
+use crate::sketches::data::DataInput;
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
+use crate::values::value_estimation::ValueEstimation;
 
 /// A preprocessed and immutable histogram that allows fast order statistic queries.
 
 pub struct PreprocessedHistogram {
-    min: f64,
-    max: f64,
     accumulated_counts: Vec<i64>,
+    histogram_type: String,
+    max: f64,
+    min: f64,
     non_empty_bin_indices: Vec<i32>,
 }
 
@@ -20,20 +34,20 @@ impl PreprocessedHistogram {
     const EMPTY_ACCUMULATED_COUNTS: usize = 0;
 
     fn of( histogram: impl Histogram) -> impl Histogram {
-        if histogram instanceof PreprocessedHistogram {
+        if histogram.histogram_type == "PreprocessedHistogram".to_string() {
             return histogram;
         } else {
-            return PreprocessedHistogram::new(histogram);
+            return Self::new(histogram);
         }
     }
 
-    fn new( histogram: impl Histogram) -> PreprocessedHistogram {
-        super(&histogram.get_layout());
-        min = histogram.get_min();
-        max = histogram.get_max();
+    fn new( histogram: impl Histogram) -> Self {
+        let layout = &histogram.get_layout();
+        layout.min = histogram.get_min();
+        layout.max = histogram.get_max();
         if histogram.is_empty() {
-            non_empty_bin_indices = EMPTY_BIN_INDICES;
-            accumulated_counts = EMPTY_ACCUMULATED_COUNTS;
+            layout.non_empty_bin_indices = Self::EMPTY_BIN_INDICES;
+            layout.accumulated_counts = Self::EMPTY_ACCUMULATED_COUNTS;
         } else {
              let first_non_empty_bin: BinIterator = histogram.get_first_non_empty_bin();
              let last_non_empty_bin: BinIterator = histogram.get_last_non_empty_bin();

@@ -23,7 +23,7 @@
 //            .measure(EmpiricalDensity) // EmpiricalFrequency (equal bin widths, custom layout), Guasssian, LogNormal etc.
 //            .state(Dynamic) // Static, Preprocessed
 //            .co_hack(10) // Coordinated omission "correction"
-//            .quantile_estimator(HerrellDavis) // R1-R9(order statistics), Hill, POT(threshold), see NIST reference: https://www.itl.nist.gov/div898/software/dataplot/refman2/auxillar/quantile.htm
+//            .quantile_estimator(HerrellDavis) // R1-R9(order statistics), Hill, Pot(threshold), see NIST reference: https://www.itl.nist.gov/div898/software/dataplot/refman2/auxillar/quantile.htm
 //            .percentile_estimator(R8) // R1-R9, see NIST reference: https://www.itl.nist.gov/div898/handbook/prc/section2/prc262.htm
 //            .iterator_strategy(NonEmpty) // All
 //            .iterator(PercentileRange(Prob(0.95),Prob(1.0),Prob(0.0001))) // QuantileRange(Prob(0.0), Prob(1.0)),

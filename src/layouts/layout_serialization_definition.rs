@@ -12,7 +12,7 @@ where
     L: Layout
 {
     serial_version: i64,
-    layout: &str,
+    layout: String,
     writer: SerializationWriter<L>,
     reader: SerializationReader<L>,
 }

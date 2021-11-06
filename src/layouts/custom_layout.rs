@@ -11,7 +11,7 @@ use crate::{errors::DynaHistError, layouts::layout::Layout};
 
 /// A custom histogram bin layout.
 pub struct CustomLayout {
-    histogram_type: &str,
+    histogram_type: String,
     sorted_bin_boundaries: Vec<f64>,
 }
 
