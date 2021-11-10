@@ -29,7 +29,7 @@ use crate::values::value_estimators::ValueEstimatorUniform;
 // https://www.reddit.com/r/rust/comments/f7uoyo/advice_on_implementing_a_custom_flat_iterator/
 // https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=eea0af2c427fef86b643dad2901bed20
 
-trait Probability {}
+pub trait Probability {}
 
 // Strategies (inter-bin):
 // - All
@@ -46,13 +46,13 @@ trait Probability {}
 // https://stackoverflow.com/questions/27893223/how-do-i-iterate-over-a-range-with-a-custom-step
 struct QuantileRange<T>(T, T)
 where
-    for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
+    //for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
     T: Probability + PartialOrd,
     T: Clone;
 
 struct Quantiles<T>
 where
-    for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
+    //for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
     T: Probability + PartialOrd,
     T: Clone,
 {
@@ -62,32 +62,34 @@ where
     start: T,
 }
 
-impl<T> Quantiles<T> {
+impl<T: Probability + Clone + std::cmp::PartialOrd> Probability for Quantiles<T> {}
+
+impl<T: Probability + Clone + std::cmp::PartialOrd> Quantiles<T> {
     fn next_quantile(&self) {
         self.quantiles().next()
     }
 }
 
-impl<T> Iterator for Quantiles<T>
-where
-    for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
-    T: Probability + PartialOrd,
-    T: Clone,
-{
-    type Item = T;
+// impl<T> Iterator for Quantiles<T>
+// where
+//     for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
+//     T: Probability + PartialOrd,
+//     T: Clone,
+// {
+//     type Item = T;
 
-    #[inline]
-    fn next(&mut self) -> Option<T> {
-        if self.current < self.end {
-            self.current = &self.next_quantile();
-            Some(&self.current)
-        } else {
-            None
-        }
-    }
-}
+//     #[inline]
+//     fn next(&mut self) -> Option<T> {
+//         if self.current < self.end {
+//             self.current = &self.next_quantile();
+//             Some(&self.current)
+//         } else {
+//             None
+//         }
+//     }
+// }
 // Iterator yielding immutable references
-impl<'a, T> IntoIterator for &'a Quantiles<T>
+impl<'a, T: Probability> IntoIterator for &'a Quantiles<T>
 where
     &'a T: std::ops::Add<&'a T, Output = T>,
     T: Probability + PartialOrd,
@@ -115,11 +117,12 @@ where
 }
 
 // Iterator yielding values
-impl<T> IntoIterator for &Quantiles<T>
+impl<T> IntoIterator for Quantiles<T>
 where
     T: std::ops::Add<T, Output = T>,
     T: Probability + PartialOrd,
     T: Clone,
+    T: std::iter::Iterator,
 {
     type Item = T;
     type IntoIter = <T as std::iter::IntoIterator>::IntoIter;
@@ -128,27 +131,55 @@ where
     }
 }
 
+// Operator overloading for all structs with a trait.
+// https://stackoverflow.com/questions/26518233/overloading-an-operator-for-all-structs-with-a-trait-in-rust
+
+// updated, DRY impl for `Quantiles<T>` and `&Quantiles<T>`
+// impl<T> std::ops::Add for T {
+//     type Output = <T as Add>::Output;
+//     fn add(self, rhs: &T) -> Self::Output {
+//         // some calculations here
+//     }
+// }
+
+// updated, DRY impl for `Quantiles<T>` and `&Quantiles<T>`
+// impl<T> std::ops::Add for &T {
+//     type Output = <T as Add>::Output;
+//     fn add(self, rhs: &T) -> Self::Output {
+//         T::add(*self, *rhs)
+//     }
+// }
+
 /// Percentiles are bounded iterators.  Limited to the interval `[0,1]` with a
 /// minimum delta/step-size of f64::EPSILON
 // https://stackoverflow.com/questions/27893223/how-do-i-iterate-over-a-range-with-a-custom-step
 struct PercentileRange<T>(T, T, T)
 where
-    for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
+    // for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
     T: Probability + PartialOrd,
     T: Clone;
 
 struct Percentiles<T>
 where
-    for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
-    T: Probability + PartialOrd,
-    T: Clone, {}
-// Note `PercentileRange` is used to configure the `Percentiles` struct.
+    // for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
+    T: PartialOrd,
+    T: Clone,
+    T: Probability,
+{
+    _marker: std::marker::PhantomData<T>
+
+    }
+
+impl<T: Probability + std::cmp::PartialOrd + Clone> Probability for Percentiles<T> {}
+
+    // Note `PercentileRange` is used to configure the `Percentiles` struct.
 // This is done in the Histogram builder helper function `iterator`.
 impl<T> Iterator for Percentiles<T>
 where
-    for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
+    // for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
     T: PartialOrd,
     T: Clone,
+    T: Probability
 {
     type Item = T;
 
@@ -226,16 +257,16 @@ struct MidpointValuesIterator {}
 //     // }
 // }
 
-pub trait AbstractHistogram: Histogram {
+pub trait AbstractHistogram: Histogram + Probability {
     type L: Layout;
     type H: Histogram;
-    type B: BinIterator + BinSketch + Iterator;
-    type V: ValueIterator + ValueSketch + Iterator;
+    type B: BinIterator + BinSketch + std::iter::Iterator;
+    type V: ValueIterator + ValueSketch + std::iter::Iterator;
 
     // No longer required by revised implementation
     //const DEFAULT_QUANTILE_ESTIMATOR: dyn QuantileEstimation = QuantileEstimator::create();
 
-    const DEFAULT_VALUE_ESTIMATOR: dyn ValueEstimation = ValueEstimatorUniform::new();
+    // const DEFAULT_VALUE_ESTIMATOR: dyn ValueEstimation = ValueEstimatorUniform::new();
 
     const ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES: i64 = 4;
 
@@ -262,6 +293,9 @@ pub trait AbstractHistogram: Histogram {
         Default::default()
     }
 
+    fn default_value_estimator(){
+        ValueEstimatorUniform::new()
+    }
     // fn format_counts(&self) -> String {
     //     if Self::get_total_count() == 0 {
     //         return "{}";
@@ -365,7 +399,7 @@ pub trait AbstractHistogram: Histogram {
     }
 
     fn get_value(&self, rank: i64) -> f64 {
-        return self.get_value_from_estimator(rank, Self::DEFAULT_VALUE_ESTIMATOR);
+        return self.get_value_from_estimator(rank, Self::default_value_estimator());
     }
 
     fn get_preprocessed_copy(&self) -> Self::H {
@@ -418,7 +452,7 @@ pub trait AbstractHistogram: Histogram {
     }
 
     fn add_histogram(&self, histogram: Self::H) -> Self::H {
-        return self.add_histogram_from_estimator(histogram, Self::DEFAULT_VALUE_ESTIMATOR);
+        return self.add_histogram_from_estimator(histogram, Self::default_value_estimator());
     }
 
     fn non_empty_bins_ascending(&self) -> &<Self as AbstractHistogram>::B {

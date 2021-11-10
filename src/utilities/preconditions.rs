@@ -46,7 +46,7 @@ pub trait Preconditions {
     ///
     /// # Errors
     ///
-    /// Return [`DynaHist::IllegalArgumentError`] if the given expression evaluates to {@code false}
+    /// Return [`DynaHist::IllegalArgumentError`] if the given expression evaluates to [`false`]
     ///
     /// # Port
     ///

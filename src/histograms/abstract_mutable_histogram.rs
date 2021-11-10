@@ -51,6 +51,7 @@ struct BinCopyImpl {
 }
 
 impl AbstractBin for BinCopyImpl {}
+impl BinSketch for BinCopyImpl {}
 
 impl BinCopyImpl {
     fn new(bin_count: i64, less_count: i64, greater_count: i64, bin_index: i32) -> BinCopyImpl {
@@ -393,7 +394,7 @@ pub trait AbstractMutableHistogram: AbstractHistogram + Histogram {
             let max_bin_index: i32 = layout.map_to_bin_index(self.max);
             // 4. write first regular effectively non-zero bin index
             let first_regular_effectively_non_zero_bin_index: i32 =
-                std::cmp::max(&self.min_allocated_bin_index_inclusive(), min_bin_index);
+                i32::max(&self.min_allocated_bin_index_inclusive(), min_bin_index);
             while self.get_allocated_bin_count(first_regular_effectively_non_zero_bin_index)
                 - (if min_bin_index == first_regular_effectively_non_zero_bin_index {
                     1

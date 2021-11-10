@@ -6,9 +6,7 @@ where
 struct LogOptimalType;
 type Histogram = Sketch<LogOptimalType>;
 
-impl GuessLayout for LogOptimalLayout {
-    const LOG_MIN_VALUE: f64 = f64::MIN.ln();
-}
+impl GuessLayout for LogOptimalLayout {}
 
 /// Support `histogram_1 + histogram_2`
 impl std::ops::Add for Sketch<T> {

@@ -14,11 +14,11 @@ pub trait Algorithms: Preconditions {
     //
     const NEGATIVE_INFINITY_MAPPED_TO_LONG: isize = f64::NEG_INFINITY as isize;
 
-    assert_eq!(NEGATIVE_INFINITY_MAPPED_TO_LONG, isize::MIN);
+    // assert_eq!(Self::NEGATIVE_INFINITY_MAPPED_TO_LONG, isize::MIN);
 
     const POSITIVE_INFINITY_MAPPED_TO_LONG: isize = f64::INFINITY as isize;
 
-    assert_eq!(POSITIVE_INFINITY_MAPPED_TO_LONG, isize::MAX);
+    // assert_eq!(Self::POSITIVE_INFINITY_MAPPED_TO_LONG, isize::MAX);
 
     //fn new() -> Box<dyn Algorithms> {}
 
@@ -64,9 +64,9 @@ pub trait Algorithms: Preconditions {
             r = y1 * 0.5 + y2 * 0.5;
         }
         if r >= y1 && r >= y2 {
-            return std::cmp::max(y1, y2);
+            return f64::max(y1, y2);
         } else if r <= y1 && r <= y2 {
-            return std::cmp::min(y1, y2);
+            return f64::min(y1, y2);
         } else {
             return r;
         }
@@ -147,8 +147,8 @@ pub trait Algorithms: Preconditions {
     /// Finds the first long value in the range [min, max] for which the given predicate returns {@code
     /// true}.
     ///
-    /// The predicate must return {@code false} for all long values smaller than some value X from
-    /// [min, max] and must return {@code true} for all long values equal to or greater than X. The
+    /// The predicate must return [`false`] for all long values smaller than some value X from
+    /// [min, max] and must return [`true`] for all long values equal to or greater than X. The
     /// return value of this function will be X.
     ///
     /// The time complexity is logarithmic in terms of the interval length max - min.
@@ -157,7 +157,7 @@ pub trait Algorithms: Preconditions {
     /// - `min`: the lower bound of the search interval
     /// - `max`: the upper bound of the search interval
     ///
-    /// the smallest value for which the predicate evaluates to {@code true}
+    /// the smallest value for which the predicate evaluates to [`true`]
     ///
     fn find_first(predicate: &i64, min: i64, max: i64) -> i64 {
         Self::check_argument(min <= max);
@@ -183,10 +183,10 @@ pub trait Algorithms: Preconditions {
     }
 
     /// Finds the first long value in the range [min, max] for which the given
-    ///  predicate returns {@code true}.
+    ///  predicate returns [`true`].
     ///
-    /// The predicate must return {@code false} for all long values smaller than some value X from
-    /// [min, max] and must return {@code true} for all long values equal to or greater than X. The
+    /// The predicate must return [`false`] for all long values smaller than some value X from
+    /// [min, max] and must return [`true`] for all long values equal to or greater than X. The
     /// return value of this function will be X.
     ///
     /// The time complexity is logarithmic in terms of the interval length max - min.
@@ -199,7 +199,7 @@ pub trait Algorithms: Preconditions {
     /// - `max`: the upper bound of the search interval
     /// - `initialGuess`: an initial guess
     ///
-    /// the smallest value for which the predicate evaluates to {@code true}
+    /// the smallest value for which the predicate evaluates to [`true`]
     ///
     fn find_first_guess<P>(predicate: P, min: i64, max: i64, initial_guess: i64) -> i64
     where

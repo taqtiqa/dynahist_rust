@@ -4,6 +4,13 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::values::value_estimation::ValueEstimation;
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
+
+// Sealing a trait stops other crates from implementing any traits that use it.
+mod private {
+    pub trait Sealed {}
+}
 
 /// Value estimators.
 /// Estimator types for the recorded values from a histogram.
@@ -22,6 +29,9 @@ pub(crate) struct ValueEstimatorMidPoint {}
 // }
 
 // Implement value estimation for each estimator type.
+impl Algorithms for ValueEstimatorUniform {}
+impl Preconditions for ValueEstimatorUniform {}
+impl private::Sealed for ValueEstimatorUniform {}
 impl ValueEstimation for ValueEstimatorUniform {
     fn new() -> Self {
         Self {}
@@ -29,6 +39,8 @@ impl ValueEstimation for ValueEstimatorUniform {
 }
 
 // Implement value estimation for each estimator type.
+impl Algorithms for ValueEstimatorLowerBound {}
+impl Preconditions for ValueEstimatorLowerBound {}
 impl ValueEstimation for ValueEstimatorLowerBound {
     fn new() -> Self {
         Self {}
@@ -36,6 +48,8 @@ impl ValueEstimation for ValueEstimatorLowerBound {
 }
 
 // Implement value estimation for each estimator type.
+impl Algorithms for ValueEstimatorUpperBound {}
+impl Preconditions for ValueEstimatorUpperBound {}
 impl ValueEstimation for ValueEstimatorUpperBound {
     fn new() -> Self {
         Self {}
@@ -43,6 +57,8 @@ impl ValueEstimation for ValueEstimatorUpperBound {
 }
 
 // Implement value estimation for each estimator type.
+impl Algorithms for ValueEstimatorMidPoint {}
+impl Preconditions for ValueEstimatorMidPoint {}
 impl ValueEstimation for ValueEstimatorMidPoint {
     fn new() -> Self {
         Self {}

@@ -5,7 +5,7 @@
 
 use crate::errors::DynaHistError;
 use crate::layouts::layout::Layout;
-use crate::utilities::data::DataOutput;
+use crate::sketches::data::DataOutput;
 
 /// A serializer for a given histogram layout.
 ///

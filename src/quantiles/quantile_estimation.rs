@@ -10,17 +10,18 @@ use crate::values::value_estimation::ValueEstimation;
 
 // Sealing stop crates other than DynaHist from implementing any functions
 // provided by this trait.
-mod private {
-    pub trait Sealed {}
-    impl Sealed for dyn super::QuantileEstimation {}
-}
+// mod private {
+//     pub trait Sealed {}
+//     impl Sealed for dyn super::QuantileEstimation { }
+// }
 
 /// A quantile estimator.
-pub trait QuantileEstimation<QEstimator = Self>:
-    Preconditions + Algorithms + ValueEstimation + private::Sealed
+// pub trait QuantileEstimation<QEstimator = Self>:
+pub trait QuantileEstimation:
+    Preconditions + Algorithms + ValueEstimation
 {
-    type QEstimator: QuantileEstimation;
-    type VEstimator: ValueEstimation;
+    // type QEstimator: QuantileEstimation;
+    // type VEstimator: ValueEstimation;
 
     // This default is used in SciPy 1.5.2
     //const DEFAULT: Self = Self::create(0.4, 0.4);

@@ -4,10 +4,13 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::layouts::guess_layout::GuessLayout;
+use crate::layouts::layout::Layout;
 use crate::seriate::SeriateUtil;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
-use crate::{errors::DynaHistError, layouts::layout::Layout};
+use crate::errors::DynaHistError;
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
 
 /// A histogram bin layout where all bins covering the given range have a
 /// width that is either smaller than a given absolute bin width limit or a
@@ -20,12 +23,64 @@ pub struct LogQuadraticLayout {
     absolute_bin_width_limit: f64,
     factor_normal: f64,
     factor_subnormal: f64,
-    histogram_type: &str,
+    histogram_type: String,
     offset: f64,
-    overflow_bin_index: i32,
+    overflow_bin_index: usize,
     relative_bin_width_limit: f64,
-    underflow_bin_index: i32,
+    underflow_bin_index: usize,
     unsigned_value_bits_normal_limit: i64,
+}
+
+impl Algorithms for LogQuadraticLayout {}
+impl Preconditions for LogQuadraticLayout {}
+impl GuessLayout for LogQuadraticLayout {
+
+    fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
+        if bin_index >= 0 {
+            return self.get_bin_lower_bound_approximation_helper(bin_index);
+        } else {
+            return -self.get_bin_lower_bound_approximation_helper(-bin_index);
+        }
+    }
+
+    fn get_bin_lower_bound_approximation_helper(&self, idx: i32) -> f64 {
+        let x: f64 = idx * self.absolute_bin_width_limit;
+        if x < f64::from_bits(self.unsigned_value_bits_normal_limit) {
+            return x;
+        } else {
+            let s: f64 = (idx - self.offset) / self.factor_normal;
+            let exponent: i32 = (num::Float::floor(s) as i32) / 3;
+            let exponent_mul3_plus4: i32 = exponent + (exponent << 1) + 4;
+            let mantissa_plus1: f64 = // mantissa_plus1 is in the range [1, 2)
+            3.0 - num::integer::sqrt(exponent_mul3_plus4 - s);
+            // Upstream (Java) uses `Math.scalb` as an efficient `f * 2 ^ scale_factor`
+            // `f * Math.pow(2, scale_factor)` claims of 2-fold speed up are around.
+            //return Math::scalb(mantissa_plus1, exponent - 1023);
+            return mantissa_plus1 * i32::pow(2, exponent - 1023)
+        }
+    }
+}
+
+impl Layout for LogQuadraticLayout {
+    type L = Self;
+
+    fn map_to_bin_index(&self, value: f64) -> usize {
+        return Self::map_to_bin_index_detail(
+            value,
+            self.factor_normal,
+            self.factor_subnormal,
+            self.unsigned_value_bits_normal_limit,
+            self.offset,
+        );
+    }
+
+    fn get_underflow_bin_index(&self) -> usize {
+        return self.underflow_bin_index;
+    }
+
+    fn get_overflow_bin_index(&self) -> usize {
+        return self.overflow_bin_index;
+    }
 }
 
 impl LogQuadraticLayout {
@@ -215,7 +270,7 @@ impl LogQuadraticLayout {
     // keyword was used for this method and all called methods. Due to a performance penalty (see
     // https://bugs.openjdk.java.net/browse/JDK-8136414) of strictfp, which is hopefully fixed in Java
     // 15, we have omitted strictfp here in the meantime.
-    fn map_to_bin_index(
+    fn map_to_bin_index_detail(
         value: f64,
         factor_normal: f64,
         factor_subnormal: f64,
@@ -231,24 +286,6 @@ impl LogQuadraticLayout {
             idx = Self::calculate_sub_normal_idx(unsigned_value_bits, factor_subnormal);
         }
         return if value_bits >= 0 { idx } else { !idx };
-    }
-
-    fn map_to_bin_index(&self, value: f64) -> usize {
-        return Self::map_to_bin_index(
-            value,
-            self.factor_normal,
-            self.factor_subnormal,
-            self.unsigned_value_bits_normal_limit,
-            self.offset,
-        );
-    }
-
-    fn get_underflow_bin_index(&self) -> usize {
-        return self.underflow_bin_index;
-    }
-
-    fn get_overflow_bin_index(&self) -> usize {
-        return self.overflow_bin_index;
     }
 
     fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
@@ -334,31 +371,6 @@ impl LogQuadraticLayout {
     //     }
     //     return true;
     // }
-
-    fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
-        if bin_index >= 0 {
-            return self.get_bin_lower_bound_approximation_helper(bin_index);
-        } else {
-            return -self.get_bin_lower_bound_approximation_helper(-bin_index);
-        }
-    }
-
-    fn get_bin_lower_bound_approximation_helper(&self, idx: i32) -> f64 {
-        let x: f64 = idx * self.absolute_bin_width_limit;
-        if x < f64::from_bits(self.unsigned_value_bits_normal_limit) {
-            return x;
-        } else {
-            let s: f64 = (idx - self.offset) / self.factor_normal;
-            let exponent: i32 = (num::Float::floor(s) as i32) / 3;
-            let exponent_mul3_plus4: i32 = exponent + (exponent << 1) + 4;
-            let mantissa_plus1: f64 = // mantissa_plus1 is in the range [1, 2)
-            3.0 - num::integer::sqrt(exponent_mul3_plus4 - s);
-            // Upstream (Java) uses `Math.scalb` as an efficient `f * 2 ^ scale_factor`
-            // `f * Math.pow(2, scale_factor)` claims of 2-fold speed up are around.
-            //return Math::scalb(mantissa_plus1, exponent - 1023);
-            return mantissa_plus1 * i32::pow(2, exponent - 1023)
-        }
-    }
 
     // fn to_string(&self) -> String {
     //     return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", self.histogram_type, self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);

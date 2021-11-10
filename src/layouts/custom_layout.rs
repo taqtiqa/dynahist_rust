@@ -4,10 +4,11 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::layouts::guess_layout::GuessLayout;
-use crate::seriate::SeriateUtil;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
 use crate::{errors::DynaHistError, layouts::layout::Layout};
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
 
 /// A custom histogram bin layout.
 pub struct CustomLayout {
@@ -16,12 +17,43 @@ pub struct CustomLayout {
 }
 
 impl CustomLayout {
-    fn new(sorted_bin_boundaries: &[f64]) -> Self {
-        sorted_bin_boundaries;
+    fn new(sorted_bin_boundaries: Vec<f64>) -> Self {
+        Self {
+            histogram_type: "CustomLayout".to_string(),
+            sorted_bin_boundaries,
+        }
     }
+    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
+        data_output.write_byte(Self::SERIAL_VERSION_V0);
+        Self::write_unsigned_var_int(self.sorted_bin_boundaries.len(), &data_output);
+        for boundary in self.sorted_bin_boundaries {
+            data_output.write_double(boundary);
+        }
+        Ok(())
+    }
+
+    fn read(data_input: &DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
+        Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
+        let len: i32 = Self::read_unsigned_var_int(&data_input);
+        let sorted_bin_boundaries = vec![0.0; len];
+        {
+            let mut i: i32 = 0;
+            while i < len {
+                {
+                    sorted_bin_boundaries[i] = data_input.read_double();
+                }
+                i += 1;
+            }
+        }
+
+        return Ok(CustomLayout::new(&sorted_bin_boundaries));
+    }
+
 }
 
-impl Layout for CustomLayout {}
+impl Algorithms for CustomLayout {}
+impl Preconditions for CustomLayout {}
+//impl Layout for CustomLayout {}
 
 impl CustomLayout {
     fn create(sorted_bin_boundaries: f64) -> CustomLayout {
@@ -57,14 +89,18 @@ impl CustomLayout {
             panic!("Expected a Vec of length {} but it was {}", N, v.len())
         })
     }
+}
+
+impl Layout for CustomLayout {
+    type L = Self;
 
     fn map_to_bin_index(&self, value: f64) -> usize {
         let mapped_value: i64 = Self::map_double_to_long(value);
-        let predicate = |&x| {
+        let predicate = |&x: usize| {
             x == self.sorted_bin_boundaries.len()
-                || Self::map_double_to_long(self.sorted_bin_boundaries[x as i32]) > mapped_value
+                || Self::map_double_to_long(self.sorted_bin_boundaries[x]) > mapped_value
         };
-        return Self::find_first(predicate, 0, self.sorted_bin_boundaries.len()) as i32;
+        return Self::find_first(predicate, 0, self.sorted_bin_boundaries.len());
     }
 
     fn get_bin_lower_bound(&self, bin_index: usize) -> f64 {
@@ -93,32 +129,6 @@ impl CustomLayout {
 
     fn get_overflow_bin_index(&self) -> usize {
         return self.sorted_bin_boundaries.len();
-    }
-
-    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
-        data_output.write_byte(Self::SERIAL_VERSION_V0);
-        Self::write_unsigned_var_int(self.sorted_bin_boundaries.len(), &data_output);
-        for boundary in self.sorted_bin_boundaries {
-            data_output.write_double(boundary);
-        }
-        Ok(())
-    }
-
-    fn read(data_input: &DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
-        Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
-        let len: i32 = Self::read_unsigned_var_int(&data_input);
-        let sorted_bin_boundaries = vec![0.0; len];
-        {
-            let mut i: i32 = 0;
-            while i < len {
-                {
-                    sorted_bin_boundaries[i] = data_input.read_double();
-                }
-                i += 1;
-            }
-        }
-
-        return Ok(CustomLayout::new(&sorted_bin_boundaries));
     }
 
     // fn hash_code(&self) -> i32 {

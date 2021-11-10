@@ -8,6 +8,7 @@
 use crate::errors::DynaHistError;
 // use crate::histograms::dynamic_histogram::DynamicHistogram;
 use crate::histograms::abstract_histogram::AbstractHistogram;
+use crate::histograms::abstract_histogram::Probability;
 use crate::histograms::abstract_mutable_histogram::AbstractMutableHistogram;
 use crate::histograms::histogram::Histogram;
 use crate::layouts::layout::Layout;
@@ -65,6 +66,9 @@ impl Histogram for StaticHistogram {
         return self;
     }
 }
+
+impl AbstractHistogram for StaticHistogram {}
+impl Probability for StaticHistogram {}
 
 impl AbstractMutableHistogram for StaticHistogram {
     fn new(layout: impl Layout) -> Self {

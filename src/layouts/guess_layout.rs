@@ -18,7 +18,7 @@ use crate::layouts::layout::Layout;
 
 pub(crate) trait GuessLayout: Layout {
 
-    const LOG_MIN_VALUE: f64;
+    const LOG_MIN_VALUE: f64 = f64::MIN.ln();
 
     fn get_bin_lower_bound(&self, bin_index: i32) -> f64 {
         if bin_index <= self.get_underflow_bin_index() {
@@ -65,4 +65,6 @@ pub(crate) trait GuessLayout: Layout {
     /// The return value must not be [`f64::NAN`].
     ///
     fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64;
+
+    fn get_bin_lower_bound_approximation_helper(&self, idx: i32) -> f64;
 }

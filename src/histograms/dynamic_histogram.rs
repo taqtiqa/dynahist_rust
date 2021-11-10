@@ -8,6 +8,7 @@ use crate::bins::bin_iterator::BinIterator;
 use crate::errors::DynaHistError;
 // use crate::histograms::dynamic_histogram::DynamicHistogram;
 use crate::histograms::abstract_histogram::AbstractHistogram;
+use crate::histograms::abstract_histogram::Probability;
 use crate::histograms::abstract_mutable_histogram::AbstractMutableHistogram;
 use crate::histograms::histogram::Histogram;
 use crate::layouts::layout::Layout;
@@ -109,6 +110,8 @@ impl DynamicHistogram {
 }
 
 impl AbstractHistogram for DynamicHistogram {}
+impl Probability for DynamicHistogram {}
+impl Histogram for DynamicHistogram {}
 
 impl AbstractMutableHistogram for DynamicHistogram {
     fn get_count(counts: &Vec<i64>, relative_idx: i32, mode: i8) -> i64 {
@@ -122,7 +125,7 @@ impl AbstractMutableHistogram for DynamicHistogram {
         return self.mode;
     }
 
-    fn new(layout: impl Layout) -> DynamicHistogram {
+    fn new(layout: impl Layout) -> Self {
         let mode = 0;
         let indexOffset = layout.get_underflow_bin_index() + 1;
         let numberOfUnusedCounts = 0;

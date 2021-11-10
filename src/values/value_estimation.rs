@@ -9,17 +9,16 @@ use crate::utilities::Preconditions;
 use crate::values::value_estimators::*;
 use crate::Histogram;
 
-// Sealing a trait stops crates other than DynaHist from implementing any traits
-// that use it.
-mod private {
-    pub trait Sealed {}
-    impl Sealed for super::ValueEstimation {}
-}
+// Sealing a trait stops other crates from implementing any traits that use it.
+// mod private {
+//     pub trait Sealed {}
+//     impl Sealed for super::ValueEstimation {}
+// }
 
 /// This trait is sealed and cannot be implemented for callers to avoid
 /// breaking backwards compatibility when adding new derived traits.
 ///
-pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
+pub trait ValueEstimation: Preconditions + Algorithms {
     fn new() -> Self;
 
     // Trait private methods, not allowed for user to call.
@@ -36,13 +35,13 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     ///
     //const UNIFORM: ValueEstimator = ValueEstimatorImpls::UNIFORM;
     // const DEFAULT_VALUE_ESTIMATOR: ValueEstimator = ValueEstimator::UNIFORM;
-    fn get_uniform_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64 {
+    fn get_uniform_estimate_from_bin(&self, bin: &impl BinSketch, rank: i64) -> f64 {
         let relative_rank: i64 = rank - bin.get_less_count();
         return Self::interpolate(
-            (relative_rank - (bin.get_bin_count() - relative_rank - 1)),
-            -bin.get_bin_count() + (if (bin.is_first_non_empty_bin()) { 1 } else { 0 }),
+            relative_rank - (bin.get_bin_count() - relative_rank - 1),
+            -bin.get_bin_count() + (if bin.is_first_non_empty_bin() { 1 } else { 0 }),
             &bin.get_lower_bound(),
-            bin.get_bin_count() - (if (bin.is_last_non_empty_bin()) { 1 } else { 0 }),
+            bin.get_bin_count() - (if bin.is_last_non_empty_bin() { 1 } else { 0 }),
             &bin.get_upper_bound(),
         );
     }
@@ -56,7 +55,7 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     /// absolute and relative bin width limits, respectively.
     ///
     //const LOWER_BOUND: ValueEstimator = ValueEstimatorImpls::LOWER_BOUND;
-    fn get_lower_bound_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64 {
+    fn get_lower_bound_estimate_from_bin(&self, bin: &impl BinSketch, rank: i64) -> f64 {
         return bin.get_lower_bound();
     }
 
@@ -72,7 +71,7 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     /// respectively.
     ///
     //const UPPER_BOUND: ValueEstimator = ValueEstimatorImpls::UPPER_BOUND;
-    fn get_upper_bound_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64 {
+    fn get_upper_bound_estimate_from_bin(&self, bin: &impl BinSketch, rank: i64) -> f64 {
         return bin.get_upper_bound();
     }
 
@@ -84,7 +83,7 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
     /// half of the absolute and relative bin width limits, respectively.
     ///
     //const MID_POINT: ValueEstimator = ValueEstimatorImpls::MID_POINT;
-    fn get_mid_point_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64 {
+    fn get_mid_point_estimate_from_bin(&self, bin: &impl BinSketch, rank: i64) -> f64 {
         return std::cmp::max(
             &bin.get_lower_bound(),
             &std::cmp::min(
@@ -191,9 +190,9 @@ pub trait ValueEstimation: Preconditions + Algorithms + private::Sealed {
         <dyn std::any::Any>::downcast_ref(x)
     }
 
-    // The original port implementtaion
+    // The original port implementation
     // fn get_estimate_from_bin(&self, bin: &Bin, rank: i64) -> f64;
-    fn get_estimate_from_bin<'a, B: BinSketch, i64>(&self, bin: &B, rank: i64) -> f64 {
+    fn get_estimate_from_bin<'a, B: BinSketch>(&self, bin: &B, rank: i64) -> f64 {
         if let Some(_u) = Self::as_type::<_, ValueEstimatorUniform>(self) {
             tracing::info!("it's a ValueEstimatorUniform");
             Self::get_uniform_estimate_from_bin(&self, bin, rank)

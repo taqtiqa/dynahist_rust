@@ -4,10 +4,13 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::layouts::guess_layout::GuessLayout;
+use crate::layouts::layout::Layout;
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
 use crate::seriate::SeriateUtil;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
-use crate::{errors::DynaHistError, layouts::layout::Layout};
+use crate::errors::DynaHistError;
 
 /// A histogram bin layout where all bins covering the given range have a width that is either
 /// smaller than a given absolute bin width limit or a given relative bin width limit. This layout
@@ -19,12 +22,90 @@ pub struct LogLinearLayout {
     absolute_bin_width_limit: f64,
     factor_normal: f64,
     factor_subnormal: f64,
-    histogram_type: &str,
+    histogram_type: String,
     offset: f64,
-    overflow_bin_index: i32,
+    overflow_bin_index: usize,
     relative_bin_width_limit: f64,
-    underflow_bin_index: i32,
+    underflow_bin_index: usize,
     unsigned_value_bits_normal_limit: i64,
+}
+
+impl Algorithms for LogLinearLayout {}
+impl Preconditions for LogLinearLayout {}
+impl Layout for LogLinearLayout {
+    type L = Self;
+
+    fn map_to_bin_index(&self, value: f64) -> usize {
+        return self.map_to_bin_index_detail(
+            value,
+            self.factor_normal,
+            self.factor_subnormal,
+            self.unsigned_value_bits_normal_limit,
+            self.offset,
+        );
+    }
+
+    // Upstream (Java) Notes:
+    //
+    // Unfortunately this mapping is not platform-independent.
+    // It would be independent if the `strictfp` keyword was used for this
+    // method and all called methods.
+    // Due to a performance penalty of `strictfp`, which is hopefully fixed
+    // in Java 15, we have omitted `strictfp` here in the meantime.
+    //
+    // References:
+    // - https://bugs.openjdk.java.net/browse/JDK-8136414
+    //
+    fn map_to_bin_index_detail(
+        value: f64,
+        factor_normal: f64,
+        factor_subnormal: f64,
+        unsigned_value_bits_normal_limit: i64,
+        offset: f64,
+    ) -> usize {
+        let value_bits: i64 = value.to_bits();
+        let unsigned_value_bits: i64 = value_bits & 0x7fffffffffffffff;
+        let mut idx: i32;
+        if unsigned_value_bits >= unsigned_value_bits_normal_limit {
+            idx = Self::calculate_normal_idx(unsigned_value_bits, factor_normal, offset);
+        } else {
+            idx = Self::calculate_sub_normal_idx(unsigned_value_bits, factor_subnormal);
+        }
+        return if value_bits >= 0x0 { idx } else { !idx };
+    }
+
+    fn get_underflow_bin_index(&self) -> usize {
+        return self.underflow_bin_index;
+    }
+
+    fn get_overflow_bin_index(&self) -> usize {
+        return self.overflow_bin_index;
+    }
+}
+
+impl GuessLayout for LogLinearLayout {
+    fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
+        if bin_index >= 0 {
+            return self.get_bin_lower_bound_approximation_helper(bin_index);
+        } else {
+            return -self.get_bin_lower_bound_approximation_helper(-bin_index);
+        }
+    }
+
+    fn get_bin_lower_bound_approximation_helper(&self, idx: i32) -> f64 {
+        let x: f64 = idx * self.absolute_bin_width_limit;
+        if x < f64::from_bits(self.unsigned_value_bits_normal_limit) {
+            return x;
+        } else {
+            let s: f64 = (idx - self.offset) / self.factor_normal;
+            let exponent: i32 = (num::Float::floor(s) as i32) - 1;
+            let mantissa_plus1: f64 = s - exponent;
+            // Upstream (Java) uses `Math.scalb` as an efficient `f * 2 ^ scale_factor`
+            // `f * Math.pow(2, scale_factor)` claims of 2-fold speed up are around.
+            //return Math::scalb(mantissa_plus1, exponent - 1023);
+            return mantissa_plus1 * i32::pow(2, exponent - 1023);
+        }
+    }
 }
 
 impl LogLinearLayout {
@@ -209,46 +290,6 @@ impl LogLinearLayout {
         return (factor_subnormal * f64::from_bits(unsigned_value_bits)) as usize;
     }
 
-    // Unfortunately this mapping is not platform-independent. It would be independent if the strictfp
-    // keyword was used for this method and all called methods. Due to a performance penalty (see
-    // https://bugs.openjdk.java.net/browse/JDK-8136414) of strictfp, which is hopefully fixed in Java
-    // 15, we have omitted strictfp here in the meantime.
-    fn map_to_bin_index(
-        value: f64,
-        factor_normal: f64,
-        factor_subnormal: f64,
-        unsigned_value_bits_normal_limit: i64,
-        offset: f64,
-    ) -> usize {
-        let value_bits: i64 = value.to_bits();
-        let unsigned_value_bits: i64 = value_bits & 0x7fffffffffffffff;
-        let mut idx: i32;
-        if unsigned_value_bits >= unsigned_value_bits_normal_limit {
-            idx = Self::calculate_normal_idx(unsigned_value_bits, factor_normal, offset);
-        } else {
-            idx = Self::calculate_sub_normal_idx(unsigned_value_bits, factor_subnormal);
-        }
-        return if (value_bits >= 0) { idx } else { !idx };
-    }
-
-    fn map_to_bin_index(&self, value: f64) -> usize {
-        return Self::map_to_bin_index(
-            value,
-            self.factor_normal,
-            self.factor_subnormal,
-            self.unsigned_value_bits_normal_limit,
-            self.offset,
-        );
-    }
-
-    fn get_underflow_bin_index(&self) -> usize {
-        return self.underflow_bin_index;
-    }
-
-    fn get_overflow_bin_index(&self) -> usize {
-        return self.overflow_bin_index;
-    }
-
     fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
         data_output.write_byte(Self::SERIAL_VERSION_V0);
         data_output.write_double(self.absolute_bin_width_limit);
@@ -332,29 +373,6 @@ impl LogLinearLayout {
     //     }
     //     return true;
     // }
-
-    fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
-        if bin_index >= 0 {
-            return self.get_bin_lower_bound_approximation_helper(bin_index);
-        } else {
-            return -self.get_bin_lower_bound_approximation_helper(-bin_index);
-        }
-    }
-
-    fn get_bin_lower_bound_approximation_helper(&self, idx: i32) -> f64 {
-        let x: f64 = idx * self.absolute_bin_width_limit;
-        if x < f64::from_bits(self.unsigned_value_bits_normal_limit) {
-            return x;
-        } else {
-            let s: f64 = (idx - self.offset) / self.factor_normal;
-            let exponent: i32 = (num::Float::floor(s) as i32) - 1;
-            let mantissa_plus1: f64 = s - exponent;
-            // Upstream (Java) uses `Math.scalb` as an efficient `f * 2 ^ scale_factor`
-            // `f * Math.pow(2, scale_factor)` claims of 2-fold speed up are around.
-            //return Math::scalb(mantissa_plus1, exponent - 1023);
-            return mantissa_plus1 * i32::pow(2, exponent - 1023)
-        }
-    }
 
     // fn to_string(&self) -> String {
     //     return format!("{} [absoluteBinWidthLimit={}, relativeBinWidthLimit={}, underflowBinIndex={}, overflowBinIndex={}]", self.histogram_type, self.absolute_bin_width_limit, self.relative_bin_width_limit, self.underflow_bin_index, self.overflow_bin_index);

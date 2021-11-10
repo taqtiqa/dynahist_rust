@@ -50,4 +50,6 @@ pub trait AbstractBin: BinSketch {
             .get_bin_upper_bound(&self.get_bin_index());
         return h1.min(h2);
     }
+
+    fn get_non_empty_index(&self) -> i32 ;
 }

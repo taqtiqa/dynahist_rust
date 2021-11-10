@@ -4,10 +4,13 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::layouts::guess_layout::GuessLayout;
+use crate::layouts::layout::Layout;
 use crate::seriate::SeriateUtil;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
-use crate::{errors::DynaHistError, layouts::layout::Layout};
+use crate::errors::DynaHistError;
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
 
 /// A histogram bin layout where all bins covering the given range have a
 /// width that is either smaller than a given absolute bin width limit or
@@ -19,17 +22,94 @@ use crate::{errors::DynaHistError, layouts::layout::Layout};
 ///
 /// This class is immutable.
 ///
-#[derive(Eq, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct LogOptimalLayout {
     absolute_bin_width_limit: f64,
     factor_normal: f64,
     factor_subnormal: f64,
-    histogram_type: &str,
+    histogram_type: String,
     offset: f64,
-    overflow_bin_index: i32,
+    overflow_bin_index: usize,
     relative_bin_width_limit: f64,
-    underflow_bin_index: i32,
+    underflow_bin_index: usize,
     unsigned_value_bits_normal_limit: i64,
+}
+
+impl Algorithms for LogOptimalLayout {}
+impl Preconditions for LogOptimalLayout {}
+impl Layout for LogOptimalLayout {
+    type L = Self;
+
+    fn map_to_bin_index(&self, value: f64) -> usize {
+        return Self::map_to_bin_index_detail(
+            value,
+            self.factor_normal,
+            self.factor_subnormal,
+            self.unsigned_value_bits_normal_limit,
+            self.offset,
+        );
+    }
+
+    // Upstream (Java) Notes:
+    //
+    // Unfortunately this mapping is not platform-independent.
+    // It would be independent if the `strictfp` keyword was used for this
+    // method and all called methods.
+    // Due to a performance penalty of `strictfp`, which is hopefully fixed
+    // in Java 15, we have omitted `strictfp` here in the meantime.
+    //
+    // References:
+    // - https://bugs.openjdk.java.net/browse/JDK-8136414
+    //
+    fn map_to_bin_index_detail(
+        value: f64,
+        factor_normal: f64,
+        factor_subnormal: f64,
+        unsigned_value_bits_normal_limit: i64,
+        offset: f64,
+    ) -> i32 {
+        let value_bits: i64 = value.to_bits();
+        let unsigned_value_bits: i64 = value_bits & 0x7fffffffffffffff;
+        let mut idx: i32;
+        let unsigned_value: f64 = f64::from_bits(unsigned_value_bits);
+        if unsigned_value_bits >= 0x7ff0000000000000 {
+            idx = 0x7fffffff;
+        } else if unsigned_value_bits >= unsigned_value_bits_normal_limit {
+            idx = Self::calculate_normal_idx(unsigned_value, factor_normal, offset);
+        } else {
+            idx = Self::calculate_sub_normal_idx(unsigned_value, factor_subnormal);
+        }
+        return if value_bits >= 0 { idx } else { idx };
+    }
+
+    fn get_underflow_bin_index(&self) -> usize {
+        return self.underflow_bin_index;
+    }
+
+    fn get_overflow_bin_index(&self) -> usize {
+        return self.overflow_bin_index;
+    }
+}
+
+impl GuessLayout for LogOptimalLayout {
+
+    fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
+        if bin_index >= 0 {
+            return self.get_bin_lower_bound_approximation_helper(bin_index);
+        } else {
+            return -self.get_bin_lower_bound_approximation_helper(-bin_index);
+        }
+    }
+
+    fn get_bin_lower_bound_approximation_helper(&self, idx: i32) -> f64 {
+        let x: f64 = idx * self.absolute_bin_width_limit;
+        if x < f64::from_bits(self.unsigned_value_bits_normal_limit) {
+            return x;
+        } else {
+            let s: f64 = (idx - self.offset) / self.factor_normal + Self::LOG_MIN_VALUE;
+            return f64::exp(s);
+        }
+    }
 }
 
 impl LogOptimalLayout {
@@ -235,49 +315,6 @@ impl LogOptimalLayout {
         return (factor_subnormal * unsigned_value) as usize;
     }
 
-    // Unfortunately this mapping is not platform-independent. It would be independent if the strictfp
-    // keyword was used for this method and all called methods. Due to a performance penalty (see
-    // https://bugs.openjdk.java.net/browse/JDK-8136414) of strictfp, which is hopefully fixed in Java
-    // 15, we have omitted strictfp here in the meantime.
-    fn map_to_bin_index(
-        value: f64,
-        factor_normal: f64,
-        factor_subnormal: f64,
-        unsigned_value_bits_normal_limit: i64,
-        offset: f64,
-    ) -> i32 {
-        let value_bits: i64 = value.to_bits();
-        let unsigned_value_bits: i64 = value_bits & 0x7fffffffffffffff;
-        let mut idx: i32;
-        let unsigned_value: f64 = f64::from_bits(unsigned_value_bits);
-        if unsigned_value_bits >= 0x7ff0000000000000 {
-            idx = 0x7fffffff;
-        } else if unsigned_value_bits >= unsigned_value_bits_normal_limit {
-            idx = Self::calculate_normal_idx(unsigned_value, factor_normal, offset);
-        } else {
-            idx = Self::calculate_sub_normal_idx(unsigned_value, factor_subnormal);
-        }
-        return if value_bits >= 0 { idx } else { idx };
-    }
-
-    fn map_to_bin_index(&self, value: f64) -> usize {
-        return Self::map_to_bin_index(
-            value,
-            self.factor_normal,
-            self.factor_subnormal,
-            self.unsigned_value_bits_normal_limit,
-            self.offset,
-        );
-    }
-
-    fn get_underflow_bin_index(&self) -> usize {
-        return self.underflow_bin_index;
-    }
-
-    fn get_overflow_bin_index(&self) -> usize {
-        return self.overflow_bin_index;
-    }
-
     fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
         data_output.write_byte(Self::SERIAL_VERSION_V0);
         data_output.write_double(self.absolute_bin_width_limit);
@@ -363,24 +400,6 @@ impl LogOptimalLayout {
     //     }
     //     return true;
     // }
-
-    fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
-        if bin_index >= 0 {
-            return self.get_bin_lower_bound_approximation_helper(bin_index);
-        } else {
-            return -self.get_bin_lower_bound_approximation_helper(-bin_index);
-        }
-    }
-
-    fn get_bin_lower_bound_approximation_helper(&self, idx: i32) -> f64 {
-        let x: f64 = idx * self.absolute_bin_width_limit;
-        if x < f64::from_bits(self.unsigned_value_bits_normal_limit) {
-            return x;
-        } else {
-            let s: f64 = (idx - self.offset) / self.factor_normal + Self::LOG_MIN_VALUE;
-            return f64::exp(s);
-        }
-    }
 
     // // This will be covered by DRY implementation of std traits via phantom types
     // //

@@ -14,9 +14,12 @@ use crate::seriate::deserialization::SerializationReader;
 use crate::seriate::deserialization::SeriateRead;
 use crate::seriate::serialization::SerializationWriter;
 use crate::seriate::serialization::SeriateWrite;
-use crate::utilities::data::DataInput;
-use crate::utilities::data::DataOutput;
+use crate::sketches::data::DataInput;
+use crate::sketches::data::DataOutput;
 use crate::Histogram;
+
+use bytes::BufMut;
+use bytes::Buf;
 
 const CONST: usize = 0;
 
@@ -24,7 +27,11 @@ pub struct SeriateUtil {}
 
 impl Seriate for SeriateUtil {}
 
-trait Seriate: bytes::Buf + bytes::BufMut {
+// impl bytes::BufMut for SeriateUtil {}
+
+// impl bytes::Buf for SeriateUtil {}
+
+trait Seriate {
     type H: Histogram; // TODO: rename Histogram trait to Sketch
 
     const ENCOUNTERED_UNEXPECTED_DATA_MSG: &'static str = "Encountered unexpected data!";
@@ -399,7 +406,7 @@ trait Seriate: bytes::Buf + bytes::BufMut {
     /// - `data`: The data to be serialized
     ///
     fn to_byte_array(
-        serialization_writer: SerializationWriter<Self::H>,
+        serialization_writer: SerializationWriter,
         data: &Self::H,
     ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         match bytes::BytesMut::with_capacity(1024) {

@@ -5,30 +5,35 @@
 
 use crate::seriate::{deserialization::SerializationReader, serialization::SerializationWriter};
 use crate::layouts::layout::Layout;
+use crate::utilities::{Algorithms, Preconditions};
 
 // Represents the serialization definition for some [`Layout`].
-pub struct LayoutSerializationDefinition<L>
-where
-    L: Layout
+pub struct LayoutSerializationDefinition
+// where
+//     L: Layout
 {
     serial_version: i64,
     layout: String,
-    writer: SerializationWriter<L>,
-    reader: SerializationReader<L>,
+    writer: SerializationWriter,
+    reader: SerializationReader,
 }
-impl<L> Layout for LayoutSerializationDefinition<L>
-where
-    L: Layout
-{}
+impl Algorithms for LayoutSerializationDefinition {}
+impl Preconditions for LayoutSerializationDefinition {}
+// impl Layout for LayoutSerializationDefinition
+//     where
+//        L: Layout
+// {}
 
-impl<L> LayoutSerializationDefinition<L>
-where
-    L: Layout
+impl LayoutSerializationDefinition
+// where
+//     L: Layout
 {
-    fn new( serial_version: i64,  layout: &L,  writer: &SerializationWriter<L>,  reader: &SerializationReader<L>) -> LayoutSerializationDefinition {
-        serial_version;
-        layout;
-        writer as SerializationWriter<L>;
-        reader as SerializationReader<L>;
+    pub fn new( serial_version: i64,  layout: String,  writer: &SerializationWriter,  reader: &SerializationReader) -> Self {
+        Self {
+            serial_version,
+            layout,
+            writer: *writer,
+            reader: *reader,
+        }
     }
 }

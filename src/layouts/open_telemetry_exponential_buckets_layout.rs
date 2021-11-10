@@ -3,9 +3,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::layouts::layout::Layout;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
-use crate::{errors::DynaHistError, layouts::layout::Layout};
+use crate::errors::DynaHistError;
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
 
 /// A tentative histogram bin layout that implements the proposal as discussed
 /// in https://github.com/open-telemetry/oteps/pull/149.
@@ -16,7 +19,10 @@ use crate::{errors::DynaHistError, layouts::layout::Layout};
 ///
 /// This [`OpenTelemetryLayout`] trait is sealed.
 ///
-pub(crate) trait OpenTelemetryLayout: Layout {
+pub(crate) trait OpenTelemetryLayout: Layout
+    where
+        Self: Sized
+{
     // currently only used by OpenTelemetry exponential buckets layout
     const BOUNDARY_CONSTANTS: Vec<usize>;
     const MAX_PRECISION: i32 = 10;
@@ -63,12 +69,37 @@ pub(crate) trait OpenTelemetryLayout: Layout {
 pub struct OpenTelemetryExponentialBucketsLayout {
     boundaries: Vec<i64>,
     first_normal_value_bits: i64,
-    histogram_type: &str,
+    histogram_type: String,
     index_offset: i32,
-    indices: Vec<i32>,
-    overflow_bin_index: i32,
+    indices: Vec<usize>,
+    overflow_bin_index: usize,
     precision: i32,
-    underflow_bin_index: i32,
+    underflow_bin_index: usize,
+}
+
+impl Algorithms for OpenTelemetryExponentialBucketsLayout {}
+impl Preconditions for OpenTelemetryExponentialBucketsLayout {}
+impl Layout for OpenTelemetryExponentialBucketsLayout {
+    fn map_to_bin_index(&self, value: f64) -> usize {
+        let value_bits: i64 = value.to_bits();
+        let index: i32 = Self::map_to_bin_index_helper(
+            value_bits,
+            &self.indices,
+            &self.boundaries,
+            self.precision,
+            self.first_normal_value_bits,
+            self.index_offset,
+        );
+        return if value_bits >= 0 { index } else { -index };
+    }
+
+    fn get_underflow_bin_index(&self) -> usize {
+        return self.underflow_bin_index;
+    }
+
+    fn get_overflow_bin_index(&self) -> usize {
+        return self.overflow_bin_index;
+    }
 }
 
 impl PartialEq for OpenTelemetryExponentialBucketsLayout {
@@ -95,14 +126,16 @@ impl Ord for OpenTelemetryExponentialBucketsLayout {
     }
 }
 
-impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
+
+impl OpenTelemetryExponentialBucketsLayout {
+
     /// Create a histogram bin layout with exponential buckets with given precision.
     ///
     /// - `precision`: the precision
     ///
-   /// a new [`OpenTelemetryExponentialBucketsLayout`] instance
+    /// a new [`OpenTelemetryExponentialBucketsLayout`] instance
     ///
-    fn new(precision: i32) -> Self {
+    fn create(precision: i32) -> Self {
         Self::check_argument(precision >= 0);
         Self::check_argument(precision <= Self::MAX_PRECISION);
         let update_fn = |x| {
@@ -117,94 +150,6 @@ impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
         return Self::INSTANCES::update_and_get(precision, update_fn);
     }
 
-    fn calculate_boundaries(precision: i32) -> Vec<i64> {
-        let mut length: i32 = 1 << precision;
-        //  let mut boundaries= [0; length + 1];
-        let mut boundaries = (1..=length + 1)
-            .collect::<Vec<i64>>()
-            .try_into()
-            .expect("wrong size iterator");
-        {
-            let mut i = 0;
-            while i < length - 1 {
-                {
-                    boundaries[i] =
-                        Self::get_boundary_constant((i + 1) << (Self::MAX_PRECISION - precision));
-                }
-                i += 1;
-            }
-        }
-        let boundaries = Self::to_array(boundaries);
-        boundaries[length - 1] = 0x0010000000000000;
-        boundaries[length] = 0x0010000000000000;
-        return boundaries;
-    }
-
-    fn calculate_indices(boundaries: &Vec<i64>, precision: i32) -> Vec<i32> {
-        let length: i32 = 1 << precision;
-        //  let mut indices: [i32; len] = [0; len];
-        let mut indices = (1..=length + 1)
-            .collect::<Vec<i32>>()
-            .try_into()
-            .expect("wrong size iterator");
-        let mut c: i32 = 0;
-        {
-            let mut i: i32 = 0;
-            while i < length {
-                {
-                    let mantissa_lower_bound: i64 = (i as i64) << (52 - precision);
-                    while boundaries[c] <= mantissa_lower_bound {
-                        c += 1;
-                    }
-                    indices[i] = c;
-                }
-                i += 1;
-            }
-        }
-        let indices = Self::to_array(indices);
-        return indices;
-    }
-
-    fn new(precision: i32) -> Self {
-        let histogram_type = "";
-        let boundaries = Self::calculate_boundaries(precision);
-        let indices = Self::calculate_indices(&boundaries, precision);
-        let value_bits: i32 = 0;
-        let mut index: i32 = i32::MIN;
-        loop {
-            let next_value_bits: i32 = value_bits + 1;
-            let next_index: i32 = Self::map_to_bin_index_helper(
-                next_value_bits,
-                &indices,
-                &boundaries,
-                precision,
-                0,
-                0,
-            );
-            if index == next_index {
-                break;
-            }
-            value_bits = next_value_bits;
-            index = next_index;
-        }
-        let first_normal_value_bits = value_bits;
-        let index_offset = value_bits - index;
-        let overflow_bin_index = Self::map_to_bin_index(f64::MAX) + 1;
-        let underflow_bin_index = -overflow_bin_index;
-        Self {
-            boundaries,
-            first_normal_value_bits,
-            histogram_type,
-            index_offset,
-            indices,
-            overflow_bin_index,
-            precision,
-            underflow_bin_index,
-        }
-    }
-}
-
-impl OpenTelemetryExponentialBucketsLayout {
     fn map_to_bin_index_helper(
         value_bits: i64,
         indices: &Vec<i32>,
@@ -233,27 +178,6 @@ impl OpenTelemetryExponentialBucketsLayout {
             + (if mantissa >= boundaries[i] { 1 } else { 0 })
             + (if mantissa >= boundaries[i + 1] { 1 } else { 0 });
         return (exponent << precision) + k + index_offset;
-    }
-
-    fn map_to_bin_index(&self, value: f64) -> usize {
-        let value_bits: i64 = value.to_bits();
-        let index: i32 = Self::map_to_bin_index_helper(
-            value_bits,
-            &self.indices,
-            &self.boundaries,
-            self.precision,
-            self.first_normal_value_bits,
-            self.index_offset,
-        );
-        return if value_bits >= 0 { index } else { -index };
-    }
-
-    fn get_underflow_bin_index(&self) -> usize {
-        return self.underflow_bin_index;
-    }
-
-    fn get_overflow_bin_index(&self) -> usize {
-        return self.overflow_bin_index;
     }
 
     fn get_bin_lower_bound_approximation_helper(&self, abs_bin_index: usize) -> f64 {
@@ -320,6 +244,94 @@ impl OpenTelemetryExponentialBucketsLayout {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let precision: i32 = data_input.read_unsigned_byte();
         return Ok(OpenTelemetryExponentialBucketsLayout::create(precision));
+    }
+}
+
+impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
+    fn calculate_boundaries(precision: i32) -> Vec<i64> {
+        let mut length: i32 = 1 << precision;
+        //  let mut boundaries= [0; length + 1];
+        let mut boundaries = (1..=length + 1)
+            .collect::<Vec<i64>>()
+            .try_into()
+            .expect("wrong size iterator");
+        {
+            let mut i = 0;
+            while i < length - 1 {
+                {
+                    boundaries[i] =
+                        Self::get_boundary_constant((i + 1) << (Self::MAX_PRECISION - precision));
+                }
+                i += 1;
+            }
+        }
+        let boundaries = Self::to_array(boundaries);
+        boundaries[length - 1] = 0x0010000000000000;
+        boundaries[length] = 0x0010000000000000;
+        return boundaries;
+    }
+
+    fn calculate_indices(boundaries: &Vec<i64>, precision: i32) -> Vec<i32> {
+        let length: i32 = 1 << precision;
+        //  let mut indices: [i32; len] = [0; len];
+        let mut indices = (1..=length + 1)
+            .collect::<Vec<i32>>()
+            .try_into()
+            .expect("wrong size iterator");
+        let mut c: i32 = 0;
+        {
+            let mut i: i32 = 0;
+            while i < length {
+                {
+                    let mantissa_lower_bound: i64 = (i as i64) << (52 - precision);
+                    while boundaries[c] <= mantissa_lower_bound {
+                        c += 1;
+                    }
+                    indices[i] = c;
+                }
+                i += 1;
+            }
+        }
+        let indices = Self::to_array(indices);
+        return indices;
+    }
+
+    fn new(precision: i32) -> Self {
+        let histogram_type = "OpenTelemetryExponential".to_string();
+        let boundaries = Self::calculate_boundaries(precision);
+        let indices = Self::calculate_indices(&boundaries, precision);
+        let value_bits: i32 = 0;
+        let mut index: i32 = i32::MIN;
+        loop {
+            let next_value_bits: i32 = value_bits + 1;
+            let next_index: i32 = Self::map_to_bin_index_helper(
+                next_value_bits,
+                &indices,
+                &boundaries,
+                precision,
+                0,
+                0,
+            );
+            if index == next_index {
+                break;
+            }
+            value_bits = next_value_bits;
+            index = next_index;
+        }
+        let first_normal_value_bits = value_bits;
+        let index_offset = value_bits - index;
+        let overflow_bin_index = Self::map_to_bin_index(f64::MAX) + 1;
+        let underflow_bin_index = -overflow_bin_index;
+        Self {
+            boundaries,
+            first_normal_value_bits,
+            histogram_type,
+            index_offset,
+            indices,
+            overflow_bin_index,
+            precision,
+            underflow_bin_index,
+        }
     }
 
     const BOUNDARY_CONSTANTS: Vec<i64> = vec![

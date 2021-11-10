@@ -30,7 +30,15 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// than or equal to [`get_underflow_bin_index`] or an index that is
     /// larger than or equal to [`get_overflow_bin_index`].
     ///
-    fn map_to_bin_index(&self, value: f64) -> i32;
+    fn map_to_bin_index(&self, value: f64) -> usize;
+
+    fn map_to_bin_index_detail(
+        value: f64,
+        factor_normal: f64,
+        factor_subnormal: f64,
+        unsigned_value_bits_normal_limit: i64,
+        offset: f64,
+    ) -> usize;
 
     /// Return the maximum index that is associated with the underflow bin of the histogram.
     ///
@@ -40,7 +48,8 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     fn get_underflow_bin_index(&self) -> usize;
 
-    /// Return the minimum index that is associated with the overflow bin of the histogram.
+    /// Return the minimum index that is associated with the overflow bin of
+    /// the histogram.
     ///
     /// **Note:**
     ///
@@ -113,7 +122,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// Write a [`Layout`] object.
     ///
     /// Important: Write methods for specific implementations must be registered
-    /// in {@code LayoutSerialization}.
+    /// in [`LayoutSerialization`].
     ///
     /// # Errors
     ///
@@ -133,7 +142,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// Read and return the read [`Layout`] object.
     ///
     /// Important: Read methods for specific implementations must be registered
-    /// in {@code LayoutSerialization}.
+    /// in [`LayoutSerialization`].
     ///
     /// # Errors
     ///
@@ -143,7 +152,10 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// In particular, an [`DynaHistError::IOError`] may result if the input
     /// stream has been closed, e.g. a network outage.
     ///
-    fn read_with_type_info(data_input: DataInput) -> Result<Self, std::rc::Rc<DynaHistError>> {
+    fn read_with_type_info(data_input: DataInput) -> Result<Self, std::rc::Rc<DynaHistError>>
+        where
+            Self: Sized
+    {
         return Ok(LayoutSerialization::read(data_input));
     }
 
@@ -177,8 +189,8 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     fn define_serialization(
         serial_version: i64,
         layout: &Self::L,
-        writer: &SerializationWriter<Self::L>,
-        reader: &SerializationReader<Self::L>,
+        writer: &SerializationWriter,
+        reader: &SerializationReader,
     ) -> LayoutSerializationDefinition {
         return LayoutSerializationDefinition::new(serial_version, &layout, writer, reader);
     }
@@ -192,6 +204,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// - `definitions` are the layout serializations to register.
     ///
     fn register(definitions: &LayoutSerializationDefinition) {
-        LayoutSerialization::register(definitions);
+        let layout_seriate = LayoutSerialization::new();
+        layout_seriate.register(definitions);
     }
 }

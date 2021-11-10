@@ -87,7 +87,7 @@ impl LayoutSerializationTest {
         Layout::register(def1);
         // LayoutSerializationDefinition def2 =
         // Layout.defineSerialization(
-        //     serialVersion,
+        //     serial_version,
         //     TestLayout2.class,
         //     (data, dataOutput) -> {},
         //     [`data_input`] -> new TestLayout2());
@@ -138,7 +138,7 @@ impl LayoutSerializationTest {
         },  data_input: & -> TestLayout1::new());
         // LayoutSerializationDefinition def2 =
         // Layout.defineSerialization(
-        //     serialVersion,
+        //     serial_version,
         //     TestLayout2.class,
         //     (data, dataOutput) -> {},
         //     [`data_input`] -> new TestLayout2());
@@ -159,7 +159,7 @@ impl LayoutSerializationTest {
         },  data_input: & -> TestLayout::new());
         // LayoutSerializationDefinition def2 =
         // Layout.defineSerialization(
-        //     serialVersion,
+        //     serial_version,
         //     TestLayout.class,
         //     (data, dataOutput) -> {},
         //     [`data_input`] -> new TestLayout());
@@ -181,7 +181,7 @@ impl LayoutSerializationTest {
         },  data_input: & -> TestLayout::new());
         // LayoutSerializationDefinition def2 =
         //     Layout.defineSerialization(
-        //         serialVersion2,
+        //         serial_version2,
         //         TestLayout.class,
         //         (data, dataOutput) -> {},
         //         [`data_input`] -> new TestLayout());
@@ -210,7 +210,7 @@ impl LayoutSerializationTest {
         },  data_input: & -> TestLayout1::new());
         // LayoutSerializationDefinition def2 =
         //     Layout.defineSerialization(
-        //         serialVersion2,
+        //         serial_version2,
         //         TestLayout2.class,
         //         (data, dataOutput) -> {},
         //         [`data_input`] -> new TestLayout2());

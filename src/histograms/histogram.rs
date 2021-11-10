@@ -120,7 +120,7 @@ pub trait Histogram {
     /// - `bin_index`: the histogram bin index
     fn get_count(&self, bin_index: i32) -> i64;
 
-    /// Return {@code true} if this histogram is empty.
+    /// Return [`true`] if this histogram is empty.
     ///
     fn is_empty(&self) -> bool;
 
@@ -329,10 +329,10 @@ pub trait Histogram {
     ///
     fn get_estimated_footprint_in_bytes(&self) -> i64;
 
-    /// Return {@code true} if the implementation supports add operations.
+    /// Return [`true`] if the implementation supports add operations.
     ///
     ///
-    /// {@code true} if add operations are supported
+    /// [`true`] if add operations are supported
     ///
     fn is_mutable(&self) -> bool;
 
@@ -375,7 +375,10 @@ pub trait Histogram {
     fn read_as_dynamic(
         layout: impl Layout,
         data_input: &DataInput,
-    ) -> Result<Self, std::rc::Rc<DynaHistError>> {
+    ) -> Result<Self, std::rc::Rc<DynaHistError>>
+        where
+            Self: Sized
+    {
         return Ok(DynamicHistogram::read(layout, &data_input));
     }
 
@@ -394,7 +397,10 @@ pub trait Histogram {
     fn read_as_static(
         layout: impl Layout,
         data_input: &DataInput,
-    ) -> Result<Self, std::rc::Rc<DynaHistError>> {
+    ) -> Result<Self, std::rc::Rc<DynaHistError>>
+        where
+            Self: Sized
+    {
         return Ok(StaticHistogram::read(layout, &data_input));
     }
 
@@ -413,7 +419,10 @@ pub trait Histogram {
     fn read_as_preprocessed(
         layout: impl Layout,
         data_input: &DataInput,
-    ) -> Result<Self, std::rc::Rc<DynaHistError>> {
+    ) -> Result<Self, std::rc::Rc<DynaHistError>>
+        where
+            Self: Sized
+    {
         let histogram = DynamicHistogram::read(layout, &data_input);
         return Ok(histogram.get_preprocessed_copy());
     }
