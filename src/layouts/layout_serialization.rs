@@ -6,6 +6,7 @@
 use crate::errors::DynaHistError;
 use crate::layouts::custom_layout::CustomLayout;
 use crate::layouts::layout::Layout;
+use crate::layouts::Sketch;
 use crate::layouts::layout_serialization_definition::LayoutSerializationDefinition;
 use crate::layouts::log_linear_layout::LogLinearLayout;
 use crate::layouts::log_optimal_layout::LogOptimalLayout;
@@ -14,17 +15,20 @@ use crate::layouts::open_telemetry_exponential_buckets_layout::OpenTelemetryExpo
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 
-pub struct LayoutSerialization {
+pub struct LayoutSerialization<L: Layout> {
     count: usize,
-    serial_to_definitions: std::collections::HashMap<i64, LayoutSerializationDefinition>,
-    layout_to_definitions: std::collections::HashMap<String, LayoutSerializationDefinition>,
+    serial_to_definitions: std::collections::HashMap<i64, LayoutSerializationDefinition<L>>,
+    layout_to_definitions: std::collections::HashMap<String, LayoutSerializationDefinition<L>>,
 }
 
-impl Preconditions for LayoutSerialization {}
+impl<L: Layout> Algorithms for LayoutSerialization<L> {}
+impl<L: Layout> Preconditions for LayoutSerialization<L> {}
 
-impl Algorithms for LayoutSerialization {}
+impl<L> LayoutSerialization<L>
+where
+    L: Layout
+{
 
-impl LayoutSerialization {
     fn new(length: usize) -> Self {
         let count = 5;
         let serial_to_definitions: std::collections::HashMap<i64, LayoutSerializationDefinition> =
@@ -45,39 +49,29 @@ impl LayoutSerialization {
         Self::register(&vec![
             &LayoutSerializationDefinition::new(
                 0x7f862c3808df6fcd,
-                "CustomLayout".to_string(),
-                CustomLayout::write,
-                CustomLayout::read,
+                Sketch::Custom
             ),
             &LayoutSerializationDefinition::new(
                 0x05d0c7e2dc0316e8,
-                "LogLinearLayout".to_string(),
-                LogLinearLayout::write,
-                LogLinearLayout::read,
+                Sketch::LogLinear,
             ),
             &LayoutSerializationDefinition::new(
                 0x9d36115de11d38d6,
-                "LogQuadraticLayout".to_string(),
-                LogQuadraticLayout::write,
-                LogQuadraticLayout::read,
+                Sketch::LogQuadratic,
             ),
             &LayoutSerializationDefinition::new(
                 0x70c0ef16c3809948,
-                "LogOptimalLayout".to_string(),
-                LogOptimalLayout::write,
-                LogOptimalLayout::read,
+                Sketch::LogOptimal,
             ),
             &LayoutSerializationDefinition::new(
                 0xf6e717a16f0a6a4a,
-                "OpenTelemetryExponentialBucketsLayout".to_string(),
-                OpenTelemetryExponentialBucketsLayout::write,
-                OpenTelemetryExponentialBucketsLayout::read,
+                Sketch::OpenTelemetryExponentialBuckets,
             ),
         ])
     }
 
     // Register layout implementations before serialization/deserialization
-    fn register(definitions: &Vec<&LayoutSerializationDefinition>) -> Self {
+    fn register(definitions: &Vec<&LayoutSerializationDefinition<L>>) -> Self {
         let seriate = Self::new(definitions.len());
 
         for definition in definitions {
@@ -95,7 +89,7 @@ impl LayoutSerialization {
             Self::check_argument(old_def2.serial_version == definition.serial_version);
         }
         Self {
-            count,
+            count: definitions.len(),
             serial_to_definitions: seriate.serial_to_definitions.clone(),
             layout_to_definitions: seriate.layout_to_definitions.clone(),
         }
@@ -118,10 +112,10 @@ impl LayoutSerialization {
         data_output: impl bytes::BufMut,
     ) -> Result<(), std::rc::Rc<DynaHistError>> {
         let definition: LayoutSerializationDefinition;
-        if layout.layout_to_definitions.contains(&layout.histogram_type) {
+        if layout.layout_to_definitions.contains_key(&layout.histogram_type) {
             definition = layout.layout_to_definitions.get(&layout.histogram_type);
         } else {
-            return Err(DynaHistError::IOError.context(format!(
+            return Err(DynaHistError::IOError( format!(
                 "{} has not been registered for serialization!",
                 layout.histogram_type
             )));
@@ -146,14 +140,12 @@ impl LayoutSerialization {
         let serialization_version: i64 = data_input.get_i64();
         let definition: LayoutSerializationDefinition;
         let layout_seriate = Self::new(5);
-        if layout_seriate.layout_to_definitions.contains(&serialization_version) {
-            definition = layout_seriate.serial_to_definitions.get(&serialization_version);
-        } else {
-            return Err(DynaHistError::IOError.context(format!(
+        let definition = layout_seriate.serial_to_definitions
+            .get(&serialization_version)
+            .ok_or(DynaHistError::IOError( anyhow::anyhow!(format!(
                 "{} is an unknown layout serialization version!",
                 serialization_version
-            )));
-        }
-        return Ok(definition.reader.read(&data_input));
+            ))));
+        return Ok(definition.unwrap().reader.read(&data_input));
     }
 }

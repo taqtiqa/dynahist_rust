@@ -5,7 +5,10 @@
 
 use crate::layouts::guess_layout::GuessLayout;
 use crate::layouts::layout::Layout;
+use crate::seriate::Seriate;
 use crate::seriate::SeriateUtil;
+use crate::seriate::serialization::SeriateWrite;
+use crate::seriate::deserialization::SeriateRead;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
 use crate::errors::DynaHistError;
@@ -37,11 +40,12 @@ pub struct LogOptimalLayout {
 
 impl Algorithms for LogOptimalLayout {}
 impl Preconditions for LogOptimalLayout {}
+impl Seriate for LogOptimalLayout {}
 impl Layout for LogOptimalLayout {
     type L = Self;
 
     fn map_to_bin_index(&self, value: f64) -> usize {
-        return Self::map_to_bin_index_detail(
+        return self.map_to_bin_index_detail(&self,
             value,
             self.factor_normal,
             self.factor_subnormal,
@@ -61,13 +65,13 @@ impl Layout for LogOptimalLayout {
     // References:
     // - https://bugs.openjdk.java.net/browse/JDK-8136414
     //
-    fn map_to_bin_index_detail(
+    fn map_to_bin_index_detail(&self,
         value: f64,
         factor_normal: f64,
         factor_subnormal: f64,
         unsigned_value_bits_normal_limit: i64,
         offset: f64,
-    ) -> i32 {
+    ) -> usize {
         let value_bits: i64 = value.to_bits();
         let unsigned_value_bits: i64 = value_bits & 0x7fffffffffffffff;
         let mut idx: i32;
@@ -109,6 +113,53 @@ impl GuessLayout for LogOptimalLayout {
             let s: f64 = (idx - self.offset) / self.factor_normal + Self::LOG_MIN_VALUE;
             return f64::exp(s);
         }
+    }
+}
+
+impl SeriateRead for LogOptimalLayout {
+    fn read(data_input: &DataInput) -> Result<LogOptimalLayout, std::rc::Rc<DynaHistError>> {
+        Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
+        let absolute_bin_width_limit_tmp: f64 = data_input.read_double();
+        let relative_bin_width_limit_tmp: f64 = data_input.read_double();
+        let underflow_bin_index_tmp: i32 = SeriateUtil::read_signed_var_int(&data_input);
+        let overflow_bin_index_tmp: i32 = SeriateUtil::read_signed_var_int(&data_input);
+        let first_normal_idx_tmp: i32 =
+            Self::calculate_first_normal_index(relative_bin_width_limit_tmp);
+        let factor_normal_tmp: f64 = Self::calculate_factor_normal(relative_bin_width_limit_tmp);
+        let factor_subnormal_tmp: f64 =
+            Self::calculate_factor_sub_normal(absolute_bin_width_limit_tmp);
+        let unsigned_value_bits_normal_limit_tmp: i64 =
+            Self::calculate_unsigned_value_bits_normal_limit(
+                factor_subnormal_tmp,
+                first_normal_idx_tmp,
+            );
+        let offset_tmp: f64 = Self::calculate_offset(
+            unsigned_value_bits_normal_limit_tmp,
+            factor_normal_tmp,
+            first_normal_idx_tmp,
+        );
+        let layer = LogOptimalLayout::new(
+            absolute_bin_width_limit_tmp,
+            relative_bin_width_limit_tmp,
+            underflow_bin_index_tmp,
+            overflow_bin_index_tmp,
+            factor_normal_tmp,
+            factor_subnormal_tmp,
+            offset_tmp,
+            unsigned_value_bits_normal_limit_tmp,
+        );
+        return Ok(layer);
+    }
+}
+
+
+impl SeriateWrite for LogOptimalLayout {
+    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
+        data_output.write_byte(Self::SERIAL_VERSION_V0);
+        data_output.write_double(self.absolute_bin_width_limit);
+        data_output.write_double(self.relative_bin_width_limit);
+        Self::write_signed_var_int(self.underflow_bin_index, &data_output);
+        Self::write_signed_var_int(self.overflow_bin_index, &data_output);
     }
 }
 
@@ -315,62 +366,20 @@ impl LogOptimalLayout {
         return (factor_subnormal * unsigned_value) as usize;
     }
 
-    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
-        data_output.write_byte(Self::SERIAL_VERSION_V0);
-        data_output.write_double(self.absolute_bin_width_limit);
-        data_output.write_double(self.relative_bin_width_limit);
-        Self::write_signed_var_int(self.underflow_bin_index, &data_output);
-        Self::write_signed_var_int(self.overflow_bin_index, &data_output);
-    }
-
-    fn read(data_input: &DataInput) -> Result<LogOptimalLayout, std::rc::Rc<DynaHistError>> {
-        Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
-        let absolute_bin_width_limit_tmp: f64 = data_input.read_double();
-        let relative_bin_width_limit_tmp: f64 = data_input.read_double();
-        let underflow_bin_index_tmp: i32 = SeriateUtil::read_signed_var_int(&data_input);
-        let overflow_bin_index_tmp: i32 = SeriateUtil::read_signed_var_int(&data_input);
-        let first_normal_idx_tmp: i32 =
-            Self::calculate_first_normal_index(relative_bin_width_limit_tmp);
-        let factor_normal_tmp: f64 = Self::calculate_factor_normal(relative_bin_width_limit_tmp);
-        let factor_subnormal_tmp: f64 =
-            Self::calculate_factor_sub_normal(absolute_bin_width_limit_tmp);
-        let unsigned_value_bits_normal_limit_tmp: i64 =
-            Self::calculate_unsigned_value_bits_normal_limit(
-                factor_subnormal_tmp,
-                first_normal_idx_tmp,
-            );
-        let offset_tmp: f64 = Self::calculate_offset(
-            unsigned_value_bits_normal_limit_tmp,
-            factor_normal_tmp,
-            first_normal_idx_tmp,
-        );
-        let layer = LogOptimalLayout::new(
-            absolute_bin_width_limit_tmp,
-            relative_bin_width_limit_tmp,
-            underflow_bin_index_tmp,
-            overflow_bin_index_tmp,
-            factor_normal_tmp,
-            factor_subnormal_tmp,
-            offset_tmp,
-            unsigned_value_bits_normal_limit_tmp,
-        );
-        return Ok(layer);
-    }
-
-    // This will be covered by DRY implementation of std traits via phantom types
-    //
-    fn hash_code(&self) -> i32 {
-        let prime: i32 = 31;
-        let mut result: i32 = 1;
-        let mut temp: i64;
-        temp = Self::to_bits_nan_collapse(self.absolute_bin_width_limit);
-        result = prime * result + (temp ^ (temp >> /* >>> */ 32)) as i32;
-        result = prime * result + self.overflow_bin_index;
-        temp = Self::to_bits_nan_collapse(self.relative_bin_width_limit);
-        result = prime * result + (temp ^ (temp >> /* >>> */ 32)) as i32;
-        result = prime * result + self.underflow_bin_index;
-        return result;
-    }
+    // // This will be covered by DRY implementation of std traits via phantom types
+    // //
+    // fn hash_code(&self) -> usize {
+    //     let prime: usize = 31;
+    //     let mut result: usize = 1;
+    //     let mut temp: usize;
+    //     temp = Self::to_bits_nan_collapse(self.absolute_bin_width_limit);
+    //     result = prime * result + (temp ^ (temp >> /* >>> */ 32)) as usize;
+    //     result = prime * result + self.overflow_bin_index;
+    //     temp = Self::to_bits_nan_collapse(self.relative_bin_width_limit);
+    //     result = prime * result + (temp ^ (temp >> /* >>> */ 32)) as usize;
+    //     result = prime * result + self.underflow_bin_index;
+    //     return result;
+    // }
 
     // This will be covered by DRY implementation of std traits via phantom types
     //

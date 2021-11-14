@@ -3,10 +3,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::errors::DynaHistError;
 use crate::layouts::layout::Layout;
+use crate::seriate::deserialization::SeriateRead;
+use crate::seriate::serialization::SeriateWrite;
+use crate::seriate::Seriate;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
-use crate::errors::DynaHistError;
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 
@@ -20,8 +23,8 @@ use crate::utilities::Preconditions;
 /// This [`OpenTelemetryLayout`] trait is sealed.
 ///
 pub(crate) trait OpenTelemetryLayout: Layout
-    where
-        Self: Sized
+where
+    Self: Sized,
 {
     // currently only used by OpenTelemetry exponential buckets layout
     const BOUNDARY_CONSTANTS: Vec<usize>;
@@ -79,7 +82,11 @@ pub struct OpenTelemetryExponentialBucketsLayout {
 
 impl Algorithms for OpenTelemetryExponentialBucketsLayout {}
 impl Preconditions for OpenTelemetryExponentialBucketsLayout {}
+impl Seriate for OpenTelemetryExponentialBucketsLayout {}
+
 impl Layout for OpenTelemetryExponentialBucketsLayout {
+    type L = Self;
+
     fn map_to_bin_index(&self, value: f64) -> usize {
         let value_bits: i64 = value.to_bits();
         let index: i32 = Self::map_to_bin_index_helper(
@@ -91,6 +98,16 @@ impl Layout for OpenTelemetryExponentialBucketsLayout {
             self.index_offset,
         );
         return if value_bits >= 0 { index } else { -index };
+    }
+
+    fn map_to_bin_index_detail(
+        &self,
+        value: f64,
+        factor_normal: f64,
+        factor_subnormal: f64,
+        unsigned_value_bits_normal_limit: i64,
+        offset: f64,
+    ) -> usize {
     }
 
     fn get_underflow_bin_index(&self) -> usize {
@@ -126,9 +143,22 @@ impl Ord for OpenTelemetryExponentialBucketsLayout {
     }
 }
 
+impl SeriateRead for OpenTelemetryExponentialBucketsLayout {
+    fn read(data_input: &DataInput) -> Result<Self, std::rc::Rc<DynaHistError>> {
+        Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
+        let precision: i32 = data_input.read_unsigned_byte();
+        return Ok(OpenTelemetryExponentialBucketsLayout::create(precision));
+    }
+}
+
+impl SeriateWrite for OpenTelemetryExponentialBucketsLayout {
+    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
+        data_output.write_byte(Self::SERIAL_VERSION_V0);
+        data_output.write_byte(self.precision);
+    }
+}
 
 impl OpenTelemetryExponentialBucketsLayout {
-
     /// Create a histogram bin layout with exponential buckets with given precision.
     ///
     /// - `precision`: the precision
@@ -234,17 +264,6 @@ impl OpenTelemetryExponentialBucketsLayout {
     // fn hash_code(&self) -> i32 {
     //     return 31 * self.precision;
     // }
-
-    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
-        data_output.write_byte(Self::SERIAL_VERSION_V0);
-        data_output.write_byte(self.precision);
-    }
-
-    fn read(data_input: &DataInput) -> Result<Self, std::rc::Rc<DynaHistError>> {
-        Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
-        let precision: i32 = data_input.read_unsigned_byte();
-        return Ok(OpenTelemetryExponentialBucketsLayout::create(precision));
-    }
 }
 
 impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
@@ -334,7 +353,7 @@ impl OpenTelemetryLayout for OpenTelemetryExponentialBucketsLayout {
         }
     }
 
-    const BOUNDARY_CONSTANTS: Vec<i64> = vec![
+    const BOUNDARY_CONSTANTS: Vec<usize> = vec![
         0x0000000000000,
         0x002c605e2e8cf,
         0x0058c86da1c0a,

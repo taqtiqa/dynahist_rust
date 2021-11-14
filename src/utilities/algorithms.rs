@@ -124,7 +124,7 @@ pub trait Algorithms: Preconditions {
     ///
     /// - `x`: the value
     ///
-    /// the corresponding long value
+    /// the corresponding [`f64`] value
     ///
     fn map_double_to_long(x: f64) -> i64 {
         let l: i64 = x.to_bits();
@@ -135,7 +135,7 @@ pub trait Algorithms: Preconditions {
     ///
     /// Inverse mapping can be performed using [`#mapDoubleToLong(double)`].
     ///
-    /// - `l`: long value
+    /// - `l`: [`f64`] value
     ///
     /// the corresponding double value
     ///
@@ -144,22 +144,27 @@ pub trait Algorithms: Preconditions {
         return f64::from_bits(((l >> 62) >> /* >>> */ 1) ^ l);
     }
 
-    /// Finds the first long value in the range [min, max] for which the given predicate returns {@code
-    /// true}.
+    /// Return the first [`f64`] value in the range `[min, max]`, for which the
+    /// given predicate closure returns [`true`].
     ///
-    /// The predicate must return [`false`] for all long values smaller than some value X from
-    /// [min, max] and must return [`true`] for all long values equal to or greater than X. The
-    /// return value of this function will be X.
+    /// The predicate must return [`false`] for all [`f64`] values smaller
+    /// than some value `X` from `[min, max]` and must return [`true`] for
+    /// all [`f64`] values equal to or greater than `X`.
+    /// The return value of this function will be `X`.
     ///
-    /// The time complexity is logarithmic in terms of the interval length max - min.
+    /// The time complexity is logarithmic in terms of the interval length
+    /// `max - min`.
     ///
-    /// - `predicate`: the predicate
-    /// - `min`: the lower bound of the search interval
-    /// - `max`: the upper bound of the search interval
+    /// # Arguments
     ///
-    /// the smallest value for which the predicate evaluates to [`true`]
+    /// - `predicate`: the predicate closure
+    /// - `min`: the lower bound, [`i64`], of the search interval
+    /// - `max`: the upper bound, [`i64`], of the search interval
     ///
-    fn find_first(predicate: &i64, min: i64, max: i64) -> i64 {
+    fn find_first<P>(predicate: &P, min: i64, max: i64) -> i64
+    where
+        P: Fn(i64) -> bool,
+    {
         Self::check_argument(min <= max);
         let mut low: i64 = min;
         let mut high: i64 = max;
@@ -171,7 +176,7 @@ pub trait Algorithms: Preconditions {
                 low = mid;
             }
         }
-        Self::check_argument(
+        Self::check_argument_value(
             high != max || predicate.eval(high),
             &Self::INVALID_PREDICATE_MSG_FORMAT_STRING,
             max,
@@ -182,11 +187,11 @@ pub trait Algorithms: Preconditions {
         return high;
     }
 
-    /// Finds the first long value in the range [min, max] for which the given
+    /// Finds the first [`f64`] value in the range [min, max] for which the given
     ///  predicate returns [`true`].
     ///
-    /// The predicate must return [`false`] for all long values smaller than some value X from
-    /// [min, max] and must return [`true`] for all long values equal to or greater than X. The
+    /// The predicate must return [`false`] for all [`f64`] values smaller than some value X from
+    /// [min, max] and must return [`true`] for all [`f64`] values equal to or greater than X. The
     /// return value of this function will be X.
     ///
     /// The time complexity is logarithmic in terms of the interval length max - min.

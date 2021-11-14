@@ -50,12 +50,6 @@ impl LayoutTestUtil {
         let check = idx >= over_flow_index || idx <= under_flow_index;
         let pair = std::sync::Arc::new((std::sync::Mutex::new(check), std::sync::Condvar::new()));
         return pair;
-        // return Condition<>::new() {
-
-        //     fn matches(&self,  value: &Integer) -> bool {
-        //         return value >= over_flow_index || value <= under_flow_index;
-        //     }
-        // };
     }
 
     fn valid_pos_inf_index(
@@ -66,28 +60,16 @@ impl LayoutTestUtil {
         let check = value >= over_flow_index;
         let pair = std::sync::Arc::new((std::sync::Mutex::new(check), std::sync::Condvar::new()));
         return pair;
-        // return Condition<>::new() {
-
-        //     fn matches(&self,  value: &Integer) -> bool {
-        //         return value >= over_flow_index;
-        //     }
-        // };
     }
 
     fn valid_neg_inf_index(
         layout: impl Layout,
         value: usize,
     ) -> std::sync::Arc<(std::sync::Mutex<bool>, std::sync::Condvar)> {
-        let under_flow_index: i32 = layout.get_underflow_bin_index();
+        let under_flow_index: usize = layout.get_underflow_bin_index();
         let check = value <= under_flow_index;
         let pair = std::sync::Arc::new((std::sync::Mutex::new(check), std::sync::Condvar::new()));
         return pair;
-        // return Condition<>::new() {
-
-        //     fn matches(&self,  value: &Integer) -> bool {
-        //         return value <= under_flow_index;
-        //     }
-        // };
     }
 
     fn assert_consistency(layout: impl Layout) {

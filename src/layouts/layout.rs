@@ -32,7 +32,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     fn map_to_bin_index(&self, value: f64) -> usize;
 
-    fn map_to_bin_index_detail(
+    fn map_to_bin_index_detail(&self,
         value: f64,
         factor_normal: f64,
         factor_subnormal: f64,
@@ -189,9 +189,9 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     fn define_serialization(
         serial_version: i64,
         layout: &Self::L,
-        writer: &SerializationWriter,
-        reader: &SerializationReader,
-    ) -> LayoutSerializationDefinition {
+        writer: &SerializationWriter<Self::L>,
+        reader: &SerializationReader<Self::L>,
+    ) -> LayoutSerializationDefinition<Self::L> {
         return LayoutSerializationDefinition::new(serial_version, &layout, writer, reader);
     }
 
@@ -203,7 +203,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     /// - `definitions` are the layout serializations to register.
     ///
-    fn register(definitions: &LayoutSerializationDefinition) {
+    fn register(definitions: &LayoutSerializationDefinition<Self::L>) {
         let layout_seriate = LayoutSerialization::new();
         layout_seriate.register(definitions);
     }

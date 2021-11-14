@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::quantiles::quantile_estimators::QuantileEstimator;
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 use crate::values::value_estimation::ValueEstimation;
@@ -59,11 +60,17 @@ pub trait QuantileEstimation:
     ///
     /// an estimate for the p-quantile
     ///
-    fn get_quantile(&self, p: f64) -> f64;
+    fn get_quantile(&self, p: f64) -> f64 {
+        let quantile_estimator = QuantileEstimator {
+            p,
+            ..Self::default()
+        };
+        return self.get_quantile_from_qestimator(quantile_estimator);
+    }
 
     /// TODO: Deprecate or merge this documentation
     /// Return an estimate for the p-quantile value using the estimated values as given by
-    /// [`get_value(i64)`] and the given [`QuantileEstimation`].
+    /// [`get_value_from_estimator(i64)`] and the given [`QuantileEstimation`].
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
     /// function is called many times, it is recommended to transform the histogram using
@@ -76,10 +83,19 @@ pub trait QuantileEstimation:
     /// an estimate for the p-quantile
     ///
     //fn get_quantile(&self, p: f64, quantile_estimator: &Self::Q) -> f64;
+    // Use the `vestimator` field set in the QuantileEstimator type/struct
+    fn get_quantile_from_qestimator(&self, quantile_estimator: impl QuantileEstimation) -> f64 {
+        let ve = quantile_estimator.vestimator;
+        let rank_fn = |rank| self.get_value_from_estimator(rank, ve);
+        return quantile_estimator.estimate_quantile_from_fn(
+            quantile_estimator.p,
+            rank_fn,
+            &Self::get_total_count(),
+        );
+    }
 
-    /// TODO: Deprecate or merge this documentation
     /// Return an estimate for the quantile value using the estimated values as given by
-    /// and the given [`QuantileEstimation`].
+    /// [`value_estimator`] and the given [`QuantileEstimation`].
     ///
     /// The runtime of this method may be O(N) where N is the number of bins. Therefore, if this
     /// function is called many times, it is recommended to transform the histogram using
@@ -92,6 +108,14 @@ pub trait QuantileEstimation:
     /// an estimate for the p-quantile
     ///
     //fn get_quantile(&self, p: f64, value_estimator: &Self::V) -> f64;
+    fn get_quantile_from_vestimator(&self, p: f64, value_estimator: impl ValueEstimation) -> f64 {
+        return self.get_quantile_from_estimators(
+            p,
+            Self::DEFAULT_QUANTILE_ESTIMATOR,
+            value_estimator,
+
+        );
+    }
 
     /// Return an estimate for the quantile value using the estimated values as given by
     /// [`get_value(i64)`] and the given [`QuantileEstimation`] implementation.
@@ -107,7 +131,19 @@ pub trait QuantileEstimation:
     ///
     /// an estimate for the p-quantile
     ///
-    fn get_quantile_from_estimator(&self, quantile_estimator: impl QuantileEstimation) -> f64;
+    // fn get_quantile_from_estimator(&self, quantile_estimator: impl QuantileEstimation) -> f64;
+    fn get_quantile_from_estimators(
+        &self,
+        p: f64,
+        quantile_estimator: impl QuantileEstimation,
+        value_estimator: impl ValueEstimation,
+    ) -> f64 {
+        return quantile_estimator.estimate_quantile(
+            p,
+            |&rank| self.get_value_from_estimator(rank, value_estimator),
+            &Self::get_total_count(),
+        );
+    }
 
     /// Return the p-quantile estimate from sorted data which can be randomly
     ///  accessed through the given function.

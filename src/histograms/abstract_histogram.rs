@@ -406,45 +406,6 @@ pub trait AbstractHistogram: Histogram + Probability {
         return PreprocessedHistogram::of(self);
     }
 
-    fn get_quantile_from_estimators(
-        &self,
-        p: f64,
-        quantile_estimator: impl QuantileEstimation,
-        value_estimator: impl ValueEstimation,
-    ) -> f64 {
-        return quantile_estimator.estimate_quantile(
-            p,
-            |&rank| self.get_value_from_estimator(rank, value_estimator),
-            &Self::get_total_count(),
-        );
-    }
-
-    // Use the `vestimator` field set in the QuantileEstimator type/struct
-    fn get_quantile_from_qestimator(&self, quantile_estimator: impl QuantileEstimation) -> f64 {
-        let ve = quantile_estimator.vestimator;
-        let rank_fn = |rank| self.get_value_from_estimator(rank, ve);
-        return quantile_estimator.estimate_quantile_from_fn(
-            quantile_estimator.p,
-            rank_fn,
-            &Self::get_total_count(),
-        );
-    }
-    fn get_quantile_from_vestimator(&self, p: f64, value_estimator: impl ValueEstimation) -> f64 {
-        return self.get_quantile_from_estimators(
-            p,
-            value_estimator,
-            Self::DEFAULT_QUANTILE_ESTIMATOR,
-        );
-    }
-
-    fn get_quantile(&self, p: f64) -> f64 {
-        let quantile_estimator = QuantileEstimator {
-            p,
-            ..Self::default()
-        };
-        return self.get_quantile_from_qestimator(quantile_estimator);
-    }
-
     fn get_estimated_footprint_in_bytes(&self) -> i64 {
         return // layout
         Self::ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES + // object header for this object

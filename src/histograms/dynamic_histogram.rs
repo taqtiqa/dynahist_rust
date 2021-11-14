@@ -14,7 +14,7 @@ use crate::histograms::histogram::Histogram;
 use crate::layouts::layout::Layout;
 use crate::quantiles::quantile_estimation::QuantileEstimation;
 use crate::sketches::data::DataInput;
-//use crate::utilities::Algorithms;
+use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 use crate::values::value_estimation::ValueEstimation;
 
@@ -40,7 +40,7 @@ impl DynamicHistogram {
     fn get_array_index(idx: i32, mode: i8) -> i32 {
         return idx >> (6 - mode);
     }
-    fn read(
+    pub fn read(
         layout: impl Layout,
         data_input: &DataInput,
     ) -> Result<DynamicHistogram, std::rc::Rc<DynaHistError>> {
@@ -109,6 +109,8 @@ impl DynamicHistogram {
     }
 }
 
+impl Algorithms for DynamicHistogram {}
+impl Preconditions for DynamicHistogram {}
 impl AbstractHistogram for DynamicHistogram {}
 impl Probability for DynamicHistogram {}
 impl Histogram for DynamicHistogram {}
@@ -126,10 +128,13 @@ impl AbstractMutableHistogram for DynamicHistogram {
     }
 
     fn new(layout: impl Layout) -> Self {
-        let mode = 0;
-        let indexOffset = layout.get_underflow_bin_index() + 1;
-        let numberOfUnusedCounts = 0;
-        let counts = Self::EMPTY_COUNTS;
+        Self {
+            histogram_type: "DynamicHistogram".to_string(),
+            counts: Self::EMPTY_COUNTS,
+            index_offset: layout.get_underflow_bin_index() + 1,
+            mode: 0,
+            number_of_unused_counts: 0,
+        }
     }
 
     fn increase_count(&self, absolute_index: i32, count: i64) {
@@ -320,8 +325,8 @@ impl AbstractMutableHistogram for DynamicHistogram {
     fn get_estimated_footprint_in_bytes(&self) -> i64 {
         return (Self::ESTIMATED_REFERENCE_FOOTPRINT_IN_BYTES + (self.counts.len() as i64) * i64::to_be_bytes() + Self::ESTIMATED_OBJECT_HEADER_FOOTPRINT_IN_BYTES + // counts
         i32::to_be_bytes()) + // mode
-        i8::to_be_bytes() + // numberOfUnusedCounts
-        i8::to_be_bytes() + // indexOffset
+        i8::to_be_bytes() +   // number_of_unused_counts
+        i8::to_be_bytes() +   // index_offset
         i32::to_be_bytes() + self.get_estimated_footprint_in_bytes();
     }
 

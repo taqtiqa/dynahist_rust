@@ -19,12 +19,19 @@ use crate::sketches::data::DataInput;
 ///     - [`LogQuadraticLayout`]
 ///     - [`OpenTelemetryLayout`]
 ///
-pub struct SerializationReader {}
+pub struct SerializationReader<L>(pub L);
 
-impl SeriateRead for SerializationReader {}
+impl<L: Layout> SeriateRead for SerializationReader<L> {
+    
+    fn new(layout: Self::L) -> Self {
+       Self(layout)
+    }
+}
 
 pub trait SeriateRead {
     type L: Layout;
+
+    fn new(layout: Self::L) -> Self;
 
     /// Return a deserialized histogram by reading from a given [`DataInput`].
     ///

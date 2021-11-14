@@ -19,12 +19,19 @@ use crate::sketches::data::DataOutput;
 ///     - [`LogQuadraticLayout`]
 ///     - [`OpenTelemetryLayout`]
 ///
-pub struct SerializationWriter {}
+pub struct SerializationWriter<L>(L);
 
-impl SeriateWrite for SerializationWriter {}
+impl<L: Layout> SeriateWrite for SerializationWriter<L> {
+
+    fn new(layout: Self::L) -> Self {
+       Self(layout)
+    }
+}
 
 pub trait SeriateWrite {
     type L: Layout;
+
+    fn new(layout: Self::L) -> Self;
 
     /// Serializes a given object by writing to a given [`DataOutput`].
     ///

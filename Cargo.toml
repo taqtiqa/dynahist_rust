@@ -20,6 +20,8 @@ float_next_after = "0.1.5"
 num = "0.4.0"
 predicates = "2.0.3"
 static_assertions = "1.1.0"
+strum = { version = "0.22", features = ["derive"] }
+strum_macros = "0.22"
 thiserror = "1.0"
 tracing = "0.1.29"
 tracing-opentelemetry = "0.16.0"

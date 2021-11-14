@@ -4,18 +4,18 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 pub struct TestLayout {
-
-     let underflow_index: usize;
-
-     let overflow_index: usize;
+    underflow_index: usize,
+    overflow_index: usize,
 }
 
 impl Layout for TestLayout {
 
-    fn new( underflow_index: usize,  overflow_index: usize) -> TestLayout {
+    fn new( underflow_index: usize,  overflow_index: usize) -> Self {
         Self::check_argument(underflow_index < overflow_index);
-        let .underflowIndex = underflow_index;
-        let .overflowIndex = overflow_index;
+        Self {
+            underflow_index: underflow_index,
+            overflow_index: overflow_index,
+        }
     }
 
     fn map_to_bin_index(&self,  value: f64) -> usize {
@@ -42,8 +42,8 @@ impl Layout for TestLayout {
     }
 
     fn hash_code(&self) -> i32 {
-         let prime: i32 = 31;
-         let mut result: i32 = 1;
+        let prime: i32 = 31;
+        let mut result: i32 = 1;
         result = prime * result + self.overflow_index;
         result = prime * result + self.underflow_index;
         return result;

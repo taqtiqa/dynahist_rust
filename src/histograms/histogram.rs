@@ -10,6 +10,7 @@ use crate::histograms::dynamic_histogram::DynamicHistogram;
 use crate::histograms::fixed::StaticHistogram;
 use crate::layouts::layout::Layout;
 use crate::quantiles::quantile_estimation::QuantileEstimation;
+use crate::seriate::SeriateHistogram;
 use crate::sketches::data::{DataInput, DataOutput};
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
@@ -313,8 +314,8 @@ pub trait Histogram {
     /// Write this histogram to a given [`DataOutput`].
     ///
     /// The [`Layout`] information will not be written. Therefore, it is necessary to provide
-    /// the layout when reading using [`#readAsDynamic(Layout, DataInput)`], {@link
-    /// #readAsStatic(Layout, DataInput)} or [`#readAsPreprocessed(Layout, DataInput)`].
+    /// the layout when reading using [`#read_as_dynamic(Layout, DataInput)`], {@link
+    /// #readAsStatic(Layout, DataInput)} or [`#read_as_preprocessed(Layout, DataInput)`].
     ///
     /// - `dataOutput`: the [`DataOutput`]
     ///
@@ -376,8 +377,8 @@ pub trait Histogram {
         layout: impl Layout,
         data_input: &DataInput,
     ) -> Result<Self, std::rc::Rc<DynaHistError>>
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         return Ok(DynamicHistogram::read(layout, &data_input));
     }
@@ -398,8 +399,8 @@ pub trait Histogram {
         layout: impl Layout,
         data_input: &DataInput,
     ) -> Result<Self, std::rc::Rc<DynaHistError>>
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         return Ok(StaticHistogram::read(layout, &data_input));
     }
@@ -420,8 +421,8 @@ pub trait Histogram {
         layout: impl Layout,
         data_input: &DataInput,
     ) -> Result<Self, std::rc::Rc<DynaHistError>>
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         let histogram = DynamicHistogram::read(layout, &data_input);
         return Ok(histogram.get_preprocessed_copy());

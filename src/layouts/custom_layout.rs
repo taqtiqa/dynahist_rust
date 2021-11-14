@@ -4,6 +4,9 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::layouts::guess_layout::GuessLayout;
+use crate::seriate::Seriate;
+use crate::seriate::serialization::SeriateWrite;
+use crate::seriate::deserialization::SeriateRead;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
 use crate::{errors::DynaHistError, layouts::layout::Layout};
@@ -16,23 +19,10 @@ pub struct CustomLayout {
     sorted_bin_boundaries: Vec<f64>,
 }
 
-impl CustomLayout {
-    fn new(sorted_bin_boundaries: Vec<f64>) -> Self {
-        Self {
-            histogram_type: "CustomLayout".to_string(),
-            sorted_bin_boundaries,
-        }
-    }
-    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
-        data_output.write_byte(Self::SERIAL_VERSION_V0);
-        Self::write_unsigned_var_int(self.sorted_bin_boundaries.len(), &data_output);
-        for boundary in self.sorted_bin_boundaries {
-            data_output.write_double(boundary);
-        }
-        Ok(())
-    }
+impl Seriate for CustomLayout {}
 
-    fn read(data_input: &DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
+impl SeriateRead for CustomLayout {
+    fn read(&self, data_input: &DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let len: i32 = Self::read_unsigned_var_int(&data_input);
         let sorted_bin_boundaries = vec![0.0; len];
@@ -48,7 +38,26 @@ impl CustomLayout {
 
         return Ok(CustomLayout::new(&sorted_bin_boundaries));
     }
+}
 
+impl SeriateWrite for CustomLayout {
+    fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
+        data_output.write_byte(Self::SERIAL_VERSION_V0);
+        Self::write_unsigned_var_int(self.sorted_bin_boundaries.len(), &data_output);
+        for boundary in self.sorted_bin_boundaries {
+            data_output.write_double(boundary);
+        }
+        Ok(())
+    }
+}
+
+impl CustomLayout {
+    fn new(sorted_bin_boundaries: Vec<f64>) -> Self {
+        Self {
+            histogram_type: "CustomLayout".to_string(),
+            sorted_bin_boundaries,
+        }
+    }
 }
 
 impl Algorithms for CustomLayout {}
@@ -95,6 +104,18 @@ impl Layout for CustomLayout {
     type L = Self;
 
     fn map_to_bin_index(&self, value: f64) -> usize {
+        if let Some(value) = self.map_to_bin_index_detail(value, 0_f64, 0_f64, 0_i64, 0_f64) {
+            return value;
+        }
+    }
+    // Unused. `map_to_bin_index_custom`
+    fn map_to_bin_index_detail(&self,
+        value: f64,
+        factor_normal: f64,
+        factor_subnormal: f64,
+        unsigned_value_bits_normal_limit: i64,
+        offset: f64,
+    ) -> usize {
         let mapped_value: i64 = Self::map_double_to_long(value);
         let predicate = |&x: usize| {
             x == self.sorted_bin_boundaries.len()

@@ -14,7 +14,7 @@ use crate::histograms::histogram::Histogram;
 use crate::layouts::layout::Layout;
 use crate::quantiles::quantile_estimation::QuantileEstimation;
 use crate::sketches::data::DataInput;
-// use crate::utilities::Algorithms;
+use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 use crate::values::value_estimation::ValueEstimation;
 
@@ -32,6 +32,9 @@ impl StaticHistogram {
         return Ok(histogram);
     }
 }
+
+impl Algorithms for StaticHistogram {}
+impl Preconditions for StaticHistogram {}
 
 impl Histogram for StaticHistogram {
     fn add_values(&self, value: f64, count: i64) -> Self {

@@ -59,7 +59,7 @@ pub trait Preconditions {
     ///
     /// - `expression`: An expression
     /// - `error_message_format_string`: An error message format string with a single `{}`%s place holder
-    /// - `value`: A long value
+    /// - `value`: A [`f64`] value
     ///
     fn check_argument_value(
         expression: bool,

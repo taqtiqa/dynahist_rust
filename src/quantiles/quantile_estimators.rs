@@ -4,10 +4,10 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::quantiles::quantile_estimation::QuantileEstimation;
-use crate::values::value_estimators::ValueEstimatorUniform;
-use crate::values::value_estimation::ValueEstimation;
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
+use crate::values::value_estimation::ValueEstimation;
+use crate::values::value_estimators::ValueEstimatorUniform;
 
 pub struct QuantileEstimator {
     p: f64,
@@ -32,11 +32,26 @@ impl Default for VEstimator {
     }
 }
 
-impl QuantileEstimation for QEstimator {}
 impl Algorithms for QEstimator {}
 impl Preconditions for QEstimator {}
 
-impl ValueEstimation for QEstimator {}
+// TODO
+// impl QuantileEstimation for QEstimator {
+
+//     // TODO:
+//     // `create`,
+//     // `to_string`,
+//     // `get_quantile`,
+//     // `get_quantile_from_estimator`,
+//     // `estimate_quantile_from_fn`
+// }
+
+// impl ValueEstimation for QEstimator {
+
+//     // TODO:
+//     // `new`,
+
+// }
 
 /// A quantile estimator implementation based on the definition used by the
 /// [`scipy.stats.mstats.mquantiles`] method in the SciPy Python library.

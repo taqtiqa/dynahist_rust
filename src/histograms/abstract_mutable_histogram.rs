@@ -181,7 +181,7 @@ impl BinIteratorImpl {
     }
 }
 
-pub trait AbstractMutableHistogram: AbstractHistogram + Histogram {
+pub trait AbstractMutableHistogram: AbstractHistogram + Histogram + Preconditions {
     type BIter: BinIterator + BinSketch + Iterator;
     type VIter: ValueIterator + ValueSketch + Iterator;
 
@@ -574,7 +574,7 @@ pub trait AbstractMutableHistogram: AbstractHistogram + Histogram {
         if effective_regular_total_count >= 1 {
             // 4. read first regular effectively non-zero bin index
             let first_regular_effectively_non_zero_bin_index: i32 =
-                SeriateUtil::ead_signed_var_int(&data_input);
+                SeriateUtil::read_signed_var_int(&data_input);
             let last_regular_effectively_non_zero_bin_index: i32;
             if effective_regular_total_count >= 2 {
                 // 5. read first regular effectively non-zero bin index

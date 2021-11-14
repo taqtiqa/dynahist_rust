@@ -3,6 +3,16 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+// Use the `strum` crate to convert enum variants into String
+#[derive(strum_macros::IntoStaticStr)]
+enum Sketch {
+    Custom,
+    LogOptimal,
+    LogLinear,
+    LogQuadratic,
+    OpenTelemetryExponentialBuckets,
+}
+
 pub(crate) mod custom_layout;
 pub(crate) mod guess_layout;
 pub(crate) mod layout;
