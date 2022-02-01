@@ -15,19 +15,16 @@ use crate::layouts::open_telemetry_exponential_buckets_layout::OpenTelemetryExpo
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 
-pub struct LayoutSerialization<L: Layout> {
+pub struct LayoutSerialization {
     count: usize,
-    serial_to_definitions: std::collections::HashMap<i64, LayoutSerializationDefinition<L>>,
-    layout_to_definitions: std::collections::HashMap<String, LayoutSerializationDefinition<L>>,
+    serial_to_definitions: std::collections::HashMap<i64, LayoutSerializationDefinition>,
+    layout_to_definitions: std::collections::HashMap<String, LayoutSerializationDefinition>,
 }
 
-impl<L: Layout> Algorithms for LayoutSerialization<L> {}
-impl<L: Layout> Preconditions for LayoutSerialization<L> {}
+impl Algorithms for LayoutSerialization {}
+impl Preconditions for LayoutSerialization {}
 
-impl<L> LayoutSerialization<L>
-where
-    L: Layout
-{
+impl LayoutSerialization {
 
     fn new(length: usize) -> Self {
         let count = 5;
@@ -49,7 +46,7 @@ where
         Self::register(&vec![
             &LayoutSerializationDefinition::new(
                 0x7f862c3808df6fcd,
-                Sketch::Custom
+                Sketch::Custom,
             ),
             &LayoutSerializationDefinition::new(
                 0x05d0c7e2dc0316e8,
@@ -71,7 +68,7 @@ where
     }
 
     // Register layout implementations before serialization/deserialization
-    fn register(definitions: &Vec<&LayoutSerializationDefinition<L>>) -> Self {
+    fn register(definitions: &Vec<&LayoutSerializationDefinition>) -> Self {
         let seriate = Self::new(definitions.len());
 
         for definition in definitions {

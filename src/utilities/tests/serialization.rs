@@ -16,8 +16,8 @@ impl SeriateTest for SerializationTestUtil {
 
     fn test_serialization(
         data: &T,
-        writer: &SerializationWriter<T>,
-        reader: &SerializationReader<T>,
+        writer: &SerializationWriter,
+        reader: &SerializationReader,
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
         let bytes: Vec<i8> = Self::to_byte_array(writer, data);
         return Ok(::from_byte_array(reader, bytes));
@@ -25,8 +25,8 @@ impl SeriateTest for SerializationTestUtil {
 
     fn test_serialization(
         data: &T,
-        writer: &SerializationWriter<T>,
-        reader: &SerializationReader<T>,
+        writer: &SerializationWriter,
+        reader: &SerializationReader,
         expected_hex_serialization: &String,
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
         let hex_serialization: String =
@@ -39,7 +39,7 @@ impl SeriateTest for SerializationTestUtil {
     }
 
     fn test_reading(
-        reader: &SerializationReader<T>,
+        reader: &SerializationReader,
         hex_serialization: &String,
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
         return Ok(::from_byte_array(
@@ -49,7 +49,7 @@ impl SeriateTest for SerializationTestUtil {
     }
 
     fn to_byte_array(
-        writer: &SerializationWriter<T>,
+        writer: &SerializationWriter,
         data: &T,
     ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         let bytes: Vec<i8> = Self::to_byte_array_helper(writer, data);
@@ -69,7 +69,7 @@ impl SeriateTest for SerializationTestUtil {
     }
 
     fn to_byte_array_helper(
-        writer: &SerializationWriter<T>,
+        writer: &SerializationWriter,
         data: &T,
     ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         let bos: ByteArrayOutput = ByteArrayOutput::new();
@@ -79,7 +79,7 @@ impl SeriateTest for SerializationTestUtil {
     }
 
     fn from_byte_array(
-        reader: &SerializationReader<T>,
+        reader: &SerializationReader,
         bytes: &Vec<i8>,
     ) -> Result<T, std::rc::Rc<DynaHistError>> {
         let bis: ByteArrayInput = ByteArrayInput::new(&bytes);

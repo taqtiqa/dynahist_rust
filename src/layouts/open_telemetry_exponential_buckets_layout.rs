@@ -82,7 +82,9 @@ pub struct OpenTelemetryExponentialBucketsLayout {
 
 impl Algorithms for OpenTelemetryExponentialBucketsLayout {}
 impl Preconditions for OpenTelemetryExponentialBucketsLayout {}
-impl Seriate for OpenTelemetryExponentialBucketsLayout {}
+impl Seriate for OpenTelemetryExponentialBucketsLayout {
+
+}
 
 impl Layout for OpenTelemetryExponentialBucketsLayout {
     type L = Self;
@@ -143,15 +145,14 @@ impl Ord for OpenTelemetryExponentialBucketsLayout {
     }
 }
 
-impl SeriateRead for OpenTelemetryExponentialBucketsLayout {
+impl OpenTelemetryExponentialBucketsLayout {
+    
     fn read(data_input: &DataInput) -> Result<Self, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let precision: i32 = data_input.read_unsigned_byte();
         return Ok(OpenTelemetryExponentialBucketsLayout::create(precision));
     }
-}
 
-impl SeriateWrite for OpenTelemetryExponentialBucketsLayout {
     fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
         data_output.write_byte(Self::SERIAL_VERSION_V0);
         data_output.write_byte(self.precision);

@@ -4,8 +4,9 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 pub struct DynamicHistogramTest {
-    super: AbstractMutableHistogramTest;
 }
+
+impl AbstractMutableHistogramTest for DynamicHistogramTest {}
 
 impl DynamicHistogramTest {
 

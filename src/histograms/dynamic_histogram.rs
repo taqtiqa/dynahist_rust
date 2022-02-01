@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::bins::Bin;
 use crate::bins::bin::BinSketch;
 use crate::bins::bin_iterator::BinIterator;
 use crate::errors::DynaHistError;
@@ -17,6 +18,7 @@ use crate::sketches::data::DataInput;
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 use crate::values::value_estimation::ValueEstimation;
+use crate::values::Value;
 
 // #[derive(Debug)]
 pub struct DynamicHistogram {
@@ -25,7 +27,7 @@ pub struct DynamicHistogram {
     mode: i8,
     number_of_unused_counts: i8,
     index_offset: i32,
-    histogram_type: String,
+    histogram_type: String, // a.k.a. layout?
 }
 
 impl DynamicHistogram {
@@ -40,6 +42,7 @@ impl DynamicHistogram {
     fn get_array_index(idx: i32, mode: i8) -> i32 {
         return idx >> (6 - mode);
     }
+
     pub fn read(
         layout: impl Layout,
         data_input: &DataInput,
@@ -111,7 +114,12 @@ impl DynamicHistogram {
 
 impl Algorithms for DynamicHistogram {}
 impl Preconditions for DynamicHistogram {}
-impl AbstractHistogram for DynamicHistogram {}
+impl AbstractHistogram for DynamicHistogram {
+     type H = Self;
+     type B = std::iter::Iterator<Item=Bin>; //placeholder
+     type V = std::iter::Iterator<Item=Value>; //placeholder
+}
+
 impl Probability for DynamicHistogram {}
 impl Histogram for DynamicHistogram {}
 

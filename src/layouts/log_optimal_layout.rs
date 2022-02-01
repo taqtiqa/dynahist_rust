@@ -40,7 +40,9 @@ pub struct LogOptimalLayout {
 
 impl Algorithms for LogOptimalLayout {}
 impl Preconditions for LogOptimalLayout {}
-impl Seriate for LogOptimalLayout {}
+impl Seriate for LogOptimalLayout {
+
+}
 impl Layout for LogOptimalLayout {
     type L = Self;
 
@@ -116,7 +118,8 @@ impl GuessLayout for LogOptimalLayout {
     }
 }
 
-impl SeriateRead for LogOptimalLayout {
+impl LogOptimalLayout {
+
     fn read(data_input: &DataInput) -> Result<LogOptimalLayout, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let absolute_bin_width_limit_tmp: f64 = data_input.read_double();
@@ -150,16 +153,13 @@ impl SeriateRead for LogOptimalLayout {
         );
         return Ok(layer);
     }
-}
 
-
-impl SeriateWrite for LogOptimalLayout {
     fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
         data_output.write_byte(Self::SERIAL_VERSION_V0);
         data_output.write_double(self.absolute_bin_width_limit);
         data_output.write_double(self.relative_bin_width_limit);
         Self::write_signed_var_int(self.underflow_bin_index, &data_output);
-        Self::write_signed_var_int(self.overflow_bin_index, &data_output);
+        Self::write_signed_var_int(self.overflow_bin_index, &data_output)
     }
 }
 

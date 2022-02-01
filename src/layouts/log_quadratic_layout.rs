@@ -36,7 +36,10 @@ pub struct LogQuadraticLayout {
 
 impl Algorithms for LogQuadraticLayout {}
 impl Preconditions for LogQuadraticLayout {}
-impl Seriate for LogQuadraticLayout {}
+impl Seriate for LogQuadraticLayout {
+
+}
+
 impl GuessLayout for LogQuadraticLayout {
     fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
         if bin_index >= 0 {
@@ -115,7 +118,7 @@ impl Layout for LogQuadraticLayout {
     }
 }
 
-impl SeriateRead for LogQuadraticLayout {
+impl LogQuadraticLayout {
 
     fn read(data_input: &DataInput) -> Result<LogQuadraticLayout, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
@@ -150,18 +153,13 @@ impl SeriateRead for LogQuadraticLayout {
         ));
     }
 
-}
-
-impl SeriateWrite for LogQuadraticLayout {
-
     fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
         data_output.write_byte(Self::SERIAL_VERSION_V0);
         data_output.write_double(self.absolute_bin_width_limit);
         data_output.write_double(self.relative_bin_width_limit);
         Self::write_signed_var_int(self.underflow_bin_index, &data_output);
-        Self::write_signed_var_int(self.overflow_bin_index, &data_output);
+        Self::write_signed_var_int(self.overflow_bin_index, &data_output)
     }
-
 }
 
 impl LogQuadraticLayout {

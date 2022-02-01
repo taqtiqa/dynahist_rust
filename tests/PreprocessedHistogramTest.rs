@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-pub struct PreprocessedHistogramTest {
-    super: AbstractHistogramTest;
-}
+pub struct PreprocessedHistogramTest { }
+
+impl AbstractHistogramTest for PreprocessedHistogramTest {}
 
 impl PreprocessedHistogramTest {
 
@@ -24,7 +24,7 @@ impl PreprocessedHistogramTest {
 
          let mutable_histogram: Histogram = Histogram::create_static(&histogram.get_layout());
         mutable_histogram.add_histogram(histogram);
-        for  let x: f64 in values {
+        for let x: f64 in values {
             mutable_histogram.add_value(x);
         }
         return mutable_histogram.get_preprocessed_copy();

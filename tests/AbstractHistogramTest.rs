@@ -10,7 +10,7 @@ impl AbstractHistogramTest {
 
     fn create(&self,  layout: impl Layout) -> impl Histogram ;
 
-    fn read(&self,  layout: impl Layout,  data_input: &DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>>  ;
+    fn read(&self,  layout: impl Layout,  data_input: &DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>>;
 
     fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram ;
 

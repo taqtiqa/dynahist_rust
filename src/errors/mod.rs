@@ -10,7 +10,7 @@ pub enum DynaHistError {
     #[error("{0}")]
     ArithmeticError(String),
     // #[error(transparent)]
-    // DataFormatError(#[from] anyhow::Error),
+    // [`DynaHistError::DataFormatError`](#[from] anyhow::Error),
     #[error("Illegal argument error")]
     IllegalArgumentError { source: std::io::Error },
     #[error("IO error")]

@@ -4,10 +4,12 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::layouts::guess_layout::GuessLayout;
+use crate::layouts::Sketch;
 use crate::seriate::Seriate;
 use crate::seriate::serialization::SeriateWrite;
 use crate::seriate::deserialization::SeriateRead;
 use crate::sketches::data::DataInput;
+use crate::histograms::histogram::Histogram;
 use crate::sketches::data::DataOutput;
 use crate::{errors::DynaHistError, layouts::layout::Layout};
 use crate::utilities::Algorithms;
@@ -19,9 +21,12 @@ pub struct CustomLayout {
     sorted_bin_boundaries: Vec<f64>,
 }
 
-impl Seriate for CustomLayout {}
+impl Seriate for CustomLayout {
 
-impl SeriateRead for CustomLayout {
+}
+
+impl CustomLayout {
+
     fn read(&self, data_input: &DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let len: i32 = Self::read_unsigned_var_int(&data_input);
@@ -38,9 +43,7 @@ impl SeriateRead for CustomLayout {
 
         return Ok(CustomLayout::new(&sorted_bin_boundaries));
     }
-}
 
-impl SeriateWrite for CustomLayout {
     fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>> {
         data_output.write_byte(Self::SERIAL_VERSION_V0);
         Self::write_unsigned_var_int(self.sorted_bin_boundaries.len(), &data_output);

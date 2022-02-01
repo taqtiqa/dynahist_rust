@@ -5,13 +5,15 @@
 
 use crate::errors::DynaHistError;
 use crate::layouts::layout::Layout;
+use crate::layouts::Sketch;
 use crate::sketches::data::DataInput;
 
 /// A deserializer for a given histogram layout.
 ///
 /// # Arguments
 ///
-/// - [`L`]: The histogram layout type to be deserialized. Available layouts are
+/// - [`L`]: The histogram sketch layout to be deserialized.
+///   Available layouts are
 ///
 ///     - [`CustomLayout`]
 ///     - [`LogLinearLayout`]
@@ -19,19 +21,21 @@ use crate::sketches::data::DataInput;
 ///     - [`LogQuadraticLayout`]
 ///     - [`OpenTelemetryLayout`]
 ///
-pub struct SerializationReader<L>(pub L);
+pub struct SerializationReader{
+    layout: Sketch,
+}
 
-impl<L: Layout> SeriateRead for SerializationReader<L> {
-    
-    fn new(layout: Self::L) -> Self {
-       Self(layout)
+impl SerializationReader {
+
+    fn new(layout: Sketch) -> Self {
+       Self{layout}
     }
 }
 
 pub trait SeriateRead {
     type L: Layout;
 
-    fn new(layout: Self::L) -> Self;
+    // fn new(layout: Self::L) -> Self;
 
     /// Return a deserialized histogram by reading from a given [`DataInput`].
     ///

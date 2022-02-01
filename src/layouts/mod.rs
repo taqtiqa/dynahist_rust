@@ -5,7 +5,7 @@
 
 // Use the `strum` crate to convert enum variants into String
 #[derive(strum_macros::IntoStaticStr)]
-enum Sketch {
+pub enum Sketch {
     Custom,
     LogOptimal,
     LogLinear,

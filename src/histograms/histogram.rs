@@ -61,7 +61,7 @@ pub trait Histogram {
     /// [`get_preprocessed_copy()`] into a @link [`PreprocessedHistogram`] first (which is an O(N)
     /// operation), whose implementation has a worst case complexity of O(log N).
     ///
-    /// @param rank, must be greater than or equal to 0 and smaller than [`#getTotalCount()`]
+    /// - rank, must be greater than or equal to 0 and smaller than [`#getTotalCount()`]
     ///
     /// bin iterator, representing the bin containing the value with given order (0-based)
     ///
@@ -319,7 +319,9 @@ pub trait Histogram {
     ///
     /// - `dataOutput`: the [`DataOutput`]
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn write(&self, data_output: &DataOutput) -> Result<(), std::rc::Rc<DynaHistError>>;
 
@@ -366,12 +368,14 @@ pub trait Histogram {
     /// The returned histogram will allocate internal arrays for bin counts dynamically. The
     /// behavior is undefined if the given layout does not match the layout before serialization.
     ///
-    /// - `layout`: the [`Layout`]
-    /// @param [`data_input`] the [`DataInput`]
+    /// - [`layout`: the [`Layout`]
+    /// - [`data_input`] the [`DataInput`]
     ///
     /// the deserialized histogram
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn read_as_dynamic(
         layout: impl Layout,
@@ -389,11 +393,13 @@ pub trait Histogram {
     /// is undefined if the given layout does not match the layout before serialization.
     ///
     /// - `layout`: the [`Layout`]
-    /// @param [`data_input`] the [`DataInput`]
+    /// - [`data_input`] the [`DataInput`]
     ///
     /// the deserialized histogram
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn read_as_static(
         layout: impl Layout,
@@ -411,11 +417,13 @@ pub trait Histogram {
     /// The behavior is undefined if the given layout does not match the layout before serialization.
     ///
     /// - `layout`: the [`Layout`]
-    /// @param [`data_input`] the [`DataInput`]
+    /// - [`data_input`] the [`DataInput`]
     ///
     /// the deserialized histogram
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn read_as_preprocessed(
         layout: impl Layout,

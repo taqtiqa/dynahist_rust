@@ -6,6 +6,7 @@
 use crate::errors::DynaHistError;
 use crate::layouts::layout_serialization_definition::LayoutSerializationDefinition;
 use crate::layouts::layout_serialization::LayoutSerialization;
+use crate::layouts::Sketch;
 use crate::seriate::deserialization::SerializationReader;
 use crate::seriate::serialization::SerializationWriter;
 use crate::utilities::Algorithms;
@@ -188,10 +189,10 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     fn define_serialization(
         serial_version: i64,
-        layout: &Self::L,
-        writer: &SerializationWriter<Self::L>,
-        reader: &SerializationReader<Self::L>,
-    ) -> LayoutSerializationDefinition<Self::L> {
+        layout: &Sketch,
+        writer: &SerializationWriter,
+        reader: &SerializationReader,
+    ) -> LayoutSerializationDefinition {
         return LayoutSerializationDefinition::new(serial_version, &layout, writer, reader);
     }
 
@@ -203,7 +204,7 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     /// - `definitions` are the layout serializations to register.
     ///
-    fn register(definitions: &LayoutSerializationDefinition<Self::L>) {
+    fn register(definitions: &LayoutSerializationDefinition) {
         let layout_seriate = LayoutSerialization::new();
         layout_seriate.register(definitions);
     }

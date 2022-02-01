@@ -25,36 +25,38 @@ const CONST: usize = 0;
 
 pub struct SeriateUtil {}
 
-// impl Seriate for SeriateUtil {
-// }
-
+// impl Seriate for SeriateUtil {}
 // impl bytes::BufMut for SeriateUtil {}
-
 // impl bytes::Buf for SeriateUtil {}
+
 pub trait SeriateHistogram<H>: Seriate
 where
     H: Histogram,
 {
-        /// Return the static [`Histogram`] read from a given [`[u8]`].
+    /// Return the static [`Histogram`] read from a given [`[u8]`].
     ///
-    /// The returned histogram will allocate internal arrays for bin counts statically. The behavior
-    /// is undefined if the given layout does not match the layout before serialization.
+    /// The returned histogram will allocate internal arrays for bin counts
+    /// statically.
+    /// The behavior is undefined if the given layout does not match the
+    /// layout before serialization.
     ///
-    /// @param `layout`: Any type which implements the [`Layout`] trait
-    /// - `serializedHistogram`: the [`[u8]`]
+    /// # Errors
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// [`DynaHistError::IOError`] if an I/O error occurs
+    ///
+    /// # Arguments
+    ///
+    /// - `layout`: Any type which implements the [`Layout`] trait
+    /// - `serialized_histogram`: the [`[u8]`]
     ///
     fn read_as_static(
         layout: impl Layout,
         serialized_histogram: Vec<i8>,
     ) -> Result<H, std::rc::Rc<DynaHistError>> {
         let serialization_reader =
-            |data_input: SerializationReader<H>| H::read_as_static(layout, data_input);
-        return Ok(Self::from_byte_array(
-            serialization_reader,
-            serialized_histogram,
-        ));
+            |data_input: &DataInput| Histogram::read_as_static(layout, data_input);
+        let h = Self::from_byte_array(serialization_reader, serialized_histogram);
+        return h;
     }
 
     /// Read a dynamic histogram from a given [`[u8]`].
@@ -63,22 +65,23 @@ where
     /// behavior is undefined if the given layout does not match the layout before serialization.
     ///
     /// - `layout`: the [`Layout`]
-    /// - `serializedHistogram`: the [`[u8]`]
+    /// - `serialized_histogram`: the [`[u8]`]
     ///
     /// the [`Histogram`]
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn read_as_dynamic(
         layout: impl Layout,
         serialized_histogram: Vec<i8>,
     ) -> Result<H, std::rc::Rc<DynaHistError>> {
         let serialization_reader =
-            |data_input: SerializationReader<H>| H::read_as_dynamic(layout, data_input);
-        return Ok(Self::from_byte_array(
-            serialization_reader,
-            serialized_histogram,
-        ));
+            |data_input: DataInput| Histogram::read_as_dynamic(layout, data_input);
+
+        let h = Self::from_byte_array(serialization_reader, serialized_histogram);
+        return h;
     }
 
     /// Read a preprocessed histogram from a given [`[u8]`].
@@ -87,23 +90,22 @@ where
     /// The behavior is undefined if the given layout does not match the layout before serialization.
     ///
     /// - `layout`: the [`Layout`]
-    /// - `serializedHistogram`: the [`[u8]`]
+    /// - `serialized_histogram`: the [`[u8]`]
     ///
     /// the [`Histogram`]
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn read_as_preprocessed(
         layout: impl Layout,
         serialized_histogram: Vec<i8>,
     ) -> Result<H, std::rc::Rc<DynaHistError>> {
-        let serialization_reader = |data_input: SerializationReader<H>| {
-            H::read_as_preprocessed(layout, data_input)
-        };
-        return Ok(Self::from_byte_array(
-            serialization_reader,
-            serialized_histogram,
-        ));
+        let serialization_reader =
+            |data_input: DataInput| Histogram::read_as_preprocessed(layout, data_input);
+        let h = Self::from_byte_array(serialization_reader, serialized_histogram);
+        return h;
     }
 
     /// Write this histogram compressed to a given [`[u8]`].
@@ -117,88 +119,85 @@ where
     ///
     /// the [`[u8]`]
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn write_compressed(histogram: H) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         return Ok(Self::compress(&Self::L::write(histogram)));
     }
 
-    /// Read a histogram from a given compressed [`[u8]`].
+    /// Return a histogram read from a given compressed [`[u8]`].
     ///
-    /// The returned histogram will allocate internal arrays for bin counts statically. The behavior
-    /// is undefined if the given layout does not match the layout before serialization.
+    /// The returned histogram will allocate internal arrays for bin counts
+    /// statically.
+    /// The behavior is undefined if the given layout does not match the
+    /// layout before serialization.
+    ///
+    /// # Arguments
     ///
     /// - `layout`: the [`Layout`]
-    /// - `serializedHistogram`: the [`[u8]`]
-    ///
-    /// the [`Histogram`]
-    ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `serialized_histogram`: the [`[u8]`]
     ///
     /// # Errors
     ///
-    /// DataFormatError if a data format error occurs
+    /// - [`DynaHistError::IOError`] if an I/O error occurs
+    /// - [`DynaHistError::DataFormatError`] if a data format error occurs
     ///
     fn read_compressed_as_static(
         layout: impl Layout,
         serialized_histogram: &Vec<i8>,
     ) -> Result<H, std::rc::Rc<DynaHistError>> {
-        return Ok(H::read_as_static(
-            layout,
-            &H::decompress(&serialized_histogram),
-        ));
+        let h = Histogram::read_as_static(layout, Self::decompress(&serialized_histogram));
+        return h;
     }
 
-    /// Read a histogram from a given compressed [`[u8]`].
+    /// Return a histogram read from a given compressed [`[u8]`].
     ///
     /// The returned histogram will allocate internal arrays for bin counts dynamically. The
     /// behavior is undefined if the given layout does not match the layout before serialization.
     ///
+    /// # Arguments
+    ///
     /// - `layout`: the [`Layout`]
-    /// - `serializedHistogram`: the [`[u8]`]
-    ///
-    /// the [`Histogram`]
-    ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `serialized_histogram`: the [`[u8]`]
     ///
     /// # Errors
     ///
-    /// DataFormatError if a data format error occurs
+    /// - [`DynaHistError::IOError`] if an I/O error occurs
+    /// - [`DynaHistError::DataFormatError`] if a data format error occurs
     ///
     fn read_compressed_as_dynamic(
         layout: impl Layout,
         serialized_histogram: &Vec<i8>,
     ) -> Result<H, std::rc::Rc<DynaHistError>> {
-        return Ok(H::read_as_dynamic(
-            layout,
-            &Self::decompress(&serialized_histogram),
-        ));
+        let h = Histogram::read_as_dynamic(layout, Self::decompress(&serialized_histogram));
+        return h;
     }
 
-    /// Read a histogram from a given compressed [`[u8]`].
+    /// Return a histogram read from a given compressed [`[u8]`].
     ///
-    /// The returned histogram will be immutable and preprocessed in order to support fast queries.
-    /// The behavior is undefined if the given layout does not match the layout before serialization.
+    /// The returned histogram will be immutable and preprocessed in order to
+    /// support fast queries.
+    /// The behavior is undefined if the given layout does not match the
+    /// layout before serialization.
+    ///
+    /// # Arguments
     ///
     /// - `layout`: the [`Layout`]
-    /// - `serializedHistogram`: the [`Histogram`]
-    ///
-    /// the [`Histogram`]
-    ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// - `serialized_histogram`: the [`Histogram`]
     ///
     /// # Errors
     ///
-    /// DataFormatError if a data format error occurs
+    /// [`DynaHistError::IOError`] if an I/O error occurs
+    /// [`DynaHistError::DataFormatError`] if a data format error occurs
     ///
     fn read_compressed_as_preprocessed(
         layout: impl Layout,
         serialized_histogram: &Vec<i8>,
     ) -> Result<H, std::rc::Rc<DynaHistError>> {
-        return Ok(Self::read_as_preprocessed(
-            layout,
-            &Self::decompress(&serialized_histogram),
-        ));
+        let h = Histogram::read_as_preprocessed(layout, Self::decompress(&serialized_histogram));
+        return h;
     }
 
     fn compress(data: &Vec<i8>) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
@@ -217,7 +216,7 @@ where
 
     /// # Errors
     ///
-    /// Return [`DynaHistError::DataFormatError`]
+    /// Return [`DynaHistError::[`DynaHistError::DataFormatError`]`]
     ///
     fn decompress(data: Vec<i8>) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         match bytes::Bytes::from(data) {
@@ -260,11 +259,11 @@ where
     /// - `serialization_reader`: The serialization reader
     ///
     fn from_byte_array(
-        serialization_reader: impl SeriateRead,
+        serialization_reader: SerializationReader,
         byte_array: Vec<i8>,
     ) -> Result<H, std::rc::Rc<DynaHistError>> {
         // Efficient byte buffer structure
-        match bytes::Bytes::from(byte_array) {
+        match bytes::Bytes::from(&byte_array) {
             Ok(bytes) => match bytes.as_ref() {
                 Ok(buffer) => return Ok(serialization_reader.read(buffer)),
                 Err(e2) => return Err(e2),
@@ -284,7 +283,7 @@ where
     /// - `data`: The data to be serialized
     ///
     fn to_byte_array(
-        serialization_writer: SerializationWriter<H>,
+        serialization_writer: SerializationWriter,
         data: &H,
     ) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         match bytes::BytesMut::with_capacity(1024) {
@@ -299,8 +298,7 @@ where
     }
 }
 // This trait for all histogram types. Default histogram is unset.
-pub trait Seriate
-{
+pub trait Seriate {
     // TODO: rename Histogram trait to Sketch
 
     const ENCOUNTERED_UNEXPECTED_DATA_MSG: &'static str = "Encountered unexpected data!";
@@ -314,6 +312,8 @@ pub trait Seriate
                 expected_serial_version,
                 current_serial_version
             )));
+        } else {
+            Ok(())
         }
     }
 
@@ -323,7 +323,9 @@ pub trait Seriate
     /// - `value`: the [`i32`] value
     /// - `dataOutput`: the [`DataOutput`]
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn write_signed_var_int(
         value: i32,
@@ -337,7 +339,9 @@ pub trait Seriate
     /// - `value`: the [`i32`] value
     /// - `dataOutput`: the [`DataOutput`]
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn write_unsigned_var_int(
         value: i32,
@@ -352,11 +356,13 @@ pub trait Seriate
 
     /// Read a variable-length encoded [`u64`] from the given [`DataInput`].
     ///
-    /// @param [`data_input`] the [`DataInput`]
+    /// - [`data_input`] the [`DataInput`]
     ///
     /// the read [`u64`] value
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn read_unsigned_var_long(data_input: &DataInput) -> Result<i64, std::rc::Rc<DynaHistError>> {
         let mut value: i64 = 0;
@@ -376,11 +382,13 @@ pub trait Seriate
 
     /// Read a variable-length and zigzag encoded [`u64`] from the given [`DataInput`].
     ///
-    /// @param [`data_input`] the [`DataInput`]
+    /// - [`data_input`] the [`DataInput`]
     ///
     /// the read [`u64`] value
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn read_signed_var_int(data_input: &DataInput) -> Result<i32, std::rc::Rc<DynaHistError>> {
         let raw: i32 = Self::read_unsigned_var_int(&data_input);
@@ -392,7 +400,9 @@ pub trait Seriate
     ///
     /// # Errors
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn read_unsigned_var_int(data_input: &DataInput) -> Result<i32, std::rc::Rc<DynaHistError>> {
         let mut value: i32 = 0;
@@ -419,7 +429,9 @@ pub trait Seriate
     ///
     /// # Errors
     ///
-    /// Err(DynaHist::Error::IOError) if an I/O error occurs
+    /// # Errors
+    ///
+    /// [`DynaHistError::IOError`] if an I/O error occurs
     ///
     fn write(histogram: impl Histogram) -> Result<Vec<i8>, std::rc::Rc<DynaHistError>> {
         return Ok(Self::to_byte_array(Histogram::write, histogram));

@@ -104,7 +104,8 @@ where
     }
 }
 
-// Visitor Pattern: Implement `Visit` to get the values from events.
+// [Visitor Pattern](https://rust-unofficial.github.io/patterns/patterns/behavioural/visitor.html):
+// Implement `Visit` to get the values from events.
 // [`Visit`] exposes a `record_*` method for each type
 // tracing can handle.
 struct MastsOtelVisitor<'a>(&'a mut BTreeMap<String, serde_json::Value>);

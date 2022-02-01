@@ -3,6 +3,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+/// Functions without default implementations - signatures only.
+/// These functions are required to be implemented.
+
 use crate::bins::bin::BinSketch;
 use crate::bins::bin_iterator::BinIterator;
 // use crate::errors::DynaHistError;
@@ -11,6 +14,7 @@ use crate::bins::bin_iterator::BinIterator;
 use crate::histograms::histogram::Histogram;
 use crate::histograms::preprocessed_histogram::PreprocessedHistogram;
 use crate::layouts::layout::Layout;
+use crate::layouts::Sketch;
 use crate::quantiles::quantile_estimation::QuantileEstimation;
 use crate::quantiles::quantile_estimators::QuantileEstimator;
 // use crate::sketches::data::{DataInput, DataOutput};
@@ -172,7 +176,7 @@ where
 
 impl<T: Probability + std::cmp::PartialOrd + Clone> Probability for Percentiles<T> {}
 
-    // Note `PercentileRange` is used to configure the `Percentiles` struct.
+// Note `PercentileRange` is used to configure the `Percentiles` struct.
 // This is done in the Histogram builder helper function `iterator`.
 impl<T> Iterator for Percentiles<T>
 where
@@ -201,13 +205,13 @@ pub trait ValueIterator {}
 
 pub trait ValueSketch {}
 
-/// This is pseudo-bounded iterators. Limited by number of data values which
+/// These are pseudo-bounded iterators. Limited by number of data values which
 /// is finite but only known at run time.
 /// https://stackoverflow.com/questions/27893223/how-do-i-iterate-over-a-range-with-a-custom-step
 struct UniformValuesIterator {}
 
-/// These are pseudo-bounded iterators. Limited by number of bins which
-/// is finite but only known at run time.
+/// These are pseudo-bounded iterators. Limited by the number of bins, which
+/// is finite, and only known at run time.
 struct AllBinsIterator {}
 struct NonEmptyBinsIterator {}
 struct LowerValuesIterator {}
@@ -258,7 +262,7 @@ struct MidpointValuesIterator {}
 // }
 
 pub trait AbstractHistogram: Histogram + Probability {
-    type L: Layout;
+    //type L: Layout;
     type H: Histogram;
     type B: BinIterator + BinSketch + std::iter::Iterator;
     type V: ValueIterator + ValueSketch + std::iter::Iterator;
@@ -367,7 +371,7 @@ pub trait AbstractHistogram: Histogram + Probability {
     //     return true;
     // }
 
-    fn get_layout(&self) -> <Self as AbstractHistogram>::L {
+    fn get_layout(&self) -> Sketch {
         return self.layout;
     }
 
@@ -402,7 +406,7 @@ pub trait AbstractHistogram: Histogram + Probability {
         return self.get_value_from_estimator(rank, Self::default_value_estimator());
     }
 
-    fn get_preprocessed_copy(&self) -> Self::H {
+    fn get_preprocessed_copy(&self) -> PreprocessedHistogram {
         return PreprocessedHistogram::of(self);
     }
 

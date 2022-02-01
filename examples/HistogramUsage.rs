@@ -18,8 +18,8 @@ impl HistogramUsage {
    /// LogLinearLayout and LogQuadraticLayout guarantee that the bins cover a given interval and that
    /// the bin widths either satisfy an absolute bin width limit or a relative bin width limit.
    ///
-   /// [`Histogram#createDynamic(Layout)`] creates a dynamic [`Histogram`] {@link
-   /// Histogram#createStatic(Layout)} creates a static [`Histogram`].
+   /// [`Histogram#create_dynamic(Layout)`] creates a dynamic [`Histogram`] {@link
+   /// Histogram#create_static(Layout)} creates a static [`Histogram`].
    ///
     #[test]
     fn create_histogram(&self) {

@@ -30,10 +30,10 @@ pub trait Algorithms: Preconditions {
     /// monotonic in x.
     ///
     /// - `x`: the x-value
-    /// @param x1 the x-value of point 1
-    /// @param y1 the y-value of point 1
-    /// @param x2 the x-value of point 2
-    /// @param y2 the y-value of point 2
+    /// - x1 the x-value of point 1
+    /// - y1 the y-value of point 1
+    /// - x2 the x-value of point 2
+    /// - y2 the y-value of point 2
     ///
     /// the interpolated y-value
     ///

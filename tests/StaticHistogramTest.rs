@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-pub struct StaticHistogramTest {
-    super: AbstractMutableHistogramTest;
-}
+pub struct StaticHistogramTest {}
+
+impl AbstractMutableHistogramTest for StaticHistogramTest {}
 
 impl StaticHistogramTest {
 
@@ -13,7 +13,7 @@ impl StaticHistogramTest {
         return Histogram::create_static(layout);
     }
 
-    fn read(&self,  layout: impl Layout,  data_input: &DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>> {
+    pub fn read(&self,  layout: impl Layout,  data_input: &DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>> {
         return Ok(Histogram::read_as_static(layout, &data_input));
     }
 
@@ -30,7 +30,7 @@ impl StaticHistogramTest {
 
     #[test]
     fn test_static_histogram_constructor(&self) {
-         let layout: Layout = Layout::new() {
+        let layout: Layout = Layout::new() {
 
             fn map_to_bin_index(&self,  value: f64) -> usize {
                 return 0;

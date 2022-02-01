@@ -106,7 +106,7 @@ impl SeriateUtilTest {
     fn test_from_byte_array(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
-         let serialization_reader: SerializationReader<Histogram> =  data_input: & -> impl Histogram::read_as_dynamic(layout, data_input);
+         let serialization_reader = | data_input: DataInput | { Histogram::read_as_dynamic(layout, data_input)};
          let serialized_histogram: Vec<i8> = null;
         let tryResult1 = 0;
         'try1: loop {
@@ -130,7 +130,7 @@ impl SeriateUtilTest {
     fn test_to_byte_array(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
          let layout: Layout = LogQuadraticLayout::create(1e-8, 1e-2, -1e6, 1e6);
          let histogram: Histogram = Histogram::create_dynamic(layout);
-         let serialization_writer: SerializationWriter<Histogram> = ( data: &,  data_output: &) -> histogram.write(data_output);
+         let serialization_writer: SerializationWriter = ( data: &,  data_output: &) -> histogram.write(data_output);
          let serialized_histogram: Vec<i8> = null;
         let tryResult1 = 0;
         'try1: loop {

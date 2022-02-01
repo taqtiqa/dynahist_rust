@@ -5,33 +5,37 @@
 
 use crate::errors::DynaHistError;
 use crate::layouts::layout::Layout;
+use crate::layouts::Sketch;
 use crate::sketches::data::DataOutput;
 
 /// A serializer for a given histogram layout.
 ///
 /// # Arguments
 ///
-/// - [`L`]: The histogram layout type to be serialized. Available layouts are
+/// - [`L`]: The histogram sketch layout type to be serialized. Available
+///   layouts are
 ///
-///     - [`CustomLayout`]
-///     - [`LogLinearLayout`]
-///     - [`LogOptimalLayout`]
-///     - [`LogQuadraticLayout`]
-///     - [`OpenTelemetryLayout`]
+///     - [`Custom`]
+///     - [`LogLinear`]
+///     - [`LogOptimal`]
+///     - [`LogQuadratic`]
+///     - [`OpenTelemetry`]
 ///
-pub struct SerializationWriter<L>(L);
+pub struct SerializationWriter {
+    layout: Sketch,
+}
 
-impl<L: Layout> SeriateWrite for SerializationWriter<L> {
+impl SerializationWriter {
 
-    fn new(layout: Self::L) -> Self {
-       Self(layout)
+    fn new(layout: Sketch) -> Self {
+       Self{layout}
     }
 }
 
 pub trait SeriateWrite {
     type L: Layout;
 
-    fn new(layout: Self::L) -> Self;
+    // fn new(layout: Sketch) -> Self;
 
     /// Serializes a given object by writing to a given [`DataOutput`].
     ///
