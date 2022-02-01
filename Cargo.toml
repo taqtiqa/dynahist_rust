@@ -1,12 +1,36 @@
 [package]
 name = "masts"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
+authors = ["Mark Van de Vyver <mark@taqtiqa.com>"]
+license = "Apache or MIT"
+readme = "README.md"
+publish = false
 resolver = "2"
+repository = "https://github.com/taqtiqa/dynahist_rust"
+homepage = "https://github.com/taqtiqa/dynahist_rust"
+description = """
+Builders for sketches, histograms and empirical densities.
+"""
+categories = [
+    "development-tools::debugging",
+    "development-tools::profiling",
+    "asynchronous",
+]
+keywords = ["metrics", "profiling", "tracing"]
 
 [lib]
 name = "dynahist"
 path = "src/lib.rs"
+
+# [workspace]
+# members = [...]
+# resolver = "2" # yes, as a string
+
+[profile.release]
+debug = 1
+incremental = true
+lto = "off"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

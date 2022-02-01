@@ -1,6 +1,11 @@
 language: rust
 cache: cargo
-env: NAME='cargo-travis'
+env:
+  - NAME='cargo-travis'
+  # Turn incremental compilation off
+  - CARGO_INCREMENTAL=0
+  # Turn on ThinLTO
+  - CARGO_PROFILE_RELEASE_LTO=thin
 rust:
   - stable
   - beta
