@@ -8,7 +8,7 @@ use crate::Histogram;
 
 use num::Float;
 
-pub trait AbstractBin: BinSketch {
+pub trait AbstractBin where Self: BinSketch + Sized {
     // Self returned is the immediate type the trait is implemented for.
     // This renders the trait no longer object-safe.
     fn get_histogram(&self) -> Self;

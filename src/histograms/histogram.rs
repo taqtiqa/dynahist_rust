@@ -17,7 +17,7 @@ use crate::utilities::Preconditions;
 use crate::values::value_estimation::ValueEstimation;
 
 // Use associated types to preserve static dispatch
-pub trait Histogram {
+pub trait Histogram where Self: Sized {
     type L: Layout + Preconditions + Algorithms;
     type B: BinIterator + BinSketch + Iterator;
     type Q: QuantileEstimation;
@@ -25,7 +25,7 @@ pub trait Histogram {
 
     /// Return the underlying [`Layout`] of the histogram.
     ///
-    fn get_layout(&self) -> &Self::L {}
+    fn get_layout(&self) -> &Self::L;
 
     /// Return a type that implements [`BinIterator`], representing the first
     /// non-empty bin.
