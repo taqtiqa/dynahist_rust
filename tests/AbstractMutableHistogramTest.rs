@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -11,7 +11,7 @@ impl AbstractMutableHistogramTest {
 
     fn add_values(&self,  histogram: impl Histogram,  values: f64) -> impl Histogram {
         if values != null {
-            for  let x: f64 in values {
+            for x: f64 in values {
                 histogram.add_value(x);
             }
         }
@@ -773,7 +773,7 @@ impl AbstractMutableHistogramTest {
          let histogram1: Histogram = histogram_factory1.apply(layout);
          let histogram2: Histogram = histogram_factory2.apply(layout);
          let histogram_total: Histogram = histogram_factory1.apply(layout);
-        DoubleStream::generate(random::nextDouble)::limit(num_values1)::for_each( x: & -> {
+        DoubleStream::generate(random::nextDouble)::limit(num_values1)::for_each( |x| {
             histogram1.add_value(x);
             histogram_total.add_value(x);
         });
@@ -845,15 +845,15 @@ impl AbstractMutableHistogramTest {
 
     #[test]
     fn test_deserialization_using_wrong_layout(&self)  -> Result<(), std::rc::Rc<DynaHistError>> {
-         let layouts: List<Layout> = Arrays::as_list(&LogLinearLayout::create(1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1.1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1.1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1e-1, 1.1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1.1e-1, -5, 5), &CustomLayout::create(-2, 4, 5), &CustomLayout::create(-2), &CustomLayout::create(1));
+         let layouts: Vector<Layout> = Arrays::as_list(&LogLinearLayout::create(1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1.1e-1, 1e-1, -5, 5), &LogQuadraticLayout::create(1.1e-1, 1e-1, -5, 5), &LogLinearLayout::create(1e-1, 1.1e-1, -5, 5), &LogQuadraticLayout::create(1e-1, 1.1e-1, -5, 5), &CustomLayout::create(-2, 4, 5), &CustomLayout::create(-2), &CustomLayout::create(1));
          let num_iterations: i64 = 10000;
          let random: SplittableRandom = SplittableRandom::new(0);
         {
              let mut i: i32 = 0;
             while i < num_iterations {
                {
-                    for  let write_layout: Layout in layouts {
-                        for  let read_layout: Layout in layouts {
+                    for write_layout in layouts {
+                        for read_layout in layouts {
                              let histogram: Histogram = create(write_layout);
                              let num_values: i64 = random.next_long(100);
                             {

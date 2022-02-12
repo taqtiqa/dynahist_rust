@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -37,7 +37,10 @@ pub struct ByteArrayInput {
 }
 
 impl bytestream::StreamReader for DataInput {
-    fn read_from<R: std::io::Read>(buffer: &mut R, order: bytestream::ByteOrder) -> Result<Self, DynaHistError> {
+    fn read_from<R: std::io::Read>(
+        buffer: &mut R,
+        order: bytestream::ByteOrder,
+    ) -> Result<Self, DynaHistError> {
         Ok(Self {
             data: bool::read_from(buffer, order)?,
         })

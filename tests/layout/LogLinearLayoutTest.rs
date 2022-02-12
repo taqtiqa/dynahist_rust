@@ -1,11 +1,11 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-pub struct LogLinearLayoutTest {
-    super: AbstractErrorLimitingLayoutTest;
-}
+pub struct LogLinearLayoutTest {}
+
+impl AbstractErrorLimitingLayoutTest for LogLinearLayoutTest {}
 
 impl LogLinearLayoutTest {
 
@@ -93,8 +93,8 @@ impl LogLinearLayoutTest {
         ;
          let relative_bin_width_limits: vec![Vec<f64>; 12] = vec![0.0, 1e-100, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, ]
         ;
-        for  let absolute_bin_width_limit: f64 in absolute_bin_width_limits {
-            for  let relative_bin_width_limit: f64 in relative_bin_width_limits {
+        for absolute_bin_width_limit in absolute_bin_width_limits {
+            for relative_bin_width_limit in relative_bin_width_limits {
                  let factor_normal: f64 = LogLinearLayout::calculate_factor_normal(relative_bin_width_limit);
                  let factor_subnormal: f64 = LogLinearLayout::calculate_factor_sub_normal(absolute_bin_width_limit);
                  let first_normal_idx: i32 = LogLinearLayout::calculate_first_normal_index(relative_bin_width_limit);

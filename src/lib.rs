@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 #![deny(unsafe_code)]

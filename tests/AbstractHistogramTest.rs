@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -173,8 +173,8 @@ impl AbstractHistogramTest {
     fn test_non_empty_bins_ascending_iterator_for_non_empty_histogram(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
-         let bins: List<Bin> = ArrayList<>::new();
-        for  let bin: BinSketch in histogram.non_empty_bins_ascending() {
+         let bins: Vector<Bin> = vec!();
+        for bin in histogram.non_empty_bins_ascending() {
             bins.add(bin);
         }
         assert_eq!(3, &bins.size());
@@ -202,7 +202,7 @@ impl AbstractHistogramTest {
     fn test_non_empty_bins_ascending_for_each_for_non_empty_histogram(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
-         let bins: List<Bin> = ArrayList<>::new();
+         let bins: Vector<Bin> = vec!();
         histogram.non_empty_bins_ascending().for_each(bins::add);
         assert_eq!(3, &bins.size());
         assert_eq!(4, &bins.get(0).get_bin_count());
@@ -229,8 +229,8 @@ impl AbstractHistogramTest {
     fn test_non_empty_bins_descending_iterator_for_non_empty_histogram(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
-         let bins: List<Bin> = ArrayList<>::new();
-        for  let bin: BinSketch in histogram.non_empty_bins_descending() {
+         let bins: Vector<Bin> = vec!();
+        for bin in histogram.non_empty_bins_descending() {
             bins.add(bin);
         }
         assert_eq!(3, &bins.size());
@@ -258,7 +258,7 @@ impl AbstractHistogramTest {
     fn test_non_empty_bins_descending_for_each_for_non_empty_histogram(&self) {
          let mut histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
         histogram = self.add_values(histogram, -3, -3, -3, -3, -1, -1, 3, 3, 3, 3, 3);
-         let bins: List<Bin> = ArrayList<>::new();
+         let bins: Vector<Bin> = vec!();
         histogram.non_empty_bins_descending().for_each(bins::add);
         assert_eq!(3, &bins.size());
         assert_eq!(5, &bins.get(0).get_bin_count());
@@ -284,8 +284,8 @@ impl AbstractHistogramTest {
     #[test]
     fn test_non_empty_bins_ascending_iterator_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
-         let bins: List<Bin> = ArrayList<>::new();
-        for  let bin: BinSketch in histogram.non_empty_bins_ascending() {
+         let bins: Vector<Bin> = vec!();
+        for bin in histogram.non_empty_bins_ascending() {
             bins.add(bin);
         }
         assert_true(&bins.is_empty());
@@ -294,7 +294,7 @@ impl AbstractHistogramTest {
     #[test]
     fn test_non_empty_bins_ascending_for_each_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
-         let bins: List<Bin> = ArrayList<>::new();
+         let bins: Vector<Bin> = vec!();
         histogram.non_empty_bins_ascending().for_each(bins::add);
         assert_true(&bins.is_empty());
     }
@@ -302,8 +302,8 @@ impl AbstractHistogramTest {
     #[test]
     fn test_non_empty_bins_descending_iterator_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
-         let bins: List<Bin> = ArrayList<>::new();
-        for  let bin: BinSketch in histogram.non_empty_bins_descending() {
+         let bins: Vector<Bin> = vec!();
+        for bin in histogram.non_empty_bins_descending() {
             bins.add(bin);
         }
         assert_true(&bins.is_empty());
@@ -312,7 +312,7 @@ impl AbstractHistogramTest {
     #[test]
     fn test_non_empty_bins_descending_for_each_for_empty_histogram(&self) {
          let histogram: Histogram = self.create(&CustomLayout::create(-4, -2, 0, 2, 4));
-         let bins: List<Bin> = ArrayList<>::new();
+         let bins: Vector<Bin> = vec!();
         histogram.non_empty_bins_descending().for_each(bins::add);
         assert_true(&bins.is_empty());
     }

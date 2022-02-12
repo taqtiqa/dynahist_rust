@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -20,6 +20,7 @@ pub trait Preconditions {
             let source = "Check argument failed";
             return Err(DynaHistError::IllegalArgumentError { source });
         }
+        Ok(expression)
     }
 
     /// Return [`true`] if the given expression evaluates to [`true`].
@@ -28,7 +29,7 @@ pub trait Preconditions {
     ///
     /// Return [`DynaHist::IllegalArgumentError`], with the given error message
     /// [`String`], when the given expression evaluates to [`false`].
-    /// The error message string is not evaulated by [`format!`], or
+    /// The error message string is not evaluated by [`format!`], or
     /// altered in any other way.
     ///
     /// # Arguments

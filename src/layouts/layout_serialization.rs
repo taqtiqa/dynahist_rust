@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -6,12 +6,12 @@
 use crate::errors::DynaHistError;
 use crate::layouts::custom_layout::CustomLayout;
 use crate::layouts::layout::Layout;
-use crate::layouts::Sketch;
 use crate::layouts::layout_serialization_definition::LayoutSerializationDefinition;
 use crate::layouts::log_linear_layout::LogLinearLayout;
 use crate::layouts::log_optimal_layout::LogOptimalLayout;
 use crate::layouts::log_quadratic_layout::LogQuadraticLayout;
 use crate::layouts::open_telemetry_exponential_buckets_layout::OpenTelemetryExponentialBucketsLayout;
+use crate::layouts::Sketch;
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 
@@ -25,7 +25,6 @@ impl Algorithms for LayoutSerialization {}
 impl Preconditions for LayoutSerialization {}
 
 impl LayoutSerialization {
-
     fn new(length: usize) -> Self {
         let count = 5;
         let serial_to_definitions: std::collections::HashMap<i64, LayoutSerializationDefinition> =
@@ -44,22 +43,10 @@ impl LayoutSerialization {
 
     fn register_current() -> Self {
         Self::register(&vec![
-            &LayoutSerializationDefinition::new(
-                0x7f862c3808df6fcd,
-                Sketch::Custom,
-            ),
-            &LayoutSerializationDefinition::new(
-                0x05d0c7e2dc0316e8,
-                Sketch::LogLinear,
-            ),
-            &LayoutSerializationDefinition::new(
-                0x9d36115de11d38d6,
-                Sketch::LogQuadratic,
-            ),
-            &LayoutSerializationDefinition::new(
-                0x70c0ef16c3809948,
-                Sketch::LogOptimal,
-            ),
+            &LayoutSerializationDefinition::new(0x7f862c3808df6fcd, Sketch::Custom),
+            &LayoutSerializationDefinition::new(0x05d0c7e2dc0316e8, Sketch::LogLinear),
+            &LayoutSerializationDefinition::new(0x9d36115de11d38d6, Sketch::LogQuadratic),
+            &LayoutSerializationDefinition::new(0x70c0ef16c3809948, Sketch::LogOptimal),
             &LayoutSerializationDefinition::new(
                 0xf6e717a16f0a6a4a,
                 Sketch::OpenTelemetryExponentialBuckets,
@@ -109,10 +96,13 @@ impl LayoutSerialization {
         data_output: impl bytes::BufMut,
     ) -> Result<(), std::rc::Rc<DynaHistError>> {
         let definition: LayoutSerializationDefinition;
-        if layout.layout_to_definitions.contains_key(&layout.histogram_type) {
+        if layout
+            .layout_to_definitions
+            .contains_key(&layout.histogram_type)
+        {
             definition = layout.layout_to_definitions.get(&layout.histogram_type);
         } else {
-            return Err(DynaHistError::IOError( format!(
+            return Err(DynaHistError::IOError(format!(
                 "{} has not been registered for serialization!",
                 layout.histogram_type
             )));
@@ -137,9 +127,10 @@ impl LayoutSerialization {
         let serialization_version: i64 = data_input.get_i64();
         let definition: LayoutSerializationDefinition;
         let layout_seriate = Self::new(5);
-        let definition = layout_seriate.serial_to_definitions
+        let definition = layout_seriate
+            .serial_to_definitions
             .get(&serialization_version)
-            .ok_or(DynaHistError::IOError( anyhow::anyhow!(format!(
+            .ok_or(DynaHistError::IOError(anyhow::anyhow!(format!(
                 "{} is an unknown layout serialization version!",
                 serialization_version
             ))));

@@ -1,19 +1,19 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::histograms::histogram::Histogram;
 use crate::layouts::guess_layout::GuessLayout;
 use crate::layouts::Sketch;
-use crate::seriate::Seriate;
-use crate::seriate::serialization::SeriateWrite;
 use crate::seriate::deserialization::SeriateRead;
+use crate::seriate::serialization::SeriateWrite;
+use crate::seriate::Seriate;
 use crate::sketches::data::DataInput;
-use crate::histograms::histogram::Histogram;
 use crate::sketches::data::DataOutput;
-use crate::{errors::DynaHistError, layouts::layout::Layout};
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
+use crate::{errors::DynaHistError, layouts::layout::Layout};
 
 /// A custom histogram bin layout.
 pub struct CustomLayout {
@@ -21,12 +21,9 @@ pub struct CustomLayout {
     sorted_bin_boundaries: Vec<f64>,
 }
 
-impl Seriate for CustomLayout {
-
-}
+impl Seriate for CustomLayout {}
 
 impl CustomLayout {
-
     fn read(&self, data_input: &DataInput) -> Result<CustomLayout, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let len: i32 = Self::read_unsigned_var_int(&data_input);
@@ -112,7 +109,8 @@ impl Layout for CustomLayout {
         }
     }
     // Unused. `map_to_bin_index_custom`
-    fn map_to_bin_index_detail(&self,
+    fn map_to_bin_index_detail(
+        &self,
         value: f64,
         factor_normal: f64,
         factor_subnormal: f64,

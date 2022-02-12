@@ -1,11 +1,11 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::values::value_estimation::ValueEstimation;
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
+use crate::values::value_estimation::ValueEstimation;
 
 // Sealing a trait stops other crates from implementing any traits that use it.
 mod private {

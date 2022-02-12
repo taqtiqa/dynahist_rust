@@ -1,19 +1,19 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::errors::DynaHistError;
 use crate::layouts::guess_layout::GuessLayout;
 use crate::layouts::layout::Layout;
-use crate::utilities::Algorithms;
-use crate::utilities::Preconditions;
+use crate::seriate::deserialization::SeriateRead;
+use crate::seriate::serialization::SeriateWrite;
 use crate::seriate::Seriate;
 use crate::seriate::SeriateUtil;
-use crate::seriate::serialization::SeriateWrite;
-use crate::seriate::deserialization::SeriateRead;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
-use crate::errors::DynaHistError;
+use crate::utilities::Algorithms;
+use crate::utilities::Preconditions;
 
 /// A histogram bin layout where all bins covering the given range have a width that is either
 /// smaller than a given absolute bin width limit or a given relative bin width limit. This layout
@@ -35,15 +35,14 @@ pub struct LogLinearLayout {
 
 impl Algorithms for LogLinearLayout {}
 impl Preconditions for LogLinearLayout {}
-impl Seriate for LogLinearLayout {
-
-}
+impl Seriate for LogLinearLayout {}
 
 impl Layout for LogLinearLayout {
     type L = Self;
 
     fn map_to_bin_index(&self, value: f64) -> usize {
-        return self.map_to_bin_index_detail(&self,
+        return self.map_to_bin_index_detail(
+            &self,
             value,
             self.factor_normal,
             self.factor_subnormal,
@@ -63,7 +62,8 @@ impl Layout for LogLinearLayout {
     // References:
     // - https://bugs.openjdk.java.net/browse/JDK-8136414
     //
-    fn map_to_bin_index_detail(&self,
+    fn map_to_bin_index_detail(
+        &self,
         value: f64,
         factor_normal: f64,
         factor_subnormal: f64,
@@ -116,7 +116,6 @@ impl GuessLayout for LogLinearLayout {
 }
 
 impl LogLinearLayout {
-
     fn read(data_input: &DataInput) -> Result<LogLinearLayout, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let absolute_bin_width_limit_tmp: f64 = data_input.read_double();

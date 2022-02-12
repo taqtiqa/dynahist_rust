@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -17,7 +17,6 @@ use crate::layouts::layout::Layout;
 ///
 
 pub(crate) trait GuessLayout: Layout {
-
     const LOG_MIN_VALUE: f64 = f64::MIN.ln();
 
     fn get_bin_lower_bound(&self, bin_index: i32) -> f64 {

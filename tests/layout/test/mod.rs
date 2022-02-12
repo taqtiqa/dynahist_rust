@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -9,8 +9,7 @@ pub struct TestLayout {
 }
 
 impl Layout for TestLayout {
-
-    fn new( underflow_index: usize,  overflow_index: usize) -> Self {
+    fn new(underflow_index: usize, overflow_index: usize) -> Self {
         Self::check_argument(underflow_index < overflow_index);
         Self {
             underflow_index: underflow_index,
@@ -18,7 +17,7 @@ impl Layout for TestLayout {
         }
     }
 
-    fn map_to_bin_index(&self,  value: f64) -> usize {
+    fn map_to_bin_index(&self, value: f64) -> usize {
         if value.is_nan() {
             return i32::MAX;
         }
@@ -38,7 +37,10 @@ impl Layout for TestLayout {
     }
 
     fn to_string(&self) -> String {
-        return format!("{} [underflowIndex={}, overflowIndex={}]", self.histogram_type, self.underflow_index, self.overflow_index);
+        return format!(
+            "{} [underflowIndex={}, overflowIndex={}]",
+            self.histogram_type, self.underflow_index, self.overflow_index
+        );
     }
 
     fn hash_code(&self) -> i32 {
@@ -49,7 +51,7 @@ impl Layout for TestLayout {
         return result;
     }
 
-    fn equals(&self,  obj: &Object) -> bool {
+    fn equals(&self, obj: &Object) -> bool {
         if self == obj {
             return true;
         }
@@ -59,7 +61,7 @@ impl Layout for TestLayout {
         if self.histogram_type != obj.histogram_type {
             return false;
         }
-         let other: TestLayout = obj as TestLayout;
+        let other: TestLayout = obj as TestLayout;
         if self.overflow_index != other.overflowIndex {
             return false;
         }

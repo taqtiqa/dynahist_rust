@@ -1,17 +1,17 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+use crate::errors::DynaHistError;
 use crate::layouts::guess_layout::GuessLayout;
 use crate::layouts::layout::Layout;
+use crate::seriate::deserialization::SeriateRead;
+use crate::seriate::serialization::SeriateWrite;
 use crate::seriate::Seriate;
 use crate::seriate::SeriateUtil;
-use crate::seriate::serialization::SeriateWrite;
-use crate::seriate::deserialization::SeriateRead;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
-use crate::errors::DynaHistError;
 use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 
@@ -40,14 +40,13 @@ pub struct LogOptimalLayout {
 
 impl Algorithms for LogOptimalLayout {}
 impl Preconditions for LogOptimalLayout {}
-impl Seriate for LogOptimalLayout {
-
-}
+impl Seriate for LogOptimalLayout {}
 impl Layout for LogOptimalLayout {
     type L = Self;
 
     fn map_to_bin_index(&self, value: f64) -> usize {
-        return self.map_to_bin_index_detail(&self,
+        return self.map_to_bin_index_detail(
+            &self,
             value,
             self.factor_normal,
             self.factor_subnormal,
@@ -67,7 +66,8 @@ impl Layout for LogOptimalLayout {
     // References:
     // - https://bugs.openjdk.java.net/browse/JDK-8136414
     //
-    fn map_to_bin_index_detail(&self,
+    fn map_to_bin_index_detail(
+        &self,
         value: f64,
         factor_normal: f64,
         factor_subnormal: f64,
@@ -98,7 +98,6 @@ impl Layout for LogOptimalLayout {
 }
 
 impl GuessLayout for LogOptimalLayout {
-
     fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
         if bin_index >= 0 {
             return self.get_bin_lower_bound_approximation_helper(bin_index);
@@ -119,7 +118,6 @@ impl GuessLayout for LogOptimalLayout {
 }
 
 impl LogOptimalLayout {
-
     fn read(data_input: &DataInput) -> Result<LogOptimalLayout, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let absolute_bin_width_limit_tmp: f64 = data_input.read_double();

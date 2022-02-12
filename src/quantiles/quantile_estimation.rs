@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -18,9 +18,7 @@ use crate::values::value_estimation::ValueEstimation;
 
 /// A quantile estimator.
 // pub trait QuantileEstimation<QEstimator = Self>:
-pub trait QuantileEstimation:
-    Preconditions + Algorithms + ValueEstimation
-{
+pub trait QuantileEstimation: Preconditions + Algorithms + ValueEstimation {
     // type QEstimator: QuantileEstimation;
     // type VEstimator: ValueEstimation;
 
@@ -113,7 +111,6 @@ pub trait QuantileEstimation:
             p,
             Self::DEFAULT_QUANTILE_ESTIMATOR,
             value_estimator,
-
         );
     }
 

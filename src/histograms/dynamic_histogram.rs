@@ -1,11 +1,11 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-use crate::bins::Bin;
 use crate::bins::bin::BinSketch;
 use crate::bins::bin_iterator::BinIterator;
+use crate::bins::Bin;
 use crate::errors::DynaHistError;
 // use crate::histograms::dynamic_histogram::DynamicHistogram;
 use crate::histograms::abstract_histogram::AbstractHistogram;
@@ -115,9 +115,9 @@ impl DynamicHistogram {
 impl Algorithms for DynamicHistogram {}
 impl Preconditions for DynamicHistogram {}
 impl AbstractHistogram for DynamicHistogram {
-     type H = Self;
-     type B = std::iter::Iterator<Item=Bin>; //placeholder
-     type V = std::iter::Iterator<Item=Value>; //placeholder
+    type H = Self;
+    type B = std::iter::Iterator<Item = Bin>; //placeholder
+    type V = std::iter::Iterator<Item = Value>; //placeholder
 }
 
 impl Probability for DynamicHistogram {}

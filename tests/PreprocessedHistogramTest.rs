@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -10,7 +10,7 @@ impl AbstractHistogramTest for PreprocessedHistogramTest {}
 impl PreprocessedHistogramTest {
 
     fn create(&self,  layout: impl Layout) -> impl Histogram {
-        return Histogram::create_dynamic(layout)::get_preprocessed_copy();
+        return Histogram::create_dynamic(layout).get_preprocessed_copy();
     }
 
     fn read(&self,  layout: impl Layout,  data_input: &DataInput) -> Result<Histogram, std::rc::Rc<DynaHistError>> {
@@ -24,7 +24,7 @@ impl PreprocessedHistogramTest {
 
          let mutable_histogram: Histogram = Histogram::create_static(&histogram.get_layout());
         mutable_histogram.add_histogram(histogram);
-        for let x: f64 in values {
+        for x in values {
             mutable_histogram.add_value(x);
         }
         return mutable_histogram.get_preprocessed_copy();

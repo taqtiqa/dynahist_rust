@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -56,8 +56,8 @@ impl SciPyQuantileEstimatorTest {
          let value: f64 = 5;
          let values: vec![Vec<f64>; 1] = vec![value, ]
         ;
-        for  let quantile_estimator: QuantileEstimation in QUANTILE_ESTIMATORS {
-            for  let p: f64 in P_VALUES {
+        for quantile_estimator in QUANTILE_ESTIMATORS {
+            for p in P_VALUES {
                 assert_eq!(value, &quantile_estimator.estimate_quantile_from_values(p, &values), 0);
             }
         }
@@ -66,8 +66,8 @@ impl SciPyQuantileEstimatorTest {
     #[test]
     fn test_no_values(&self) {
          let values;
-        for  let quantile_estimator: QuantileEstimation in QUANTILE_ESTIMATORS {
-            for  let p: f64 in P_VALUES {
+        for quantile_estimator in QUANTILE_ESTIMATORS {
+            for p in P_VALUES {
                 assert_eq!(f64::NAN, &quantile_estimator.estimate_quantile_from_values(p, &values), 0);
             }
         }
@@ -81,8 +81,8 @@ impl SciPyQuantileEstimatorTest {
         ;
          let betap_values: vec![Vec<f64>; 11] = vec![0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, ]
         ;
-        for  let alphap: f64 in alphap_values {
-            for  let betap: f64 in betap_values {
+        for alphap in alphap_values {
+            for betap in betap_values {
                  let estimator: QuantileEstimation = SciPyQuantileEstimator::create(alphap, betap);
                 assert_eq!(true_median + (alphap - betap) * 0.5, &estimator.estimate_quantile_from_values(0.5, &values), 1e-10);
             }

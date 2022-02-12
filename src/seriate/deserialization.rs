@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -21,14 +21,13 @@ use crate::sketches::data::DataInput;
 ///     - [`LogQuadraticLayout`]
 ///     - [`OpenTelemetryLayout`]
 ///
-pub struct SerializationReader{
+pub struct SerializationReader {
     layout: Sketch,
 }
 
 impl SerializationReader {
-
     fn new(layout: Sketch) -> Self {
-       Self{layout}
+        Self { layout }
     }
 }
 

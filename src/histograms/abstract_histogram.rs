@@ -1,11 +1,10 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 /// Functions without default implementations - signatures only.
 /// These functions are required to be implemented.
-
 use crate::bins::bin::BinSketch;
 use crate::bins::bin_iterator::BinIterator;
 // use crate::errors::DynaHistError;
@@ -170,9 +169,8 @@ where
     T: Clone,
     T: Probability,
 {
-    _marker: std::marker::PhantomData<T>
-
-    }
+    _marker: std::marker::PhantomData<T>,
+}
 
 impl<T: Probability + std::cmp::PartialOrd + Clone> Probability for Percentiles<T> {}
 
@@ -183,7 +181,7 @@ where
     // for<'a> &'a T: std::ops::Add<&'a T, Output = T>,
     T: PartialOrd,
     T: Clone,
-    T: Probability
+    T: Probability,
 {
     type Item = T;
 
@@ -297,7 +295,7 @@ pub trait AbstractHistogram: Histogram + Probability {
         Default::default()
     }
 
-    fn default_value_estimator(){
+    fn default_value_estimator() {
         ValueEstimatorUniform::new()
     }
     // fn format_counts(&self) -> String {

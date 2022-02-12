@@ -1,16 +1,16 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use crate::errors::DynaHistError;
-use crate::layouts::layout_serialization_definition::LayoutSerializationDefinition;
 use crate::layouts::layout_serialization::LayoutSerialization;
+use crate::layouts::layout_serialization_definition::LayoutSerializationDefinition;
 use crate::layouts::Sketch;
 use crate::seriate::deserialization::SerializationReader;
 use crate::seriate::serialization::SerializationWriter;
-use crate::utilities::Algorithms;
 use crate::sketches::data::{DataInput, DataOutput};
+use crate::utilities::Algorithms;
 use crate::utilities::Preconditions;
 
 /// A histogram bin layout, which defines the bins for a [`Histogram`].
@@ -33,7 +33,8 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     ///
     fn map_to_bin_index(&self, value: f64) -> usize;
 
-    fn map_to_bin_index_detail(&self,
+    fn map_to_bin_index_detail(
+        &self,
         value: f64,
         factor_normal: f64,
         factor_subnormal: f64,
@@ -154,8 +155,8 @@ pub(crate) trait Layout: Preconditions + Algorithms {
     /// stream has been closed, e.g. a network outage.
     ///
     fn read_with_type_info(data_input: DataInput) -> Result<Self, std::rc::Rc<DynaHistError>>
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         return Ok(LayoutSerialization::read(data_input));
     }

@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -8,7 +8,10 @@ use crate::Histogram;
 
 use num::Float;
 
-pub trait AbstractBin where Self: BinSketch + Sized {
+pub trait AbstractBin
+where
+    Self: BinSketch + Sized,
+{
     // Self returned is the immediate type the trait is implemented for.
     // This renders the trait no longer object-safe.
     fn get_histogram(&self) -> Self;
@@ -51,5 +54,5 @@ pub trait AbstractBin where Self: BinSketch + Sized {
         return h1.min(h2);
     }
 
-    fn get_non_empty_index(&self) -> i32 ;
+    fn get_non_empty_index(&self) -> i32;
 }

@@ -1,11 +1,12 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 use thiserror::Error;
+
 // was Error
-#[derive(Debug, Error)]
+#[derive(Debug, thiserror::Error)]
 pub enum DynaHistError {
     #[error("{0}")]
     ArithmeticError(String),
@@ -23,4 +24,13 @@ pub enum DynaHistError {
     UnsupportedOperationError { source: std::io::Error },
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
 }
+
+// impl From<std::io::Error> for DynaHistError {
+
+//     fn from(err: std::io::Error) -> Self {
+//         DynaHistError::Io(err)
+//     }
+// }

@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -228,8 +228,8 @@ pub trait AbstractMutableHistogram: AbstractHistogram + Histogram + Precondition
         }
         let layout: Self::L = histogram.get_layout();
         if Self::get_layout().equals(layout) {
-            let first_non_empty_bin: Self::BIter  = histogram.get_first_non_empty_bin();
-            let last_non_empty_bin:  Self::BIter = histogram.get_last_non_empty_bin();
+            let first_non_empty_bin: Self::BIter = histogram.get_first_non_empty_bin();
+            let last_non_empty_bin: Self::BIter = histogram.get_last_non_empty_bin();
             if first_non_empty_bin.get_bin_index() == last_non_empty_bin.get_bin_index() {
                 Self::add_values(&histogram.get_min(), histogram.get_total_count() - 1);
                 Self::add_value(&histogram.get_max());
@@ -239,7 +239,7 @@ pub trait AbstractMutableHistogram: AbstractHistogram + Histogram + Precondition
                     &last_non_empty_bin.get_bin_count(),
                 );
                 {
-                    let bin_iterator:  Self::BIter = first_non_empty_bin;
+                    let bin_iterator: Self::BIter = first_non_empty_bin;
                     while !bin_iterator.is_last_non_empty_bin() {
                         {
                             Self::add_values(
@@ -452,16 +452,8 @@ pub trait AbstractMutableHistogram: AbstractHistogram + Histogram + Precondition
                                         {
                                             let bin_count: i64 = self
                                                 .get_allocated_bin_count(bin_index)
-                                                - (if min_bin_index == bin_index {
-                                                    1
-                                                } else {
-                                                    0
-                                                })
-                                                - (if max_bin_index == bin_index {
-                                                    1
-                                                } else {
-                                                    0
-                                                });
+                                                - (if min_bin_index == bin_index { 1 } else { 0 })
+                                                - (if max_bin_index == bin_index { 1 } else { 0 });
                                             bin_index += 1;
                                             b |= (bin_count as i32) & bit_mask;
                                         }
@@ -683,7 +675,7 @@ pub trait AbstractMutableHistogram: AbstractHistogram + Histogram + Precondition
 
     fn increase_count(&self, absolute_index: i32, count: i64);
 
-    fn get_first_non_empty_bin(&self) ->  Self::BIter {
+    fn get_first_non_empty_bin(&self) -> Self::BIter {
         if self.is_empty() {
             return Err(DynaHistError::NoSuchElementError);
         }
@@ -718,7 +710,7 @@ pub trait AbstractMutableHistogram: AbstractHistogram + Histogram + Precondition
         return BinIteratorImpl::new(absolute_index, less_count, greater_count, count);
     }
 
-    fn get_last_non_empty_bin(&self) ->  Self::BIter {
+    fn get_last_non_empty_bin(&self) -> Self::BIter {
         if self.is_empty() {
             return Err(DynaHistError::NoSuchElementError);
         }

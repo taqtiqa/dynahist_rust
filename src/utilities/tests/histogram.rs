@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -9,7 +9,7 @@ pub struct HistogramTest {}
 impl utilities::tests::Histogram for HistogramTest {}
 
 trait Histogram {
-    fn new() -> impl Histogram {}
+    pub fn new() -> impl Histogram {}
 
     fn check_histogram_data_consistency(histogram_data: &Histogram) -> Map<Integer, Long> {
         let layout: Layout = histogram_data.get_layout();

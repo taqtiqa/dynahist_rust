@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -17,7 +17,10 @@ use crate::utilities::Preconditions;
 use crate::values::value_estimation::ValueEstimation;
 
 // Use associated types to preserve static dispatch
-pub trait Histogram where Self: Sized {
+pub trait Histogram
+where
+    Self: Sized,
+{
     type L: Layout + Preconditions + Algorithms;
     type B: BinIterator + BinSketch + Iterator;
     type Q: QuantileEstimation;

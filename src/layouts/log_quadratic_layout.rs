@@ -1,4 +1,4 @@
-// Copyright 2021 Mark van de Vyver
+// Copyright 2021-2022 Mark van de Vyver
 // Copyright 2020-2021 Dynatrace LLC
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
@@ -6,10 +6,10 @@
 use crate::errors::DynaHistError;
 use crate::layouts::guess_layout::GuessLayout;
 use crate::layouts::layout::Layout;
+use crate::seriate::deserialization::SeriateRead;
+use crate::seriate::serialization::SeriateWrite;
 use crate::seriate::Seriate;
 use crate::seriate::SeriateUtil;
-use crate::seriate::serialization::SeriateWrite;
-use crate::seriate::deserialization::SeriateRead;
 use crate::sketches::data::DataInput;
 use crate::sketches::data::DataOutput;
 use crate::utilities::Algorithms;
@@ -36,9 +36,7 @@ pub struct LogQuadraticLayout {
 
 impl Algorithms for LogQuadraticLayout {}
 impl Preconditions for LogQuadraticLayout {}
-impl Seriate for LogQuadraticLayout {
-
-}
+impl Seriate for LogQuadraticLayout {}
 
 impl GuessLayout for LogQuadraticLayout {
     fn get_bin_lower_bound_approximation(&self, bin_index: i32) -> f64 {
@@ -71,7 +69,8 @@ impl Layout for LogQuadraticLayout {
     type L = Self;
 
     fn map_to_bin_index(&self, value: f64) -> usize {
-        return self.map_to_bin_index_detail(&self,
+        return self.map_to_bin_index_detail(
+            &self,
             value,
             self.factor_normal,
             self.factor_subnormal,
@@ -91,7 +90,8 @@ impl Layout for LogQuadraticLayout {
     // References:
     // - https://bugs.openjdk.java.net/browse/JDK-8136414
     //
-    fn map_to_bin_index_detail(&self,
+    fn map_to_bin_index_detail(
+        &self,
         value: f64,
         factor_normal: f64,
         factor_subnormal: f64,
@@ -119,7 +119,6 @@ impl Layout for LogQuadraticLayout {
 }
 
 impl LogQuadraticLayout {
-
     fn read(data_input: &DataInput) -> Result<LogQuadraticLayout, std::rc::Rc<DynaHistError>> {
         Self::check_serial_version(Self::SERIAL_VERSION_V0, &data_input.read_unsigned_byte());
         let absolute_bin_width_limit_tmp: f64 = data_input.read_double();
@@ -344,7 +343,6 @@ impl LogQuadraticLayout {
     fn calculate_sub_normal_idx(unsigned_value_bits: i64, factor_subnormal: f64) -> usize {
         return (factor_subnormal * f64::from_bits(unsigned_value_bits)) as usize;
     }
-
 
     // fn hash_code(&self) -> i32 {
     //     let prime: i32 = 31;
